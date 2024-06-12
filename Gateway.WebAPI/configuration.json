@@ -1,0 +1,230 @@
+{  
+  "Routes": [  
+    {
+        "DownstreamPathTemplate": "/api/claims",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claims",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/claims/closed",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claims/closed",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/claims/{claimId}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claims/{claimId}",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/claimStatus/report/{month}/{year}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claimStatus/report/{month}/{year}",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/paymentStatus/report/{month}/{year}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/paymentStatus/report/{month}/{year}",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/claims/new",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claims/new",  
+        "UpstreamHttpMethod": [ "POST" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/claims/{claimId}/update",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claims/{claimId}/update",  
+        "UpstreamHttpMethod": [ "PUT" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/claims/{claimId}/{claimant}/update",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claims/{claimId}/{claimant}/update",  
+        "UpstreamHttpMethod": [ "PATCH" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/surveyorfees/{claimId}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/surveyorfees/{claimId}",  
+        "UpstreamHttpMethod": [ "PATCH" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/surveyors/{estimatedLoss}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/surveyors/{estimatedLoss}",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+
+
+    {
+        "DownstreamPathTemplate": "/api/claims/addclaim",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5025 
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claims/addclaim",  
+        "UpstreamHttpMethod": [ "POST" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/claims/{claimId}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5025  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/claims/{claimId}",  
+        "UpstreamHttpMethod": [ "PATCH" ]  
+    },
+    
+    
+    {
+        "DownstreamPathTemplate": "/IRDA/claimStatus/report/{month}/{year}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5199  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/IRDA/claimStatus/report/{month}/{year}",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/IRDA/paymentStatus/report/{month}/{year}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5199  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/IRDA/paymentStatus/report/{month}/{year}",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/IRDA/claimStatus/pull/{month}/{year}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/IRDA/claimStatus/pull/{month}/{year}",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/IRDA/paymentStatus/pull/{month}/{year}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/IRDA/paymentStatus/pull/{month}/{year}",  
+        "UpstreamHttpMethod": [ "GET" ]  
+    },
+
+
+    {
+        "DownstreamPathTemplate": "/api/surveyors/{claimId}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5251
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/surveyReport/{claimId}",  
+        "UpstreamHttpMethod": [ "GET","PATCH" ]  
+    },
+    {
+        "DownstreamPathTemplate": "/api/surveyors/new",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5251  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/surveyors/new",  
+        "UpstreamHttpMethod": [ "POST" ]  
+    }
+  ],  
+  "GlobalConfiguration": {  
+    "BaseUrl": "http://localhost:5179"  
+  }  
+  
+}

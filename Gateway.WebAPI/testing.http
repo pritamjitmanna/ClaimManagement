@@ -1,0 +1,34 @@
+@Testing_HostAddress = http://localhost:5179
+
+###
+GET {{Testing_HostAddress}}/api/claims
+###
+GET {{Testing_HostAddress}}/api/claims/closed
+
+
+
+
+###
+POST {{Testing_HostAddress}}/api/claims/addclaim
+Content-Type: application/json
+
+{
+  "policyNo": "SO18824",
+  "estimatedLoss": 6000,
+  "dateOfAccident": "2024-05-30"
+}
+
+###
+GET {{Testing_HostAddress}}/IRDA/claimStatus/report/5/2024
+
+###
+GET {{Testing_HostAddress}}/api/surveyReport/CLSO182024
+
+###
+PATCH  {{Testing_HostAddress}}/api/surveyReport/CLSO182024
+Content-Type: application/json
+
+{
+    "labourCharges":2100,
+    "partsCost":4500
+}

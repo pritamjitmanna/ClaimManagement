@@ -1,0 +1,6 @@
+@IRDA_HostAddress = http://localhost:5199
+
+GET {{IRDA_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

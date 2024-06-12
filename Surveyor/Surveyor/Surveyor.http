@@ -1,0 +1,26 @@
+@Surveyor_HostAddress = http://localhost:5251
+
+GET {{Surveyor_HostAddress}}/api/surveyors/CLSO182024
+
+###
+
+POST {{Surveyor_HostAddress}}/api/surveyors/new
+Content-Type: application/json
+
+{
+    "claimId": "CLSO182024",
+    "policyNo": "SO18824",
+    "labourCharges": 2000,
+    "partsCost": 4000,
+    "DepreciationCost": 400
+}
+
+###
+
+PATCH {{Surveyor_HostAddress}}/api/surveyors/CLSO182024
+Content-Type: application/json
+
+{
+    "labourCharges":2100,
+    "partsCost":3500
+}

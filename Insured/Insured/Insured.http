@@ -1,0 +1,20 @@
+@Insured_HostAddress = http://localhost:5025
+
+###
+POST {{Insured_HostAddress}}/api/claims/addclaim/
+Content-Type: application/json
+
+{
+  "policyNo": "SO18824",
+  "estimatedLoss": 6000,
+  "dateOfAccident": "2024-05-30"
+}
+
+
+###
+PATCH {{Insured_HostAddress}}/api/claims/CLSO182024
+Content-Type: application/json
+
+{
+  "acceptReject":false
+}

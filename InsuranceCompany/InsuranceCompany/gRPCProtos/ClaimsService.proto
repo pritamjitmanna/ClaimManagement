@@ -1,0 +1,140 @@
+syntax = "proto3";
+option csharp_namespace = "gRPCClaimsService.Protos";
+package claims;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+// ---------------------------Service----------------------------
+
+service ClaimsService {
+    rpc AddNewClaim(ClaimDetailRequestDTOgRPC)returns (CommonOutputgRPC); 
+    rpc GetClaimByClaimId(GetClaimByIdString)returns (CommonOutputgRPC);
+    rpc GetPolicyByPolicyNo(GetPolicyNoString)returns (CommonOutputgRPC);
+    rpc GetClaimStatusReports(GetClaimStatusReportsMonthAndYear)returns (CommonOutputgRPC);
+    rpc GetPaymentStatusReports(GetPaymentStatusReportsMonthAndYear)returns (CommonOutputgRPC);
+    rpc UpdateClaimAmountApprovedBySurveyor(UpdateClaimAmountApprovedBySurveyorClaimIdClaimant)returns (CommonOutputgRPC);
+    rpc UpdateAcceptOrRejectClaim(AcceptReject)returns (CommonOutputgRPC);
+}
+
+// -------------------------Enums------------------------------
+
+enum STATUSCODE{
+    OK=0;
+    BADREQUEST=1;
+    INTERNALSERVERERROR=2;
+    NOTFOUND=3;
+}
+
+enum CLAIMSTATUS
+{
+    CLOSED = 0;
+    OPEN = 1;
+}
+
+enum STAGES
+{
+    NEWCLAIMS=0;
+    PENDINGCLAIMS=1;
+    FINALIZEDCLAIMS=2;
+}
+
+enum WITHDRAWSTATUS{
+    NOSTATUS=0;
+    ACCEPTED=1;
+    WITHDRAWN=2;
+}
+
+message GetClaimByIdString{
+    string ClaimId=1;
+}
+
+message GetPolicyNoString{
+    string PolicyNo=1;
+}
+
+message GetClaimStatusReportsMonthAndYear{
+    int32 Month=1;
+    int32 Year=2;
+}
+
+message GetPaymentStatusReportsMonthAndYear{
+    int32 Month=1;
+    int32 Year=2;
+}
+
+message AcceptReject{
+    string ClaimId=1;
+    bool IsAccept=2;
+}
+
+message UpdateClaimAmountApprovedBySurveyorClaimIdClaimant{
+    string ClaimID=1;
+    int32 Claimant=2;
+}
+
+
+
+message ClaimDetailRequestDTOgRPC {
+    google.protobuf.StringValue PolicyNo=1;
+    google.protobuf.Int32Value EstimatedLoss=2;
+    google.protobuf.Timestamp DateOfAccident=3; 
+}
+
+message CommonOutputgRPC {
+    google.protobuf.Any Output=1;
+    STATUSCODE StatusCode=2;
+}
+
+message PropertyValidationResponsegRPC{
+    string Property=1;
+    string ErrorMessage=2;
+}
+
+message ErrorsListgRPC{
+    repeated PropertyValidationResponsegRPC Errors=1;
+}
+
+
+message ClaimDTOgRPC{
+    string ClaimId=1;
+    string PolicyNo=2;
+    int32 EstimatedLoss=3;
+    google.protobuf.Timestamp DateOfAccident=4;
+    int32 SurveyorID=5;
+    int32 AmtApprovedBySurveyor=6;
+    bool InsuranceCompanyApproval=7;
+    WITHDRAWSTATUS WithdrawClaim=8;
+    CLAIMSTATUS ClaimStatus=9;
+    google.protobuf.Int32Value SurveyorFees=10;
+}
+
+message PolicyDTOgRPC
+{
+    string PolicyNo=1; 
+    string InsuredFirstName=2; 
+    string InsuredLastName=3;
+    google.protobuf.Timestamp DateOfInsurance=4; 
+    google.protobuf.StringValue EmailId=5; 
+    string VehicleNo=6; 
+    bool Status=7; 
+}
+
+message ClaimStatusReportDTOgRPC{
+    STAGES Stage=1;
+    int32 Count=2;
+}
+
+message ClaimStatusReportsListgRPC{
+    repeated ClaimStatusReportDTOgRPC reports=1;
+}
+
+
+message ClaimPaymentReportDTOgRPC
+{
+    int32 Month=1;
+    int32 Year=2;
+    int32 Amount=3;
+
+}
