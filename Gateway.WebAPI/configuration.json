@@ -10,7 +10,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claims",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }
     },
     {
         "DownstreamPathTemplate": "/api/claims/closed",  
@@ -22,7 +29,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claims/closed",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/claims/{claimId}",  
@@ -34,7 +48,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claims/{claimId}",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/claimStatus/report/{month}/{year}",  
@@ -46,7 +67,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claimStatus/report/{month}/{year}",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/paymentStatus/report/{month}/{year}",  
@@ -58,7 +86,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/paymentStatus/report/{month}/{year}",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/claims/new",  
@@ -70,7 +105,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claims/new",  
-        "UpstreamHttpMethod": [ "POST" ]  
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/claims/{claimId}/update",  
@@ -82,7 +124,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claims/{claimId}/update",  
-        "UpstreamHttpMethod": [ "PUT" ]  
+        "UpstreamHttpMethod": [ "PUT" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/claims/{claimId}/{claimant}/update",  
@@ -94,7 +143,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claims/{claimId}/{claimant}/update",  
-        "UpstreamHttpMethod": [ "PATCH" ]  
+        "UpstreamHttpMethod": [ "PATCH" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/surveyorfees/{claimId}",  
@@ -106,7 +162,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/surveyorfees/{claimId}",  
-        "UpstreamHttpMethod": [ "PATCH" ]  
+        "UpstreamHttpMethod": [ "PATCH" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/surveyors/{estimatedLoss}",  
@@ -118,7 +181,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/surveyors/{estimatedLoss}",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "InsuranceCompany"
+        }  
     },
 
 
@@ -132,7 +202,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claims/addclaim",  
-        "UpstreamHttpMethod": [ "POST" ]  
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "Insurer"
+        }  
     },
     {
         "DownstreamPathTemplate": "/api/claims/{claimId}",  
@@ -144,7 +221,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/claims/{claimId}",  
-        "UpstreamHttpMethod": [ "PATCH" ]  
+        "UpstreamHttpMethod": [ "PATCH" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "Insurer"
+        }    
     },
     
     
@@ -158,7 +242,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/IRDA/claimStatus/report/{month}/{year}",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "IRDA"
+        }    
     },
     {
         "DownstreamPathTemplate": "/IRDA/paymentStatus/report/{month}/{year}",  
@@ -170,7 +261,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/IRDA/paymentStatus/report/{month}/{year}",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "IRDA"
+        }   
     },
     {
         "DownstreamPathTemplate": "/IRDA/claimStatus/pull/{month}/{year}",  
@@ -182,7 +280,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/IRDA/claimStatus/pull/{month}/{year}",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "IRDA"
+        }   
     },
     {
         "DownstreamPathTemplate": "/IRDA/paymentStatus/pull/{month}/{year}",  
@@ -194,7 +299,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/IRDA/paymentStatus/pull/{month}/{year}",  
-        "UpstreamHttpMethod": [ "GET" ]  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "IRDA"
+        }   
     },
 
 
@@ -208,7 +320,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/surveyReport/{claimId}",  
-        "UpstreamHttpMethod": [ "GET","PATCH" ]  
+        "UpstreamHttpMethod": [ "GET","PATCH" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "Surveyor"
+        }   
     },
     {
         "DownstreamPathTemplate": "/api/surveyors/new",  
@@ -220,7 +339,14 @@
             }  
         ],  
         "UpstreamPathTemplate": "/api/surveyors/new",  
-        "UpstreamHttpMethod": [ "POST" ]  
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "Surveyor"
+        }   
     }
   ],  
   "GlobalConfiguration": {  

@@ -1,0 +1,64 @@
+.container {
+    background: #ffffff; /* White background for the container */
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow for a lighter feel */
+    max-width: 500px; /* Slightly wider container */
+    width: 100%;
+    margin: auto;
+}
+
+.form-wrapper {
+    text-align: center;
+}
+
+.form-wrapper h2 {
+    margin-bottom: 20px;
+    font-size: 28px; /* Slightly larger font size */
+    color: #444;
+    font-weight: 500; /* Use a medium font weight for the header */
+}
+
+.form-group {
+    margin-bottom: 20px; /* Increased margin for better spacing */
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px; /* Slightly larger margin for labels */
+    font-size: 14px;
+    color: #666; /* Softer color for labels */
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px; /* Increased padding for inputs */
+    font-size: 15px;
+    border: 1px solid #ccc; /* Neutral grey border */
+    border-radius: 6px;
+    transition: border-color 0.3s, background-color 0.3s;
+    background-color: #f7f9fc; /* Match the background color with the page */
+}
+
+.form-group input:focus {
+    border-color: #007bff; /* Bright blue border on focus */
+    background-color: #ffffff; /* White background on focus */
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 12px; /* Increased padding for button */
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff; /* Bright blue button background */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}

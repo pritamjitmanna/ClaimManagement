@@ -1,0 +1,89 @@
+/* Specific styles for the survey report details */
+.survey-report-details-container {
+    width: 100%;
+    max-width: 800px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.survey-report-details-container h1 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.survey-report-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.detail-item label {
+    font-weight: bold;
+    color: #333;
+}
+
+.detail-item span {
+    color: #666;
+}
+
+.total-amount {
+    font-size: 18px;
+    color: #007bff;
+    font-weight: bold;
+    border-top: 2px solid #ccc;
+    padding-top: 10px;
+    margin-top: 20px;
+    border-bottom: none;
+}
+
+.accident-details-section {
+    margin-top: 30px;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.accident-details-section h2 {
+    margin-bottom: 10px;
+    color: #333;
+    text-align: center;
+}
+
+.accident-details-section p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Styles for the update button */
+.update-btn {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 30px auto 0;
+    padding: 10px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.update-btn:hover {
+    background: #0056b3;
+}

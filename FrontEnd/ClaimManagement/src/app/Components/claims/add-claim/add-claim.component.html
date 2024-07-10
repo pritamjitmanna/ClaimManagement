@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="form-wrapper">
+        <h2>Insurance Claim Form</h2>
+        <form action="/submit_claim" method="POST">
+            <div class="form-group">
+                <label for="policyNo">Policy No</label>
+                <input type="text" id="policyNo" name="policyNo" required>
+            </div>
+            <div class="form-group">
+                <label for="estimatedLoss">Estimated Loss</label>
+                <input type="number" id="estimatedLoss" name="estimatedLoss" required>
+            </div>
+            <div class="form-group">
+                <label for="dateOfAccident">Date of Accident</label>
+                <input type="date" id="dateOfAccident" name="dateOfAccident" required>
+            </div>
+            <button type="submit">Submit Claim</button>
+        </form>
+    </div>
+</div>

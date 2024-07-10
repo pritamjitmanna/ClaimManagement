@@ -1,0 +1,22 @@
+<div class="container home-page-container">
+  <h1>Insurance Management System</h1>
+  <div class="navigation-section">
+      <div class="nav-item">
+          <label for="claims-list">Go to Claims List:</label>
+          <a id="claims-list" class="btn nav-btn" [routerLink]="['claims']">Claims List Page</a>
+      </div>
+      <div class="nav-item">
+          <label for="irda-page">Go to IRDA Portal:</label>
+          <a id="irda-page" class="btn nav-btn" routerLink="/irda">IRDA Page</a>
+      </div>
+      <div class="nav-item">
+          <label for="survey-report-page">Create Survey Report:</label>
+          <a id="survey-report-page" class="btn nav-btn" routerLink="/createsurveyreport">Survey Report Page</a>
+      </div>
+      <div class="nav-item">
+          <label for="individual-claim-page">View Individual Claim:</label>
+          <input type="text" id="individual-claim-id" placeholder="Enter Claim ID">
+          <button id="individual-claim-page" class="btn nav-btn">Individual Claim Page</button>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,96 @@
+.container {
+    background: #ffffff; /* White background for the container */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    max-width: 600px; /* Slightly wider container */
+    width: 100%;
+    margin: auto;
+    position: relative;
+}
+
+.action-icons {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.accept-btn, .reject-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.accept-btn {
+    color: green;
+}
+
+.reject-btn {
+    color: red;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px; /* Larger font size */
+    color: #444;
+    font-weight: 500; /* Medium font weight */
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+}
+
+.important-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+span {
+    font-size: 16px;
+    color: #333;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.approval {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.approved {
+    color: #fff;
+    background-color: #28a745; /* Green for approved */
+}
+
+.not-approved {
+    color: #fff;
+    background-color: #dc3545; /* Red for not approved */
+}
