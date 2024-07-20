@@ -1,0 +1,15 @@
+{
+  "name": "concurrently",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "parallel":"concurrently \"dotnet run --project ..\\InsuranceCompany\\InsuranceCompany\\InsuranceCompany.csproj\" \"dotnet run --project ..\\Insured\\Insured\\Insured.csproj\" \"dotnet run --project ..\\IRDA\\IRDA\\IRDA.csproj\" \"dotnet run --project ..\\Surveyor\\Surveyor\\Surveyor.csproj\" \"dotnet run --project ..\\Gateway.WebAPI\\Gateway.WebAPI.csproj\""
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 using Ocelot.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<AuthDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("AuthTesting")));
+builder.Services.AddDbContext<AuthDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("Auth")));
 
 builder.Services.AddIdentity<AuthUser,IdentityRole>().AddEntityFrameworkStores<AuthDBContext>().AddDefaultTokenProviders();
 
@@ -49,7 +49,18 @@ builder.Services.AddLogging(opt=>opt.AddConsole());
 builder.Services.AddLogging(opt=>opt.AddDebug());
 builder.Services.AddOcelot(new ConfigurationBuilder().AddJsonFile("configuration.json").Build());
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularOrigins",
+    builder =>
+    {
+        builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowAngularOrigins");
 
 if (app.Environment.IsDevelopment())
 {
@@ -88,6 +99,6 @@ var configuration = new OcelotPipelineConfiguration
         
     }
 };
-await app.UseOcelot();
+await app.UseOcelot(configuration);
 
 app.Run();

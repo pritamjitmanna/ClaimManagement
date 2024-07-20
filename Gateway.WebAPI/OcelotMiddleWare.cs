@@ -26,10 +26,14 @@ public static class OcelotAuthorize{
         bool auth = true;
         Claim[] claims = ctx.User.Claims.ToArray<Claim>();
         Dictionary<string, string> required = route.RouteClaimsRequirement;
+
+
+
         foreach (KeyValuePair<string, string> reqclaim in required)
         {
 
             string[] values=reqclaim.Value.Split(",").Select(inp=>inp.Trim()).ToArray();   //Gives the matches for the claims present in the configuration.json. Here it is only Role, it gives all the roles present.
+
 
             bool possible=false;
 
@@ -54,6 +58,7 @@ public static class OcelotAuthorize{
         Type type = typeof(ClaimTypes);
         FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Static);
         var values=fieldInfos.Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToDictionary(fi => fi.GetValue(null)!.ToString()!, fi => fi.Name);
+        Console.WriteLine(values);
         
         return values;
     }
