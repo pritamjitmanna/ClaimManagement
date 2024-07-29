@@ -36,7 +36,7 @@
 }
 
 .tablink.active {
-    background: #0056b3; /* Darker blue for active tab */
+    background: red; /* Darker blue for active tab */
 }
 
 .tabcontent {

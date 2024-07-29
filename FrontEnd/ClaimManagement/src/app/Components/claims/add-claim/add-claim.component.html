@@ -1,20 +1,50 @@
 <div class="container">
     <div class="form-wrapper">
         <h2>Insurance Claim Form</h2>
-        <form action="/submit_claim" method="POST">
+        <form  (ngSubmit)="submitClaim()" #addClaim="ngForm">
             <div class="form-group">
-                <label for="policyNo">Policy No</label>
-                <input type="text" id="policyNo" name="policyNo" required>
+                <label for="PolicyNo">Policy No</label>
+                <input type="text" id="PolicyNo" name="PolicyNo" ngModel #PolicyNo="ngModel" required>
+                @if(PolicyNo.invalid && PolicyNo.touched && PolicyNo.errors && PolicyNo.errors['required']){
+                    <div class="error-message">
+                        <small>Policy Number is required</small>
+                    </div>
+                }
+                @if(PolicyNo.errors && PolicyNo.errors['isErr']){
+                    <div class="error-message">
+                        <small>{{fieldValidations['PolicyNo']}}</small>
+                    </div>
+                }
             </div>
             <div class="form-group">
-                <label for="estimatedLoss">Estimated Loss</label>
-                <input type="number" id="estimatedLoss" name="estimatedLoss" required>
+                <label for="EstimatedLoss">Estimated Loss</label>
+                <input type="number" id="EstimatedLoss" name="EstimatedLoss" ngModel #EstimatedLoss="ngModel" required>
+                @if(EstimatedLoss.invalid && EstimatedLoss.touched && EstimatedLoss.errors && EstimatedLoss.errors['required']){
+                    <div class="error-message">
+                        <small>Estimated Loss is required</small>
+                    </div>
+                }
+                @if(EstimatedLoss.errors && EstimatedLoss.errors['isErr']){
+                    <div class="error-message">
+                        <small>{{fieldValidations['EstimatedLoss']}}</small>
+                    </div>
+                }
             </div>
             <div class="form-group">
-                <label for="dateOfAccident">Date of Accident</label>
-                <input type="date" id="dateOfAccident" name="dateOfAccident" required>
+                <label for="DateOfAccident">Date of Accident</label>
+                <input type="date" id="DateOfAccident" name="DateOfAccident" ngModel #DateOfAccident="ngModel" required>
+                @if(DateOfAccident.invalid && DateOfAccident.touched && DateOfAccident.errors && DateOfAccident.errors['required']){
+                    <div class="error-message">
+                        <small>Date Of Accident is required</small>
+                    </div>
+                }
+                @if(DateOfAccident.errors && DateOfAccident.errors['isErr']){
+                    <div class="error-message">
+                        <small>{{fieldValidations['DateOfAccident']}}</small>
+                    </div>
+                }
             </div>
-            <button type="submit">Submit Claim</button>
+            <button type="submit" [disabled]="addClaim.invalid">Submit Claim</button>
         </form>
     </div>
 </div>

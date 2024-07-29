@@ -1,44 +1,55 @@
-<div class="container">
-    <div class="action-icons">
-        <button class="accept-btn">&#10004;</button>
-        <button class="reject-btn">&#10006;</button>
-    </div>
-    <h2>Claim Details</h2>
-    <div class="details">
-        <div class="important-info">
-            <div class="info-item">
-                <label for="claimId">Claim ID:</label>
-                <span id="claimId">12345</span>
+@if(isLoading){
+    <app-loading></app-loading>
+}
+@else {
+
+    <div class="container">
+        @if(claim.withdrawClaim.toString()==='NOSTATUS'){
+            <div class="action-icons">
+                <button class="accept-btn">&#10004;</button>
+                <button class="reject-btn">&#10006;</button>
             </div>
-            <div class="info-item">
-                <label for="policyNo">Policy No:</label>
-                <span id="policyNo">98765</span>
+        }
+        @else {
+            <span id="withdrawstatus" class="approval" [class]="claim.withdrawClaim.toString()==='ACCEPTED'?'approved':'not-approved'">{{claim.withdrawClaim.toString()==='ACCEPTED'?"Accepted":"Rejected"}}</span>
+        }
+        <h2>Claim Details</h2>
+        <div class="details">
+            <div class="important-info">
+                <div class="info-item">
+                    <label for="claimId">Claim ID:</label>
+                    <span id="claimId">{{claim.claimId}}</span>
+                </div>
+                <div class="info-item">
+                    <label for="policyNo">Policy No:</label>
+                    <span id="policyNo">{{claim.policyNo}}</span>
+                </div>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <label for="dateOfAccident">Date Of Accident:</label>
+                    <span id="dateOfAccident">{{claim.dateOfAccident|date}}</span>
+                </div>
+                <div class="grid-item">
+                    <label for="estimatedLoss">Estimated Loss:</label>
+                    <span id="estimatedLoss">{{claim.estimatedLoss}}</span>
+                </div>
+                <div class="grid-item">
+                    <label for="surveyor">Surveyor:</label>
+                    <span id="surveyor">{{claim.surveyorID===0?"Not Assigned":claim.surveyorID}}</span>
+                </div>
+                <div class="grid-item">
+                    <label for="amountApproved">Amount Approved By Surveyor:</label>
+                    <span id="amountApproved">{{claim.amtApprovedBySurveyor}}</span>
+                </div>
+                <div class="grid-item">
+                    <label for="surveyorFees">Surveyor Fees:</label>
+                    <span id="surveyorFees">{{claim.surveyorFees===null?"Not released":claim.surveyorFees}}</span>
+                </div>
+                <div class="grid-item">
+                    <span id="insuranceApproval" class="approval" [class]="claim.insuranceCompanyApproval?'approved':'not-approved'">{{claim.insuranceCompanyApproval===true?"Approved":"Not Approved"}}</span>
+                </div>
             </div>
         </div>
-        <div class="grid-container">
-            <div class="grid-item">
-                <label for="dateOfAccident">Date Of Accident:</label>
-                <span id="dateOfAccident">2024-01-01</span>
-            </div>
-            <div class="grid-item">
-                <label for="estimatedLoss">Estimated Loss:</label>
-                <span id="estimatedLoss">$10,000</span>
-            </div>
-            <div class="grid-item">
-                <label for="surveyor">Surveyor:</label>
-                <span id="surveyor">John Doe</span>
-            </div>
-            <div class="grid-item">
-                <label for="amountApproved">Amount Approved By Surveyor:</label>
-                <span id="amountApproved">$8,000</span>
-            </div>
-            <div class="grid-item">
-                <label for="surveyorFees">Surveyor Fees:</label>
-                <span id="surveyorFees">$500</span>
-            </div>
-            <div class="grid-item">
-                <span id="insuranceApproval" class="approval approved">Approved</span>
-            </div>
-        </div>
     </div>
-</div>
+}

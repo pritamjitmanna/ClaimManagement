@@ -4,7 +4,11 @@
         <ul class="navbar-menu">
             <li><a routerLink="/addclaim">Add New Claim</a></li>
             <li><a routerLink="/irda">IRDA</a></li>
-            <li><a href="#">About</a></li>
+            <li><a routerLink="/createsurveyreport">Create Report</a></li>
+            <li><a routerLink="/surveyreport">Report</a></li>
+            <li><a routerLink="/claims">Claims</a></li>
+            <li><a routerLink="/claim">Claim</a></li>
+            <!-- <li><a href="#">About</a></li> -->
         </ul>
     </div>
     <div class="navbar-right">
@@ -12,9 +16,10 @@
         <a routerLink="/register" class="btn signup">Sign Up</a>
         <div class="profile-dropdown">
             <img src="user.jpg" alt="User Profile" class="profile-img">
+             <span></span>
             <div class="dropdown-content">
                 <a href="#">Profile</a>
-                <a href="#">Logout</a>
+                <button (click)="logoutClick()">Logout</button>
             </div>
         </div>
     </div>

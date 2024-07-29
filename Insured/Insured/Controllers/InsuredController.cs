@@ -19,9 +19,9 @@ public class InsuredController:ControllerBase
         try{
             CommonOutput output = await _insuredService.AddNewClaim(claim);
             if(output.Result==RESULT.SUCCESS){
-                return Ok(output.Output);
+                return Ok(output);
             }
-            return BadRequest(output.Output);
+            return BadRequest(output);
         }
         catch(Exception ex){
             return StatusCode(500,"Internal Server Error");

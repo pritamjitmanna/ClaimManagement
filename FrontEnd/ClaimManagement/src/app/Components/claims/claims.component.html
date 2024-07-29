@@ -1,61 +1,47 @@
 <div class="container">
     <div class="tabs">
-        <button class="tablink">Open</button>
-        <button class="tablink">Closed</button>
+        <button class="tablink" (click)="onClick('Open')" [class.active]="tab === 'Open'">Open</button>
+        <button class="tablink" (click)="onClick('Closed')" [class.active]="tab === 'Closed'">Closed</button>
     </div>
 
-    <div id="Open" class="tabcontent">
-        @for(item of [1,2];track item;){
-            <div class="claim-card">
-                <div class="claim-row">
-                    <div class="claim-info">
-                        <label>Claimed:</label>
-                        <span>2024-01-01</span>
+    @if(isLoading){
+        <app-loading></app-loading>
+    }
+    @else{
+        <div class="tabcontent" >
+            @for(item of claims;track item.claimId;){
+                <div class="claim-card">
+                    <div class="claim-row">
+                        <div class="claim-info">
+                            <label>ClaimId:</label>
+                            <span>{{item.claimId}}</span>
+                        </div>
+                        <div class="claim-info">
+                            <label>Policy No:</label>
+                            <span>{{item.policyNo}}</span>
+                        </div>
                     </div>
-                    <div class="claim-info">
-                        <label>Policy No:</label>
-                        <span>98765</span>
+                    <div class="claim-row">
+                        <div class="claim-info">
+                            <label>Claimed:</label>
+                            <span>{{item.dateOfAccident}}</span>
+                        </div>
+                        <div class="claim-info">
+                            <label>Estimated Loss:</label>
+                            <span>{{item.estimatedLoss}}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="claim-row">
-                    <div class="claim-info">
-                        <label>Estimated Loss:</label>
-                        <span>$10,000</span>
+                    <div class="claim-row">
+                        <div class="claim-info">
+                            <label>Surveyor Assigned:</label>
+                            <span>{{item.surveyorID===0?"Not Assigned":item.surveyorID}}</span>
+                        </div>
                     </div>
-                    <div class="claim-info">
-                        <label>Surveyor Assigned:</label>
-                        <span>John Doe</span>
-                    </div>
+                    
+                    <a [routerLink]="['/claim',item.claimId]" class="details-link">View Details</a>
                 </div>
-                <a [routerLink]="['/claim']" class="details-link">View Details</a>
-            </div>
-        }
-    </div>
-
-    <!-- <div id="Closed" class="tabcontent">
-        <div class="claim-card">
-            <div class="claim-row">
-                <div class="claim-info">
-                    <label>Claimed:</label>
-                    <span>2024-02-01</span>
-                </div>
-                <div class="claim-info">
-                    <label>Policy No:</label>
-                    <span>12345</span>
-                </div>
-            </div>
-            <div class="claim-row">
-                <div class="claim-info">
-                    <label>Estimated Loss:</label>
-                    <span>$5,000</span>
-                </div>
-                <div class="claim-info">
-                    <label>Surveyor Assigned:</label>
-                    <span>Jane Smith</span>
-                </div>
-            </div>
-            <a href="claim-details.html" class="details-link">View Details</a>
-        </div>-->
-        <!-- Repeat similar claim-card divs for other closed claims -->
-    <!-- </div>  -->
+            }
+        </div>
+    }
+    
 </div>

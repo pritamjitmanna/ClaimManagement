@@ -1,9 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { globalModules } from '../../global_module';
 import { NgForm } from '@angular/forms';
-import { AuthService } from '../../Services/AuthService.service';
+import { AuthService } from '../../Services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { RESULT } from '../../Models/e.enum';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -17,18 +18,22 @@ export class LoginComponent {
 
   @ViewChild("login") login!:NgForm
 
-  constructor(private authService:AuthService){}
+  constructor(private authService:AuthService,private router:Router){}
 
   async onSubmit(){
-    console.log(this.login)
     let data=await this.authService.login(this.login.value)
-    if(data.result==RESULT.SUCCESS){
-      localStorage.setItem("loginData",JSON.stringify(data.output))
+    if(data.result==RESULT.FAILURE){
+      if(data.output.status===0||data.output.status>=500){
+        this.router.navigate(['internalservererror'])
+      }
+      else{
+        
+      }
     }
     else{
-      console.log(data.output)
+      this.router.navigate([''])
     }
-
+    
   }
 
 

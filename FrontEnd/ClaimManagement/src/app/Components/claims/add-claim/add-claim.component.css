@@ -62,3 +62,17 @@ button {
 button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
+
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+input.ng-touched.ng-invalid {
+    border-color: red;
+  }
+
+input.ng-touched.ng-valid {
+    border-color: green;
+}

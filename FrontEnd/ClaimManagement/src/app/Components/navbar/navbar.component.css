@@ -117,6 +117,17 @@ body {
     transition: background-color 0.3s;
 }
 
+.dropdown-content button{
+    color: #333;
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content button:hover{
+    background-color: #f0f0f0;
+}
 .dropdown-content a:hover {
     background-color: #f0f0f0;
 }
