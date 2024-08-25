@@ -94,3 +94,45 @@ span {
     color: #fff;
     background-color: #dc3545; /* Red for not approved */
 }
+
+
+.update-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745; /* Green background */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s;
+}
+
+.update-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.update-btn svg {
+    fill: white;
+}
+
+.breadcrumb {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px 10px;
+    border-radius: 50%;
+}
+
+.breadcrumb-open {
+    background-color: green;
+}
+
+.breadcrumb-closed {
+    background-color: red;
+}

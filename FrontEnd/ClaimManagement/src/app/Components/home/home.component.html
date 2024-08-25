@@ -15,8 +15,8 @@
       </div>
       <div class="nav-item">
           <label for="individual-claim-page">View Individual Claim:</label>
-          <input type="text" id="individual-claim-id" placeholder="Enter Claim ID">
-          <button id="individual-claim-page" class="btn nav-btn">Individual Claim Page</button>
+          <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>
+          <button id="individual-claim-page" class="btn nav-btn" (click)="fetchClaim(claimId.value)">Individual Claim Page</button>
       </div>
   </div>
 

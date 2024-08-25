@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-add-claim',
   standalone: true,
-  providers:[ClaimsService,AccessoriesService],
+  providers:[ClaimsService],
   imports: [globalModules],
   templateUrl: './add-claim.component.html',
   styleUrl: './add-claim.component.css'

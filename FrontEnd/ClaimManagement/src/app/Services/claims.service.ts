@@ -1,10 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ClaimDetail } from "../Models/claim-detail.model";
-import { firstValueFrom, map } from "rxjs";
+import { first, firstValueFrom, map } from "rxjs";
 import { CommonOutput } from "../Models/common-output.model";
-import { RESULT } from "../Models/e.enum";
+import { ClaimStatus, RESULT } from "../Models/e.enum";
 import { globalVariables } from "../global_module";
+import { UpdateClaim } from "../Models/update-claim.model";
 
 @Injectable()
 export class ClaimsService{
@@ -66,6 +67,28 @@ export class ClaimsService{
         }
         catch(err:any){
             return new CommonOutput(RESULT.FAILURE,err)
+        }
+    }
+
+    async updateClaim(claimId:string,details:UpdateClaim){
+        try{
+            let URL=this.BASE_URL+`claims/${claimId}/update`
+            const result:CommonOutput=await firstValueFrom(this.http.put<CommonOutput>(URL,details,{headers:this.header}))
+            return result
+        }   
+        catch(err:any){
+            return new CommonOutput(RESULT.FAILURE,err)
+        }
+    }
+
+    async acceptOrRejectClaim(claimId:string,details:{AcceptReject:boolean}){
+        try{
+            let URL=this.BASE_URL+`claims/${claimId}`
+            const result=await firstValueFrom(this.http.patch<any>(URL,details,{headers:this.header}))
+            return result
+        }
+        catch(err:any){
+            return err
         }
     }
 

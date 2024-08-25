@@ -1,0 +1,38 @@
+@if(isModelOpen){
+    <div class="modal-backdrop" (click)="closeModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Update Claim</h2>
+            <button class="close-btn" (click)="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <form (ngSubmit)="onSubmit()" #updateClaim="ngForm">
+                <div class="form-group">
+                    <label for="SurveyorId">Surveyor ID</label>
+                    <input type="number" id="SurveyorId" name="SurveyorId" ngModel #SurveyorId="ngModel" required>
+                    @if(SurveyorId.invalid&&SurveyorId.touched&&SurveyorId.errors&&SurveyorId.errors['isErr']){
+                        <div class="error-message">
+                            <small>{{fieldValidations['SurveyorId']}}</small>
+                        </div>
+                    }
+                </div>
+                <div class="form-group">
+                    <label for="ClaimStatus">Claim Status</label>
+                    <select id="ClaimStatus" name="ClaimStatus" ngModel #ClaimStatus="ngModel" required>
+                        @for(val of claimStatusOptions;track val;){
+                            <option value="{{val}}">{{val}}</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="InsuranceCompanyApproval">Insurance Company Approval</label>
+                    <select id="InsuranceCompanyApproval" name="InsuranceCompanyApproval" ngModel #InsuranceCompanyApproval="ngModel" required>
+                        <option [value]="true">Approved</option>
+                        <option [value]="false">Not Approved</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn" [disabled]="updateClaim.invalid">Update</button>
+            </form>
+        </div>
+    </div>
+}

@@ -6,7 +6,7 @@ import { AccessoriesService } from "../../Services/accessories.service";
 @Component({
     selector:'app-alert',
     standalone:true,
-    providers:[AccessoriesService],
+    providers:[],
     imports:[],
     template:`
         @if(toShow){
@@ -23,13 +23,11 @@ export class AlertComponent implements OnInit{
     public alertType:string=""
     public toShow:boolean=false
 
-    constructor(private accessoriesService:AccessoriesService){
-        
-    }
+    constructor(private accessoriesService:AccessoriesService){}
 
     ngOnInit(): void {
         this.accessoriesService.alertEmitter.subscribe({
-            next:(info:any)=>{
+            next:(info:{message:string,alertType:string})=>{
                 this.toShow=true
                 this.message=info.message
                 this.alertType=info.alertType
