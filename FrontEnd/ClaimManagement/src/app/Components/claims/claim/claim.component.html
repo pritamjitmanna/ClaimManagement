@@ -6,22 +6,29 @@
     <div class="container">
         <span class="breadcrumb" [class]="claim.claimStatus.toString() === 'Open' ? 'breadcrumb-open' : 'breadcrumb-closed'">
         </span>
-        @if(claim.withdrawClaim.toString()==='NOSTATUS'){
-            <div class="action-icons">
-                <button class="accept-btn" (click)="acceptRejectClaim(true)">&#10004;</button>
-                <button class="reject-btn" (click)="acceptRejectClaim(false)">&#10006;</button>
-            </div>
-
+        @if(claim.withdrawClaim===0 || claim.withdrawClaim.toString()==='NOSTATUS'){
+            @if(roles.includes("Insurer")){
+                <div class="action-icons">
+                    <button class="accept-btn" (click)="acceptRejectClaim(true)">&#10004;</button>
+                    <button class="reject-btn" (click)="acceptRejectClaim(false)">&#10006;</button>
+                </div>
+            }
+            @else{
+                <span id="withdrawstatus" class="approval no-status">NO STATUS</span>
+            }
         }
         @else {
-            <span id="withdrawstatus" class="approval" [class]="claim.withdrawClaim.toString()==='ACCEPTED'?'approved':'not-approved'">{{claim.withdrawClaim.toString()==='ACCEPTED'?"Accepted":"Rejected"}}</span>
+            <span id="withdrawstatus" class="approval" [class]="claim.withdrawClaim===1 || claim.withdrawClaim.toString()==='ACCEPTED'?'approved':'not-approved'">{{claim.withdrawClaim===1 || claim.withdrawClaim.toString()==='ACCEPTED'?"Accepted":"Rejected"}}</span>
         }
-        <button class="update-btn" (click)="openModal()">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.1464 0.146447C12.3417 -0.0488155 12.6583 -0.0488155 12.8536 0.146447L15.8536 3.14645C16.0488 3.34171 16.0488 3.65829 15.8536 3.85355L5.85355 13.8536C5.75979 13.9473 5.63261 14 5.5 14H2.5C2.22386 14 2 13.7761 2 13.5V10.5C2 10.3674 2.05268 10.2402 2.14645 10.1464L12.1464 0.146447ZM13.2071 2.5L11.5 0.792893L13.7071 2.5L13.2071 2.5ZM1 12V13H2V12H1ZM12 1L3 10H4V11H5V10H6L15 1H12Z" fill="currentColor"/>
-            </svg>
-            Update
-        </button>
+        @if(roles.includes('InsuranceCompany')){
+
+            <button class="update-btn" (click)="openModal()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.1464 0.146447C12.3417 -0.0488155 12.6583 -0.0488155 12.8536 0.146447L15.8536 3.14645C16.0488 3.34171 16.0488 3.65829 15.8536 3.85355L5.85355 13.8536C5.75979 13.9473 5.63261 14 5.5 14H2.5C2.22386 14 2 13.7761 2 13.5V10.5C2 10.3674 2.05268 10.2402 2.14645 10.1464L12.1464 0.146447ZM13.2071 2.5L11.5 0.792893L13.7071 2.5L13.2071 2.5ZM1 12V13H2V12H1ZM12 1L3 10H4V11H5V10H6L15 1H12Z" fill="currentColor"/>
+                </svg>
+                Update
+            </button>
+        }
         <h2>Claim Details</h2>
         <div class="details">
             <div class="important-info">
@@ -48,11 +55,27 @@
                     <span id="surveyor">{{claim.surveyorID===0?"Not Assigned":claim.surveyorID}}</span>
                 </div>
                 <div class="grid-item">
-                    <label for="amountApproved">Amount Approved By Surveyor:</label>
+                    <label for="amountApproved">Amount Approved By Surveyor:
+                        @if(roles.includes("Surveyor")){
+                            <button class="update-surveyor-fees-btn" (click)="openModal()">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.1464 0.146447C12.3417 -0.0488155 12.6583 -0.0488155 12.8536 0.146447L15.8536 3.14645C16.0488 3.34171 16.0488 3.65829 15.8536 3.85355L5.85355 13.8536C5.75979 13.9473 5.63261 14 5.5 14H2.5C2.22386 14 2 13.7761 2 13.5V10.5C2 10.3674 2.05268 10.2402 2.14645 10.1464L12.1464 0.146447ZM13.2071 2.5L11.5 0.792893L13.7071 2.5L13.2071 2.5ZM1 12V13H2V12H1ZM12 1L3 10H4V11H5V10H6L15 1H12Z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                        }
+                    </label>
                     <span id="amountApproved">{{claim.amtApprovedBySurveyor}}</span>
                 </div>
                 <div class="grid-item">
-                    <label for="surveyorFees">Surveyor Fees:</label>
+                    <label for="surveyorFees">Surveyor Fees:
+                        @if(roles.includes("InsuranceCompany")&&claim.surveyorFees===null){
+                            <button class="update-surveyor-fees-btn" (click)="releaseSurveyorFees()">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.1464 0.146447C12.3417 -0.0488155 12.6583 -0.0488155 12.8536 0.146447L15.8536 3.14645C16.0488 3.34171 16.0488 3.65829 15.8536 3.85355L5.85355 13.8536C5.75979 13.9473 5.63261 14 5.5 14H2.5C2.22386 14 2 13.7761 2 13.5V10.5C2 10.3674 2.05268 10.2402 2.14645 10.1464L12.1464 0.146447ZM13.2071 2.5L11.5 0.792893L13.7071 2.5L13.2071 2.5ZM1 12V13H2V12H1ZM12 1L3 10H4V11H5V10H6L15 1H12Z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                        }
+                    </label>
                     <span id="surveyorFees">{{claim.surveyorFees===null?"Not released":claim.surveyorFees}}</span>
                 </div>
                 <div class="grid-item">

@@ -18,6 +18,11 @@
           <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>
           <button id="individual-claim-page" class="btn nav-btn" (click)="fetchClaim(claimId.value)">Individual Claim Page</button>
       </div>
+      <div class="nav-item">
+          <label for="estimated-loss-surveyors">View Individual Claim:</label>
+          <input type="number" id="estimated-loss-surveyors" placeholder="Enter Estimated Loss" #estimatedLoss>
+          <button id="estimated-loss-surveyors-btn" class="btn nav-btn" (click)="fetchSurveyors(estimatedLoss.value)">Fetch Surveyors</button>
+      </div>
   </div>
 
   

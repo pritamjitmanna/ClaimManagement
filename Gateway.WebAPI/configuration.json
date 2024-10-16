@@ -16,7 +16,7 @@
             "AllowedScopes":[]
         },
         "RouteClaimsRequirement": {
-            "Role": "InsuranceCompany"
+            "Role": "InsuranceCompany,Insurer"
         }
     },
     {
@@ -35,7 +35,7 @@
             "AllowedScopes":[]
         },
         "RouteClaimsRequirement": {
-            "Role": "InsuranceCompany"
+            "Role": "InsuranceCompany,Insurer"
         }  
     },
     {
@@ -54,7 +54,7 @@
             "AllowedScopes":[]
         },
         "RouteClaimsRequirement": {
-            "Role": "InsuranceCompany"
+            "Role": "InsuranceCompany,Insurer,Surveyor"
         }  
     },
     {
@@ -276,7 +276,7 @@
         "DownstreamHostAndPorts": [  
             {  
             "Host": "localhost",  
-            "Port": 5274  
+            "Port": 5199  
             }  
         ],  
         "UpstreamPathTemplate": "/IRDA/claimStatus/pull/{month}/{year}",  
@@ -295,7 +295,7 @@
         "DownstreamHostAndPorts": [  
             {  
             "Host": "localhost",  
-            "Port": 5274  
+            "Port": 5199  
             }  
         ],  
         "UpstreamPathTemplate": "/IRDA/paymentStatus/pull/{month}/{year}",  

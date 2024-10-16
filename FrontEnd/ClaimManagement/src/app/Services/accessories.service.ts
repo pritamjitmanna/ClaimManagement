@@ -11,10 +11,15 @@ export class AccessoriesService{
         alertType:string
     }>()
 
+    surveyorEstimatedLossEmitter=new EventEmitter<number>();
+
     alertShow(message:string,alertType:string){
-        console.log(message,alertType)
         this.alertEmitter.emit({
             message,alertType
         })
+    }
+
+    emitEstimatedLossValue(value:number){
+        this.surveyorEstimatedLossEmitter.emit(value)
     }
 }

@@ -89,6 +89,10 @@ span {
     color: #fff;
     background-color: #28a745; /* Green for approved */
 }
+.no-status {
+    color: #fff;
+    background-color: #5d5f5e; /* Green for approved */
+}
 
 .not-approved {
     color: #fff;
@@ -136,3 +140,20 @@ span {
 .breadcrumb-closed {
     background-color: red;
 }
+
+.update-surveyor-fees-btn {
+    width: max-content;
+    padding: 3px;
+    padding-bottom: 1px;
+    background-color: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.update-surveyor-fees-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+

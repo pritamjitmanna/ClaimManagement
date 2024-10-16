@@ -27,7 +27,7 @@ export class LoginComponent {
         this.router.navigate(['internalservererror'])
       }
       else{
-        
+        console.log(data.output)
       }
     }
     else{

@@ -1,0 +1,30 @@
+<div class="sidebar" [class.active]="isSidebarOpen">
+    <h3>Surveyors for Estimated Loss: {{ estimatedLoss | currency }}</h3>
+    <button class="close-btn" (click)="closeSidebar()">&#10006;</button>
+
+    @if(surveyors.length>0){
+        @for(surveyor of surveyors;track surveyor.surveyorId;){
+            <div class="surveyor-card">
+                <div class="surveyor-info">
+                    <span class="surveyor-name">{{surveyor.firstName}} {{surveyor.lastName}}</span>
+                    <span class="surveyor-id">ID: {{surveyor.surveyorId}}</span>
+                    <span class="estimated-limit">Limit: {{surveyor.estimateLimit}}</span>
+                    <span class="times-allocated">Times Allocated: {{surveyor.timesAllocated}}</span>
+                </div>
+            </div>
+            
+        }
+    }
+
+    @else {
+        <p>No surveyors found for this estimated loss.</p>
+    }
+
+    
+</div>
+
+<!-- Main claim details content -->
+<!-- <div class="main-content">
+    <button class="open-sidebar-btn" (click)="openSidebar()">View Surveyors</button>
+    Rest of the claim details page
+</div> -->

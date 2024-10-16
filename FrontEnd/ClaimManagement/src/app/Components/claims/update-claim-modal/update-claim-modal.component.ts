@@ -84,4 +84,9 @@ export class UpdateClaimModalComponent {
     this.isModelOpen=false
   }
 
+  getSurveyors(){
+    
+    this.accessoriesService.emitEstimatedLossValue(this.claim.estimatedLoss)
+  }
+
 }

@@ -15,3 +15,10 @@ export enum WITHDRAWSTATUS
     ACCEPTED = 1,
     WITHDRAWN = 2
 }
+
+export enum Stages
+{
+	NewClaims,
+	PendingClaims,
+	FinalizedClaims
+}

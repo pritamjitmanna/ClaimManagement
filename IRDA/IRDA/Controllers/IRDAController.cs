@@ -66,7 +66,7 @@ public class IRDAController:ControllerBase
         try{
             CommonOutput output=await _pendingStatusReports.AddPendingStatusReports(month,year);
             if(output.Result==RESULT.FAILURE){
-                return BadRequest(output.Output);
+                return BadRequest(output);
             }
             return Ok(output);
         }
@@ -81,7 +81,7 @@ public class IRDAController:ControllerBase
         try{
             CommonOutput output=await _paymentOfClaimsService.AddPaymentOfClaimsStatus(month,year);
             if(output.Result==RESULT.FAILURE){
-                return BadRequest(output.Output);
+                return BadRequest(output);
             }
             return Ok(output);
         }

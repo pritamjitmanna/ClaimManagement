@@ -40,6 +40,7 @@ export class AuthService{
     logout(){
         localStorage.removeItem("loginData")
         globalVariables.isAuthenticated.next(false);
+        
         this.router.navigate([''])
     }
     

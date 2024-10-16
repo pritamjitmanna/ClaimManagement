@@ -5,7 +5,7 @@ import { ClaimDetail } from '../../../Models/claim-detail.model';
 import { ClaimsService } from '../../../Services/claims.service';
 import { CommonOutput } from '../../../Models/common-output.model';
 import { ClaimStatus, RESULT, WITHDRAWSTATUS } from '../../../Models/e.enum';
-import { globalModules } from '../../../global_module';
+import { globalModules, globalVariables } from '../../../global_module';
 import { LoadingComponent } from '../../loading/loading.component';
 import { AccessoriesService } from '../../../Services/accessories.service';
 import { UpdateClaimModalComponent } from '../update-claim-modal/update-claim-modal.component';
@@ -24,6 +24,7 @@ export class ClaimComponent {
   claim!:ClaimDetail
   isLoading:boolean=false
   @ViewChild(UpdateClaimModalComponent)updateClaim!:UpdateClaimModalComponent;
+  roles:string[]=globalVariables.role.getValue()
 
   constructor(private claimsService:ClaimsService,private accessoriesService:AccessoriesService,private route:ActivatedRoute,private router:Router){
     this.isLoading=true
@@ -50,7 +51,42 @@ export class ClaimComponent {
     )
   }
 
-  acceptRejectClaim(flag:boolean){
+  async acceptRejectClaim(flag:boolean){
+    console.log(flag)
+
+    let result:CommonOutput=await this.claimsService.acceptOrRejectClaim(this.claim.claimId,{AcceptReject:flag})
+
+    if(result.result===RESULT.SUCCESS){
+      this.claim.withdrawClaim=(flag?WITHDRAWSTATUS.ACCEPTED:WITHDRAWSTATUS.WITHDRAWN)
+      this.accessoriesService.alertShow(`Claim ${flag?"Accepted":"Rejected"}`,"success")
+    }
+    else{
+      if(result.output.status===0||result.output.status>=500){
+        this.router.navigate(['internalservererror'])
+      }
+    }
+  }
+
+  async releaseSurveyorFees(){
+    let result:CommonOutput=await this.claimsService.releaseSurveyorFees(this.claim.claimId)
+
+    //Gets the object {estimateStartLimit: 5000, estimateEndLimit: 10000, fees: 1000}
+    if(result.result===RESULT.SUCCESS){
+      this.claim.surveyorFees=result.output['fees']
+      this.accessoriesService.alertShow(`Surveyor Fees ${result.output['fees']} released for the claim Id: ${this.claim.claimId}`,'success')
+    }
+    else{
+      if(result.output.status===0||result.output.status>=500){
+        this.router.navigate(['internalservererror'])
+      }
+      else if(result.output.status===400){
+        // console.log(result.output)
+        this.accessoriesService.alertShow(result.output.error.output[0]['errorMessage'],'danger')
+      }
+    }
+  }
+
+  approveAmount(){
     
   }
 

@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
 
@@ -7,7 +8,8 @@ import { BehaviorSubject } from "rxjs";
 export const globalModules=[
     RouterModule,
     FormsModule,
-    CommonModule
+    CommonModule,
+    
 ]
 
 export const globalVariables={

@@ -85,11 +85,25 @@ export class ClaimsService{
         try{
             let URL=this.BASE_URL+`claims/${claimId}`
             const result=await firstValueFrom(this.http.patch<any>(URL,details,{headers:this.header}))
-            return result
+            return new CommonOutput(RESULT.SUCCESS)
         }
         catch(err:any){
-            return err
+            return new CommonOutput(RESULT.FAILURE,err)
         }
+    }
+
+    async releaseSurveyorFees(claimId:string){
+
+        try{
+            let URL=this.BASE_URL+`surveyorfees/${claimId}`
+            const result=await firstValueFrom(this.http.patch<any>(URL,null,{headers:this.header}))
+            return result;
+        }
+        catch(err:any){
+            return new CommonOutput(RESULT.FAILURE,err)
+        }
+
+
     }
 
 
