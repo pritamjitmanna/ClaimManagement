@@ -4,6 +4,12 @@ using SharedModules;
 
 namespace Surveyor.DAL;
 
+/// <summary>
+/// Repository for surveyor persistence:
+/// - Validates SurveyReport entities using ValidationFunctions before insert/update.
+/// - Uses EF Core DbContext to perform Add, Update and read (AsNoTracking) operations.
+/// - Returns CommonOutput with ValidationResult collections when validation fails so services/controllers can translate to API responses.
+/// </summary>
 public class SurveyorRepository:ISurveyor
 {
 

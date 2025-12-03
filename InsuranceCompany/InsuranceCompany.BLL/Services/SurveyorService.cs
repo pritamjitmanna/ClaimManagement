@@ -1,5 +1,13 @@
-﻿using AutoMapper;
+﻿// Summary:
+// Service layer for Surveyor-related operations. Uses the ISurveyor repository to fetch data
+// and AutoMapper to convert DAL entities to DTOs. Methods are async and rely on 'await' to
+// asynchronously wait for repository Task results. Exceptions are propagated after optional logging.
+
+using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using InsuranceCompany.BLL.RequestDTO;
 using InsuranceCompany.DAL;
+using SharedModules;
 
 namespace InsuranceCompany.BLL;
 
@@ -17,6 +25,10 @@ public class SurveyorService : ISurveyorService
         //_logger = logger;
     }
 
+    // GetSurveyorListOnEstimatedLoss:
+    // - Calls repository GetAllSurveyorsForEstimatedLoss which returns IEnumerable<Surveyor>.
+    // - Uses AutoMapper to map each Surveyor entity to SurveyorDTO.
+    // - Uses 'await' to asynchronously get repository results and foreach to iterate the collection.
     public async Task<IEnumerable<SurveyorDTO>> GetSurveyorListOnEstimatedLoss(int estimatedLoss)
     {
 
@@ -29,6 +41,7 @@ public class SurveyorService : ISurveyorService
             var result = await _surveyorRepository.GetAllSurveyorsForEstimatedLoss(estimatedLoss);
             foreach(var val in result)
             {
+                // AutoMapper.Map<T> maps properties from source entity to DTO.
                 surveyors.Add(_mapper.Map<SurveyorDTO>(val));
             }
         }
@@ -44,6 +57,10 @@ public class SurveyorService : ISurveyorService
         return surveyors;
     }
 
+    // GetMinAllocatedSurveyorBasedOnEstimatedLoss:
+    // - Calls repository to obtain the best-fit surveyor (uses ordering in DAL).
+    // - Maps the resulting Surveyor (or null) to SurveyorDTO.
+    // - Note: mapping null returns null; maintain nullability.
     public async Task<SurveyorDTO?> GetMinAllocatedSurveyorBasedOnEstimatedLoss(int EstimatedLoss)
     {
 
@@ -66,6 +83,9 @@ public class SurveyorService : ISurveyorService
         return surveyor;
     }
 
+    // GetSurveyorById:
+    // - Fetches a surveyor by primary key via repository and maps to DTO.
+    // - Uses await to asynchronously wait for DB call.
     public async Task<SurveyorDTO?> GetSurveyorById(int surveyorId)
     {
         SurveyorDTO? surveyor;
@@ -85,5 +105,62 @@ public class SurveyorService : ISurveyorService
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
         return surveyor;
     }
+
+    public async Task<CommonOutput> AddSurveyorDetails(SurveyorEntryDTO surveyorDTO)
+    {
+        CommonOutput result;
+        try{
+            // Map DTO to DAL entity
+            Surveyor surveyorEntity = _mapper.Map<Surveyor>(surveyorDTO);
+            result= await _surveyorRepository.AddSurveyorDetails(surveyorEntity);
+            GetErrorListInRequiredFormat(ref result);
+        }
+        catch(Exception ex)
+        {
+            throw;
+        }
+        return result;
+    }
+
+    public async Task<bool> DeleteSurveyorDetails(int surveyorId)
+    {
+        bool isDeleted=false;
+
+        try
+        {
+            isDeleted=await _surveyorRepository.DeleteSurveyorDetails(surveyorId);
+        }
+        catch(Exception ex)
+        {
+            throw;
+        }
+        return isDeleted;
+
+    }
+
+
+
+    // ------------Helper functions----------
+
+    private void GetErrorListInRequiredFormat(ref CommonOutput result)
+    {
+        if (result.Result == RESULT.FAILURE)
+        {
+            List<PropertyValidationResponse> validationErrors = new List<PropertyValidationResponse>();
+
+            foreach (var err in (ICollection<ValidationResult>)result.Output)
+            {
+                validationErrors.Add(
+                    new PropertyValidationResponse
+                    {
+                        Property = err.MemberNames.First(),
+                        ErrorMessage = err.ErrorMessage
+                    });
+            }
+
+            result.Output = validationErrors;
+        }
+    }
+
 }
 

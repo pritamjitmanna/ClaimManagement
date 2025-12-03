@@ -1,4 +1,8 @@
-﻿using InsuranceCompany.DAL;
+﻿// Summary:
+// PolicyService is a thin service that delegates policy retrieval to IPolicy repository.
+// It uses async/await and forwards exceptions. The service shields higher layers from direct DAL access.
+
+using InsuranceCompany.DAL;
 
 namespace InsuranceCompany.BLL;
 
@@ -15,6 +19,9 @@ public class PolicyService : IPolicyService
         //_logger = logger;
     }
 
+    // GetPolicyByPolicyNo:
+    // - Delegates to repository GetPolicyByPolicyNo (which uses EF Include and AsNoTracking).
+    // - Uses await to asynchronously obtain result and returns Policy or null.
     public async Task<Policy?> GetPolicyByPolicyNo(string policyNo)
     {
 

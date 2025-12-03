@@ -1,4 +1,12 @@
-﻿namespace InsuranceCompany;
+﻿// Summary:
+// gRPC service implementation that adapts BLL/shared logic results to gRPC messages defined in ClaimsService.proto.
+// Responsibilities:
+// - Map incoming gRPC DTO messages to internal DTOs using AutoMapper.
+// - Call application logic (ISharedLogic, IClaimDetailService, IPolicyService) asynchronously.
+// - Convert CommonOutput results to CommonOutputgRPC by packing payloads into google.protobuf.Any and selecting STATUSCODE values.
+// - Provide defensive exception handling and return INTERNALSERVERERROR with a user-friendly message for unexpected errors.
+
+namespace InsuranceCompany;
 
 using Grpc.Core;
 using gRPCClaimsService.Protos;
@@ -10,6 +18,7 @@ using AutoMapper;
 using InsuranceCompany.DAL;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using SharedModules;
+using InsuranceCompany.BLL.RequestDTO;
 
 public class ClaimsServices:ClaimsService.ClaimsServiceBase
 {
@@ -20,19 +29,27 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
     private readonly ISharedLogic _sharedLogic;
     private readonly IClaimDetailService _claimService;
     private readonly IPolicyService _policyService;
+    private readonly ISurveyorService _surveyorService;
     private readonly IMapper _mapper;
     //private readonly ILog _logger;
     const string INTERNAL_SERVER_ERROR = "There's an unexpected Internal error. Sorry for the inconvenience caused. Please try again after some time";
 
-    public ClaimsServices(ISharedLogic sharedLogic,IClaimDetailService claimDetail,IPolicyService policyService, IMapper mapper)
+    public ClaimsServices(ISharedLogic sharedLogic,IClaimDetailService claimDetail,IPolicyService policyService,ISurveyorService surveyorService, IMapper mapper)
     {
         _sharedLogic = sharedLogic;
         _claimService = claimDetail;
         _policyService = policyService;
+        _surveyorService = surveyorService;
         _mapper = mapper;
         //_logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
     }
 
+    // AddNewClaim:
+    // - Maps gRPC ClaimDetailRequestDTOgRPC to internal ClaimDetailRequestDTO using AutoMapper.
+    // - Calls SharedLogic.AddClaimSharedLogic and converts CommonOutput to CommonOutputgRPC.
+    // - On success: packs a StringValue containing result.Output into Any and returns STATUSCODE.Ok.
+    // - On validation failure: maps PropertyValidationResponse collection to gRPC errors and returns STATUSCODE.Badrequest.
+    // - On unexpected exception: returns STATUSCODE.Internalservererror with generic message.
     public async override Task<CommonOutputgRPC> AddNewClaim(ClaimDetailRequestDTOgRPC request,ServerCallContext context){
 
         try{
@@ -57,6 +74,7 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
             });
         }
         catch(Exception ex){
+            // Unexpected errors are mapped to a generic internal-server message and STATUSCODE.Internalservererror.
             return await Task.FromResult(new CommonOutputgRPC{
                 Output=Any.Pack(new StringValue{Value=INTERNAL_SERVER_ERROR}),
                 StatusCode=STATUSCODE.Internalservererror
@@ -65,7 +83,10 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
 
     }
 
-
+    // GetClaimByClaimId:
+    // - Uses SharedLogic.GetClaimByClaimId to obtain domain DTO; maps ClaimListOpenDTO to ClaimDTOgRPC.
+    // - If not found, returns STATUSCODE.Notfound.
+    // - Uses Any.Pack to embed the mapped DTO into the response.
     public async override Task<CommonOutputgRPC> GetClaimByClaimId(GetClaimByIdString request,ServerCallContext context)
     {
         try
@@ -95,6 +116,9 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
         }
     }
 
+    // GetPolicyByPolicyNo:
+    // - Delegates to PolicyService; maps Policy to PolicyDTOgRPC on success.
+    // - Returns STATUSCODE.Notfound when policy doesn't exist.
     public async override Task<CommonOutputgRPC> GetPolicyByPolicyNo(GetPolicyNoString request,ServerCallContext context){
         try
         {
@@ -121,8 +145,10 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
         }
     }
 
-
-
+    // GetClaimStatusReports:
+    // - Receives month/year, calls SharedLogic.GetClaimStatusReports which returns a list of ClaimStatusReportDTO.
+    // - Maps each DTO to its gRPC counterpart and returns them packed in Any along with STATUSCODE.Ok.
+    // - On validation failure (bad month/year) returns STATUSCODE.Badrequest with the message.
     public async override Task<CommonOutputgRPC> GetClaimStatusReports(GetClaimStatusReportsMonthAndYear request,ServerCallContext context)
     {
         try
@@ -158,7 +184,8 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
         }
     }
 
-
+    // GetPaymentStatusReports:
+    // - Similar pattern: call shared logic, map DTO to gRPC DTO using AutoMapper, and pack in Any.
     public async override Task<CommonOutputgRPC> GetPaymentStatusReports(GetPaymentStatusReportsMonthAndYear request,ServerCallContext context){
 
         try{
@@ -184,6 +211,8 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
 
     }
 
+    // UpdateClaimAmountApprovedBySurveyor:
+    // - Calls SharedLogic to update amount approved by surveyor; maps any validation errors to gRPC errors list.
     public async override Task<CommonOutputgRPC> UpdateClaimAmountApprovedBySurveyor(UpdateClaimAmountApprovedBySurveyorClaimIdClaimant request,ServerCallContext context){
 
         try{
@@ -213,6 +242,8 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
         }
     } 
 
+    // UpdateAcceptOrRejectClaim:
+    // - For withdraw accept/reject semantics, calls ClaimDetailService.UpdateAcceptRejectClaim and returns mapped gRPC responses.
     public async override Task<CommonOutputgRPC> UpdateAcceptOrRejectClaim(AcceptReject acceptReject,ServerCallContext context){
 
         try{
@@ -242,6 +273,5 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
         }
 
     }
-
     
 }

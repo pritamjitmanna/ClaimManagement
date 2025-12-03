@@ -1,0 +1,91 @@
+.profile-form {
+  max-width: 520px;
+  margin: 24px auto;
+  padding: 18px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(20, 20, 40, 0.08);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #222;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.form-row label {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.form-row input[type="text"],
+.form-row input[type="number"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #d1d7e0;
+  border-radius: 6px;
+  background: #fafbff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-row input[type="text"]:focus,
+.form-row input[type="number"]:focus {
+  outline: none;
+  border-color: #5b8def;
+  box-shadow: 0 0 0 3px rgba(91, 141, 239, 0.12);
+  background: #fff;
+}
+
+.form-row input[type="number"]::-webkit-inner-spin-button,
+.form-row input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form-row .helper {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* Button row */
+.form-row button[type="submit"] {
+  margin-top: 6px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.06s ease, box-shadow 0.12s ease;
+  box-shadow: 0 6px 12px rgba(37, 99, 235, 0.18);
+}
+
+.form-row button[type="submit"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+}
+
+.form-row button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+  .profile-form {
+    margin: 12px;
+    padding: 14px;
+  }
+  .form-row label {
+    font-size: 0.88rem;
+  }
+  .form-row button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+  }
+}

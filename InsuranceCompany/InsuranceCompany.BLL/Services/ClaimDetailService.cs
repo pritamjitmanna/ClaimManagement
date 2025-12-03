@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// Summary:
+// Service layer orchestrating claim-related business logic. Coordinates between repositories/services:
+// - Validates business rules (policy existence, date checks, max claims per year).
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using InsuranceCompany.DAL;
 using SharedModules;
@@ -33,6 +36,10 @@ public class ClaimDetailService : IClaimDetailService
     }
 
 
+    // ListAllOpenClaims:
+    // - Calls repository to get open claims (DAL returns collection).
+    // - Uses AutoMapper to map each ClaimDetail to ClaimListOpenDTO.
+    // - 'await' releases thread while DB I/O completes.
     public async Task<IEnumerable<ClaimListOpenDTO>> ListAllOpenClaims()
     {
 
@@ -58,6 +65,7 @@ public class ClaimDetailService : IClaimDetailService
         return result;
     }
 
+    // ListAllClosedClaims: same pattern as ListAllOpenClaims but using GetAllCloseClaims.
     public async Task<IEnumerable<ClaimListOpenDTO>> ListAllClosedClaims()
     {
 
@@ -83,6 +91,10 @@ public class ClaimDetailService : IClaimDetailService
         return result;
     }
 
+    // ClaimStatusReportsBasedOnMonthAndYear:
+    // - Uses Enum.GetValues(typeof(Stages)) to iterate enum values (built-in reflection-based method).
+    // - Calls repository GetClaimsCountForStageTypeBasedOnMonthAndYear for each stage and awaits results.
+    // - Builds a list of DTOs representing the count per stage.
     public async Task<IEnumerable<ClaimStatusReportDTO>> ClaimStatusReportsBasedOnMonthAndYear(int month, int year)
     {
 
@@ -113,6 +125,8 @@ public class ClaimDetailService : IClaimDetailService
 
     }
 
+    // PaymentStatusBasedOnMonthAndYear:
+    // - Delegates to repository PaymentStatusOnMonthAndYear which uses SumAsync in DAL.
     public async Task<ClaimPaymentReportDTO> PaymentStatusBasedOnMonthAndYear(int month, int year)
     {
 
@@ -135,6 +149,13 @@ public class ClaimDetailService : IClaimDetailService
         };
     }
 
+    // AddNewClaim:
+    // - Business validation sequence:
+    //   1. Verify policy exists via PolicyService (await).
+    //   2. Check policy.status and date constraints.
+    //   3. Determine if a claim for the same policy exists in the same year (in-memory LINQ on policy.ClaimDetails).
+    // - Uses AutoMapper to map request DTO to ClaimDetail entity.
+    // - Calls AddNewClaim in repository (which performs model validation and persistence).
     public async Task<CommonOutput> AddNewClaim(ClaimDetailRequestDTO claimDetail)
     {
 
@@ -192,6 +213,7 @@ public class ClaimDetailService : IClaimDetailService
             else
             {
                 //ClaimDetail? prevClaimIfAny = await _claimDetailRepository.GetClaimByPolicyNo(claimDetail.PolicyNo);
+                // Using in-memory LINQ on the policy's ClaimDetails collection:
                 ClaimDetail? prevClaimIfAny = policy.ClaimDetails.Where(cd=>cd.DateOfAccident.Year==((DateOnly)claimDetail.DateOfAccident).Year).FirstOrDefault();
                 if (prevClaimIfAny == null)
                 {
@@ -221,6 +243,11 @@ public class ClaimDetailService : IClaimDetailService
         return result;
     }
 
+    // UpdateClaim:
+    // - Fetch claim by id, validate it exists and is not closed.
+    // - Optionally set SurveyorID (validates surveyor exists via SurveyorService).
+    // - Updates ClaimStatus and InsuranceCompanyApproval where provided.
+    // - Calls repository UpdateClaim to persist.
     public async Task<CommonOutput> UpdateClaim(string claimID, UpdateClaimDTO value)
     {
         CommonOutput result;
@@ -306,6 +333,7 @@ public class ClaimDetailService : IClaimDetailService
 
 
 
+
             }
         }
         catch (Exception ex)
@@ -318,6 +346,9 @@ public class ClaimDetailService : IClaimDetailService
         return result;
     }
 
+    // UpdateClaimAmtApprovedBySurveyor:
+    // - Validates claim existence and that a surveyor was assigned.
+    // - Sets AmtApprovedBySurveyor and persists via repository.UpdateClaim.
     public async Task<CommonOutput> UpdateClaimAmtApprovedBySurveyor(string claimID, int claimant)
     {
         CommonOutput result;
@@ -375,6 +406,10 @@ public class ClaimDetailService : IClaimDetailService
 
     }
 
+    // UpdateClaimSurveyorFees:
+    // - Fetches Fee via IFeeService based on EstimatedLoss (which internally uses EF range query).
+    // - Assigns fee value to claim and persists.
+    // - If successful, populates result.Output with FeeDTO.
     public async Task<CommonOutput> UpdateClaimSurveyorFees(string claimID)
     {
         CommonOutput result;
@@ -446,9 +481,10 @@ public class ClaimDetailService : IClaimDetailService
         return result;
     }
 
-
-    //---New EndPoint--
-
+        //---New EndPoint--
+    // UpdateAcceptRejectClaim:
+    // - Accepts a boolean to mark withdraw status accepted/rejected and persists.
+    // - Guard prevents withdrawing once WithdrawClaim==ACCEPTED and trying to set false.
     public async Task<CommonOutput> UpdateAcceptRejectClaim(string claimId,bool acceptReject){
 
         CommonOutput result;
@@ -653,6 +689,8 @@ public class ClaimDetailService : IClaimDetailService
 
     //--Helper functions--
 
+    // GenerateClaimID:
+    // - Simple deterministic generator using policy prefix + accident year.
     private string GenerateClaimID(ClaimDetailRequestDTO claimDetail)
     {
         string claimId = "CL";
@@ -663,6 +701,8 @@ public class ClaimDetailService : IClaimDetailService
     }
 
 
+    // GetErrorListInRequiredFormat:
+    // - Converts ValidationResult collection into a List<PropertyValidationResponse> for API-friendly output.
     private void GetErrorListInRequiredFormat(ref CommonOutput result)
     {
         if (result.Result == RESULT.FAILURE)

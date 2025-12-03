@@ -1,4 +1,10 @@
-﻿using InsuranceCompany.BLL;
+﻿// Summary:
+// ASP.NET Core API controller exposing HTTP endpoints for claims-related operations.
+// - Uses IClaimDetailService for business operations and ISharedLogic for lightweight validations/orchestration.
+// - Action methods return appropriate HTTP status codes (200/204/400/404/500) depending on the service output.
+// - Methods are asynchronous and rely on await for non-blocking DB/service calls.
+
+using InsuranceCompany.BLL;
 using InsuranceCompany.DAL;
 using Microsoft.AspNetCore.Mvc;
 using SharedModules;
@@ -23,6 +29,9 @@ public class ClaimsController : ControllerBase
         //_logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
     }
 
+    // GetAllOpenClaims:
+    // - Returns 200 with list of open claims, 204 when no content, and 500 for unexpected errors.
+    // - Uses ClaimDetailService.ListAllOpenClaims to obtain DTOs.
     // GET: api/<ClaimsController>
     [HttpGet("[controller]")]
     [ProducesResponseType(typeof(IEnumerable<ClaimListOpenDTO>),StatusCodes.Status200OK,"application/json")]
@@ -49,6 +58,8 @@ public class ClaimsController : ControllerBase
         }
     }
 
+    // GetAllClosedClaims:
+    // - Same pattern as open claims but uses ListAllClosedClaims.
     // GET: api/<ClaimsController>
     [HttpGet("[controller]/closed")]
     [ProducesResponseType(typeof(IEnumerable<ClaimListOpenDTO>), StatusCodes.Status200OK, "application/json")]
@@ -74,6 +85,8 @@ public class ClaimsController : ControllerBase
         }
     }
 
+    // GetClaimByClaimId:
+    // - Uses SharedLogic for retrieval and returns 200 when found or 404 when not found.
     [HttpGet("[controller]/{ClaimId}")]
     [ProducesResponseType(typeof(ClaimListOpenDTO), StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -98,6 +111,8 @@ public class ClaimsController : ControllerBase
     }
 
 
+    // GetClaimStatusReports:
+    // - Endpoint validates via SharedLogic; returns 200 with report or 400 with validation message.
     // GET: api/claimStatus/report/{month}/{year}
     [HttpGet("claimStatus/report/{month}/{year}")]
     [ProducesResponseType(typeof(ClaimStatusReportDTO), StatusCodes.Status200OK, "application/json")]
@@ -122,6 +137,8 @@ public class ClaimsController : ControllerBase
         }
     }
 
+    // GetPaymentStatusReports:
+    // - Similar to claim status reports; returns ClaimPaymentReportDTO on success.
     //GET: api/paymentStatus/report/{month}/{year}
     [HttpGet("paymentStatus/report/{month}/{year}")]
     [ProducesResponseType(typeof(ClaimPaymentReportDTO), StatusCodes.Status200OK, "application/json")]
@@ -147,6 +164,9 @@ public class ClaimsController : ControllerBase
         }
     }
 
+    // AddNewClaim:
+    // - Consumes JSON body and delegates validation+creation to SharedLogic.AddClaimSharedLogic.
+    // - Returns 200 on success or 400/500 accordingly.
     //POST: api/<ClaimsController>/new
     [HttpPost("[controller]/new")]
     [Consumes("application/json")]
@@ -170,12 +190,14 @@ public class ClaimsController : ControllerBase
     }
 
 
+    // UpdateClaim:
+    // - Delegates to ClaimDetailService.UpdateClaim; returns 200 on success, 400 on validation failure.
     // PUT api/<ClaimsController>/{claimID}/update
     [HttpPut("[controller]/{claimID}/update")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(CommonOutput),StatusCodes.Status200OK,"application/json")]
     [ProducesResponseType(typeof(CommonOutput),StatusCodes.Status400BadRequest,"application/json")]
-    [ProducesResponseType(typeof(string),StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateClaim(string claimID, [FromBody] UpdateClaimDTO updateDTO)
     {
         try
@@ -194,6 +216,8 @@ public class ClaimsController : ControllerBase
         }
     }
 
+    // UpdateClaimAmountApprovedBySurveyor:
+    // - PATCH endpoint to set the amount approved by surveyor via SharedLogic facade.
     //PATCH api/<ClaimsController>/{claimID}/{claimant}/update
     [HttpPatch("[controller]/{claimID}/{claimant}/update")]
     [ProducesResponseType(typeof(CommonOutput), StatusCodes.Status200OK, "application/json")]
@@ -217,6 +241,8 @@ public class ClaimsController : ControllerBase
         }
     }
 
+    // ReleaseSurveyorFees:
+    // - Calls service to compute surveyor fees by estimated loss and persist them to the claim.
     //PATCH: api/surveyorfees/{claimId}
     [HttpPatch("surveyorfees/{claimId}")]
     [ProducesResponseType(typeof(CommonOutput), StatusCodes.Status200OK, "application/json")]

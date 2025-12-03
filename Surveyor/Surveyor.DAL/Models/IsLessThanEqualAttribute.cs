@@ -2,6 +2,12 @@
 
 namespace Surveyor.DAL;
 
+/// <summary>
+/// Custom ValidationAttribute that enforces the decorated integer property is less than or equal to another property on the same object.
+/// - The constructor accepts the name of the other property to compare against.
+/// - IsValid performs reflection to obtain the comparison property value and returns ValidationResult.Success when the condition holds.
+/// - Returns useful error messages when values or properties are null or the condition fails.
+/// </summary>
 public class IsLessThanEqualAttribute:ValidationAttribute
 {
 

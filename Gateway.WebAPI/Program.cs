@@ -8,9 +8,16 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using Ocelot.Authorization;
+using gRPCClaimsService.Protos;
+using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<AuthDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("Auth")));
+
+
+
 
 builder.Services.AddIdentity<AuthUser,IdentityRole>().AddEntityFrameworkStores<AuthDBContext>().AddDefaultTokenProviders();
 
@@ -31,6 +38,11 @@ builder.Services.AddAuthentication(options=>{
     };
 #pragma warning restore CS8604 // Possible null reference argument.
 });
+
+// Source - https://stackoverflow.com/a
+// Posted by Yong Shun, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-11-29, License - CC BY-SA 4.0
+
 
 builder.Services.AddSwaggerGen();
 
@@ -102,3 +114,8 @@ var configuration = new OcelotPipelineConfiguration
 await app.UseOcelot(configuration);
 
 app.Run();
+
+// Summary:
+// This is the API Gateway bootstrap using ASP.NET Core and Ocelot.
+// Responsibilities:
+// - Configure EF Core for Identity (AuthDBContext) and register Identity stores (AddIdentity).

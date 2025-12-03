@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { globalModules } from '../../global_module';
+import { Roles } from '../../Models/e.enum';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -10,4 +12,13 @@ import { globalModules } from '../../global_module';
 })
 export class RegisterComponent {
 
+  @ViewChild('registerForm') registerForm!:NgForm;
+  Roles:Roles[]=Object.values(Roles)
+
+
+  onSubmit(){
+    let formValue=this.registerForm.value;
+    
+    console.log(formValue);
+  }
 }

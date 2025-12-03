@@ -106,6 +106,8 @@ export class ClaimsService{
 
     }
 
+    
+
 
     private assignNull=(response:ClaimDetail)=>new ClaimDetail(
         response.claimId,

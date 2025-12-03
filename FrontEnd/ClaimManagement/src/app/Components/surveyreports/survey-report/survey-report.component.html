@@ -3,36 +3,44 @@
     <div class="survey-report-details">
         <div class="detail-item">
             <label>ClaimId:</label>
-            <span>12345</span>
+            <span>{{surveyReport.claimId}}</span>
         </div>
         <div class="detail-item">
             <label>PolicyNo:</label>
-            <span>98765</span>
+            <span>{{surveyReport.policyNo}}</span>
         </div>
         <div class="detail-item">
             <label>Labour Charges:</label>
-            <span>$500</span>
+            <span>${{surveyReport.labourCharges}}</span>
         </div>
         <div class="detail-item">
             <label>Parts Cost:</label>
-            <span>$1500</span>
+            <span>${{surveyReport.partsCost}}</span>
         </div>
         <div class="detail-item">
             <label>Policy Clause:</label>
-            <span>Collision Coverage</span>
+            <span>${{surveyReport.policyClause}}</span>
         </div>
         <div class="detail-item">
             <label>Depreciation Cost:</label>
-            <span>$200</span>
+            <span>${{surveyReport.depreciationCost}}</span>
         </div>
         <div class="detail-item total-amount">
             <label>Total Amount:</label>
-            <span>$1800</span>
+            <span>${{surveyReport.totalAmount}}</span>
         </div>
     </div>
     <div class="accident-details-section">
         <h2>Accident Details</h2>
-        <p>Minor collision with another vehicle.</p>
+        <p>{{surveyReport.accidentDetails===null?"Currently not described":surveyReport.accidentDetails}}</p>
     </div>
-    <button class="btn update-btn">Update Report</button>
+    <button class="btn update-btn" (click)="openModal()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.1464 0.146447C12.3417 -0.0488155 12.6583 -0.0488155 12.8536 0.146447L15.8536 3.14645C16.0488 3.34171 16.0488 3.65829 15.8536 3.85355L5.85355 13.8536C5.75979 13.9473 5.63261 14 5.5 14H2.5C2.22386 14 2 13.7761 2 13.5V10.5C2 10.3674 2.05268 10.2402 2.14645 10.1464L12.1464 0.146447ZM13.2071 2.5L11.5 0.792893L13.7071 2.5L13.2071 2.5ZM1 12V13H2V12H1ZM12 1L3 10H4V11H5V10H6L15 1H12Z" fill="currentColor"/>
+        </svg>
+        Update Report
+    </button>
 </div>
+
+
+<app-update-survey-report-modal [surveyReport]="surveyReport"></app-update-survey-report-modal>

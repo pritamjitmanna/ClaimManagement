@@ -1,4 +1,7 @@
-﻿namespace InsuranceCompany.BLL;
+﻿using InsuranceCompany.BLL.RequestDTO;
+using SharedModules;
+
+namespace InsuranceCompany.BLL;
 
 public interface ISurveyorService
 {
@@ -7,5 +10,8 @@ public interface ISurveyorService
     Task<SurveyorDTO?> GetMinAllocatedSurveyorBasedOnEstimatedLoss(int EstimatedLoss);
 
     Task<SurveyorDTO?> GetSurveyorById(int surveyorId);
+
+    Task<CommonOutput> AddSurveyorDetails(SurveyorEntryDTO surveyorDTO);
+    Task<bool> DeleteSurveyorDetails(int surveyorId);
 
 }

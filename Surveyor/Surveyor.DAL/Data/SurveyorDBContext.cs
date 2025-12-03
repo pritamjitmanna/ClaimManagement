@@ -2,6 +2,11 @@
 
 namespace Surveyor.DAL;
 
+/// <summary>
+/// EF Core DbContext for Surveyor service persistence.
+/// - Exposes DbSet<SurveyReport> Reports for survey records.
+/// - Configures primary key and constraint name for SurveyReport entity in OnModelCreating.
+/// </summary>
 public class SurveyorDBContext:DbContext
 {
     public SurveyorDBContext(DbContextOptions<SurveyorDBContext> options):base(options){}

@@ -1,4 +1,10 @@
-﻿using InsuranceCompany.BLL;
+﻿// Summary:
+// SharedLogic is an application-level layer that coordinates simple validation and delegates
+// business operations to the ClaimDetailService (IClaimDetailService). It centralizes
+// basic input validation and maps service outcomes to CommonOutput responses suitable for APIs.
+// Key behaviors:
+// - Performs lightweight input checks (null/required fields).
+using InsuranceCompany.BLL;
 using InsuranceCompany.DAL;
 using SharedModules;
 
@@ -12,6 +18,11 @@ public class SharedLogic:ISharedLogic
     public SharedLogic(IClaimDetailService claimDetailService){
         _claimDetailService = claimDetailService;
     }
+
+    // AddClaimSharedLogic:
+    // - Performs basic validation for required fields (PolicyNo, EstimatedLoss, DateOfAccident).
+    // - If validation passes, delegates to ClaimDetailService.AddNewClaim and returns its CommonOutput.
+    // - Catches domain-specific MaximumClaimLimitReachedException and converts it to a CommonOutput failure.
     public async Task<CommonOutput> AddClaimSharedLogic(ClaimDetailRequestDTO claimDetail){
         try
         {
@@ -37,6 +48,7 @@ public class SharedLogic:ISharedLogic
                 return new CommonOutput { Result = RESULT.FAILURE, Output = errors };
             }
 
+            // Delegate to the service layer; the service handles deeper business rules and persistence.
             CommonOutput result = await _claimDetailService.AddNewClaim(claimDetail);
             return result;
         }
@@ -59,12 +71,15 @@ public class SharedLogic:ISharedLogic
         }
         catch (Exception ex)
         {
-            //Log exception
+            //Log exception and rethrow so higher layers (controllers/gRPC) can produce proper HTTP/gRPC responses.
             //_logger.Error(LogMessage(ex.Message));
             throw;
         }
     }
 
+    // GetClaimByClaimId:
+    // - Calls into ClaimDetailService to fetch a claim DTO and wraps it into CommonOutput.
+    // - Returns a success CommonOutput when found, otherwise failure.
     public async Task<CommonOutput> GetClaimByClaimId(string ClaimId)
     {
 
@@ -90,6 +105,9 @@ public class SharedLogic:ISharedLogic
         }
     }
 
+    // GetClaimStatusReports:
+    // - Validates month/year range; throws an InvalidMonthOrYearException for invalid input.
+    // - Delegates to ClaimDetailService.ClaimStatusReportsBasedOnMonthAndYear and maps result to CommonOutput.
     public async Task<CommonOutput> GetClaimStatusReports(int month, int year)
     {
         try
@@ -118,6 +136,9 @@ public class SharedLogic:ISharedLogic
         }
     }
 
+    // GetPaymentStatusReports:
+    // - Validates month/year and forwards to ClaimDetailService.PaymentStatusBasedOnMonthAndYear.
+    // - Returns CommonOutput with ClaimPaymentReportDTO on success.
     public async Task<CommonOutput> GetPaymentStatusReports(int month, int year)
     {
         try
@@ -148,6 +169,9 @@ public class SharedLogic:ISharedLogic
         }
     }
 
+    // UpdateClaimAmountApprovedBySurveyor:
+    // - Thin facade that delegates to ClaimDetailService.UpdateClaimAmtApprovedBySurveyor.
+    // - Propagates the service CommonOutput back to callers (controllers/gRPC).
     public async Task<CommonOutput> UpdateClaimAmountApprovedBySurveyor(string claimID, int claimant){
         try
         {

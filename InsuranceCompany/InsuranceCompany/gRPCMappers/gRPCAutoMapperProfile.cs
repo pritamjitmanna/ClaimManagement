@@ -1,7 +1,15 @@
-﻿using AutoMapper;
+﻿// Summary:
+// AutoMapper profile for mapping between gRPC-generated DTOs (ClaimDetailRequestDTOgRPC, ClaimDTOgRPC, etc.)
+// and internal DTOs used by the BLL. Highlights:
+// - Conversion between google.protobuf.Timestamp and System.DateOnly/DateTime.
+// - Mapping of validation/error DTOs to their gRPC equivalents.
+// - Mapping claim report DTOs and policy DTOs for gRPC responses.
+
+using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using gRPCClaimsService.Protos;
 using InsuranceCompany.BLL;
+using InsuranceCompany.BLL.RequestDTO;
 using InsuranceCompany.DAL;
 using SharedModules;
 
@@ -13,16 +21,20 @@ public class GRPCAutoMapperProfile:Profile
 
         CreateMap<ClaimDetailRequestDTOgRPC,ClaimDetailRequestDTO>()
         .ForMember(cd=>cd.DateOfAccident,opt=>{
+            // PreCondition ensures DateOfAccident exists before attempting conversion (Timestamp -> DateOnly).
             opt.PreCondition(cg=>cg.DateOfAccident!=null);
             opt.MapFrom(cg=>DateOnly.FromDateTime(cg.DateOfAccident.ToDateTime()));
     }   )
         .ForMember(cd=>cd.EstimatedLoss,opt=>opt.MapFrom(cg=>cg.EstimatedLoss))
         .ForMember(cd=>cd.PolicyNo,opt=>opt.MapFrom(cg=>cg.PolicyNo));
 
+        // Map validation error objects to gRPC error messages.
         CreateMap<PropertyValidationResponse,PropertyValidationResponsegRPC>()
         .ForMember(pg=>pg.Property,opt=>opt.MapFrom(pr=>pr.Property))
         .ForMember(pg=>pg.ErrorMessage,opt=>opt.MapFrom(pr=>pr.ErrorMessage));
 
+        // Map internal ClaimListOpenDTO to ClaimDTOgRPC.
+        // Note: DateOfAccident mapping uses Timestamp.FromDateTime and ensures UTC kind to avoid timezone issues.
         CreateMap<ClaimListOpenDTO,ClaimDTOgRPC>()
         .ForMember(cd=>cd.ClaimId,opt=>opt.MapFrom(cld=>cld.ClaimId))
         .ForMember(cd=>cd.PolicyNo,opt=>opt.MapFrom(cld=>cld.PolicyNo))
@@ -45,6 +57,7 @@ public class GRPCAutoMapperProfile:Profile
         .ForMember(crg=>crg.Amount,opt=>opt.MapFrom(cr=>cr.Amount))
         .ForMember(crg=>crg.Year,opt=>opt.MapFrom(cr=>cr.Year));
 
+        // Map Policy -> PolicyDTOgRPC; DateOfInsurance is converted to Timestamp with UTC kind.
         CreateMap<Policy, PolicyDTOgRPC>()
         .ForMember(pd=>pd.InsuredFirstName,opt=>opt.MapFrom(p=>p.InsuredFirstName))
         .ForMember(pd=>pd.InsuredLastName,opt=>opt.MapFrom(p=>p.InsuredLastName))

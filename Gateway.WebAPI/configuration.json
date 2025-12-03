@@ -190,7 +190,44 @@
             "Role": "InsuranceCompany"
         }  
     },
-
+    {
+        "DownstreamPathTemplate": "/api/surveyors/addsurveyor",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/surveyors/addsurveyor",  
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "Surveyor"
+        } 
+    },
+    {
+        "DownstreamPathTemplate": "/api/surveyors/deletesurveyor/{surveyorId}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5274  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/surveyors/deletesurveyor/{surveyorId}",  
+        "UpstreamHttpMethod": [ "DELETE" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "Surveyor"
+        } 
+    },
 
     {
         "DownstreamPathTemplate": "/api/claims/addclaim",  

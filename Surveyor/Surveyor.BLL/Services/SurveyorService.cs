@@ -6,6 +6,18 @@ using Surveyor.DAL;
 
 namespace Surveyor.BLL;
 
+/// <summary>
+/// Business service for surveyor operations:
+/// - Validates claim and policy exist and are in correct states by calling remote Claims gRPC endpoints.
+/// - Calculates vehicle age, policy clause and total amount based on business rules.
+/// - Persists survey reports via ISurveyor repository and returns CommonOutput containing success/failure and errors.
+/// - Updates the claim amount in the InsuranceCompany service by calling a gRPC endpoint after successful persistence.
+/// 
+/// Key behaviors and helper functions:
+/// - GetVehicleAge(PolicyDTOgRPC): computes vehicle age from policy DateOfInsurance (converts Timestamp to DateTime).
+/// - UpdateClaimAmtInsuranceCompany(...): calls remote gRPC method and unpacks Any-typed error lists using TryUnpack.
+/// - GetErrorListInRequiredFormat: transforms ValidationResult collections into PropertyValidationResponse list for API consumers.
+/// </summary>
 public class SurveyorService:ISurveyorService
 {
 

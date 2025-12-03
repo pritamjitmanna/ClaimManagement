@@ -64,3 +64,28 @@ public static class OcelotAuthorize{
     }
 }
 
+// Summary:
+// This static helper implements a custom authorization check used by Ocelot's pipeline configuration.
+// The Authorize(HttpContext) method inspects the configured DownstreamRoute.RouteClaimsRequirement
+// and ensures the current HttpContext.User has matching claims (e.g., Role claims) as specified in the Ocelot configuration.
+//
+// Key behaviors:
+// - If the route's AuthenticationProviderKey is null/empty, the route is considered public and the method returns true.
+// - If RouteClaimsRequirement is empty, no claim-based restrictions are applied.
+// - The method compares required claim types (keys in route.RouteClaimsRequirement) against the current user's claims.
+//   Multiple allowed values for a claim in configuration.json are split by comma and treated as an OR list.
+// - GetClaimTypeValue normalizes claim type names using a dictionary built from System.Security.Claims.ClaimTypes
+//   so configuration can use friendly keys (e.g., "role") while still matching the actual claim type URIs.
+//
+// Explanation of helper functions:
+// - GetClaimTypesConstantValues() uses reflection on System.Security.Claims.ClaimTypes to create a dictionary mapping
+//   claim type URIs to their constant field names. This allows the code to look up friendly names for claim types.
+//   It enumerates public static fields from ClaimTypes and builds a dictionary of their string values.
+//
+// - GetClaimTypeValue(string claim) looks up the friendly name for a claim type URI, then lowercases it for case-insensitive comparisons.
+//   If no mapping is found, it returns the original claim string lowercased.
+//
+// - Authorize(HttpContext ctx):
+//   - Extracts the DownstreamRoute from ctx.Items and reads AuthenticationOptions.AuthenticationProviderKey.
+//   - If authentication provider key is empty the route is allowed (no auth required).
+

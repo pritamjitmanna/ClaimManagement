@@ -4,6 +4,11 @@ using SharedModules;
 
 namespace IRDA.DAL;
 
+/// <summary>
+/// Repository implementation for PaymentOfClaims persistence.
+/// - Performs model validation using ValidationFunctions before insert/update.
+/// - Uses EF Core DbContext to add, update and query PaymentOfClaims entities.
+/// </summary>
 public class PaymentOfClaimsRepository:IPaymentOfClaims
 {
     #pragma warning disable CS0168 // Variable is declared but never used
@@ -13,6 +18,12 @@ public class PaymentOfClaimsRepository:IPaymentOfClaims
         _dbcontext = dbcontext;
     }
 
+    /// <summary>
+    /// Adds a PaymentOfClaims after validating the entity.
+    /// - Uses ValidationFunctions.ValidateModel which leverages DataAnnotations and Validator.TryValidateObject.
+    /// - On success adds entity via DbContext.AddAsync and SaveChangesAsync.
+    /// - Returns CommonOutput with FAILURE and the ValidationResult collection when validation fails.
+    /// </summary>
     public async Task<CommonOutput> AddPaymentOfClaimsData(PaymentOfClaims payment){
         CommonOutput result;
         try{
@@ -41,6 +52,9 @@ public class PaymentOfClaimsRepository:IPaymentOfClaims
         return result;
     }
 
+    /// <summary>
+    /// Updates a PaymentOfClaims after validation and persists changes.
+    /// </summary>
     public async Task<CommonOutput> UpdatePaymentOfClaimsData(PaymentOfClaims payment){
         CommonOutput result;
         try{
@@ -70,6 +84,11 @@ public class PaymentOfClaimsRepository:IPaymentOfClaims
     }
 
 
+    /// <summary>
+    /// Queries the database for a PaymentOfClaims entry matching the provided month and year.
+    /// - Uses AsNoTracking() for read-only query to reduce EF tracking overhead.
+    /// - Month parameter is translated to the month name using the MonthName array.
+    /// </summary>
     public async Task<PaymentOfClaims?> PaymentStatusOnMonthAndYear(int month, int year)
     {
 

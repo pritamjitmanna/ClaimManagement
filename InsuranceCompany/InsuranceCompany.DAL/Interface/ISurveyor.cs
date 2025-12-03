@@ -1,4 +1,6 @@
-﻿namespace InsuranceCompany.DAL;
+﻿using SharedModules;
+
+namespace InsuranceCompany.DAL;
 
 /// <summary>
 /// This interface helps in creating the Surveyor repository for dealing with the Surveyor table.
@@ -26,5 +28,8 @@ public interface ISurveyor
     /// <param name="surveyorId"></param>
     /// <returns>Surveyor?</returns>
     Task<Surveyor?> GetSurveyorById(int surveyorId);
+
+    Task<CommonOutput> AddSurveyorDetails(Surveyor surveyor);
+    Task<bool> DeleteSurveyorDetails(int surveyorId);
 
 }

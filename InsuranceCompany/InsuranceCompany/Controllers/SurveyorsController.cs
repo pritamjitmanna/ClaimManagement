@@ -1,5 +1,11 @@
-﻿using InsuranceCompany.BLL;
+﻿// Summary:
+// Exposes an API endpoint to list surveyors based on estimated loss. Delegates to ISurveyorService
+// and returns 200/204/500 depending on result. The controller action is asynchronous and uses AutoMapper results provided by the service.
+
+using InsuranceCompany.BLL;
+using InsuranceCompany.BLL.RequestDTO;
 using Microsoft.AspNetCore.Mvc;
+using SharedModules;
 
 namespace InsuranceCompany;
 
@@ -15,7 +21,9 @@ public class SurveyorsController : ControllerBase
         //_logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
     }
 
-    //GET: /api/<SurveyorsController>/{EstimatedLoss}
+    // GetAllSurveyorsOnEstimatedLoss:
+    // - Accepts EstimatedLoss as route parameter, calls service to fetch DTO list.
+    // - Returns 200 with list, 204 when empty, or 500 on unexpected errors.
     [HttpGet("{EstimatedLoss}")]
     [ProducesResponseType(typeof(IEnumerable<SurveyorDTO>), StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType(typeof(IEnumerable<SurveyorDTO>), StatusCodes.Status204NoContent, "application/json")]
@@ -35,6 +43,50 @@ public class SurveyorsController : ControllerBase
                 return StatusCode(StatusCodes.Status204NoContent, surveyors);
             }
             return Ok(surveyors);
+        }
+        catch (Exception ex)
+        {
+            //_logger.Error(LogMessage(ex.Message));
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpPost("addsurveyor")]
+    [ProducesResponseType(typeof(CommonOutput), StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType(typeof(CommonOutput), StatusCodes.Status400BadRequest, "application/json")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AddSurveyorDetails(SurveyorEntryDTO surveyorEntryDTO)
+    {
+        try
+        {
+            CommonOutput result=await _surveyorService.AddSurveyorDetails(surveyorEntryDTO);
+            if (result.Result == RESULT.SUCCESS)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            //_logger.Error(LogMessage(ex.Message));
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpDelete("deletesurveyor/{surveyorId}")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteSurveyorDetails(int surveyorId)
+    {
+        try
+        {
+            bool result = await _surveyorService.DeleteSurveyorDetails(surveyorId);
+            if (result)
+            {
+                return Ok();
+            }
+            return NotFound();
         }
         catch (Exception ex)
         {

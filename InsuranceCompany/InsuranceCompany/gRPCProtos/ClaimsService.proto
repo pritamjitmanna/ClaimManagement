@@ -1,3 +1,12 @@
+// Summary:
+// Protocol buffer definitions for the Claims gRPC service. This file declares:
+// - The ClaimsService RPC methods used by clients to create, query and update claims.
+// - Enum types (STATUSCODE, CLAIMSTATUS, STAGES, WITHDRAWSTATUS) used to transfer state.
+// - DTO messages for request/response payloads and error lists.
+// Notes:
+// - google.protobuf.Any is used in CommonOutputgRPC to carry different payload types (packed messages).
+// - Timestamp is used for date/time fields; wrappers (StringValue/Int32Value) are used for optional primitives.
+
 syntax = "proto3";
 option csharp_namespace = "gRPCClaimsService.Protos";
 package claims;
@@ -16,6 +25,7 @@ service ClaimsService {
     rpc GetPaymentStatusReports(GetPaymentStatusReportsMonthAndYear)returns (CommonOutputgRPC);
     rpc UpdateClaimAmountApprovedBySurveyor(UpdateClaimAmountApprovedBySurveyorClaimIdClaimant)returns (CommonOutputgRPC);
     rpc UpdateAcceptOrRejectClaim(AcceptReject)returns (CommonOutputgRPC);
+
 }
 
 // -------------------------Enums------------------------------

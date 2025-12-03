@@ -31,21 +31,26 @@ export class ClaimComponent {
     route.params.subscribe(
       async(params:Params)=>{
         const claimId=params["id"]
-        let result:CommonOutput=await claimsService.getClaimById(claimId)
+        if(sessionStorage.getItem(claimId)===null){
 
-        if(result.result===RESULT.SUCCESS){
-          this.claim=result.output
-        }
-        else{
-          if(result.output.status===0||result.output.status>=500){
-            router.navigate(['internalservererror'])
+          let result:CommonOutput=await claimsService.getClaimById(claimId)
+          
+          if(result.result===RESULT.SUCCESS){
+            this.claim=result.output
+            sessionStorage.setItem(claimId,JSON.stringify(this.claim))
           }
           else{
-            accessoriesService.alertShow("Claim Not found","danger")
-            router.navigate([''])
-
+            if(result.output.status===0||result.output.status>=500){
+              router.navigate(['internalservererror'])
+            }
+            else{
+              accessoriesService.alertShow("Claim Not found","danger")
+              router.navigate([''])
+              
+            }
           }
         }
+        else this.claim=JSON.parse(sessionStorage.getItem(claimId)!)
         this.isLoading=false
       }
     )
@@ -86,8 +91,8 @@ export class ClaimComponent {
     }
   }
 
-  approveAmount(){
-    
+  createSurveyReport(){
+    this.router.navigate([`createsurveyreport/${this.claim.claimId}`],{state:{navigated:true}})
   }
 
   openModal(){

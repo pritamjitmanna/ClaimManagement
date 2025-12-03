@@ -1,13 +1,13 @@
 <div class="container survey-report-container">
     <h1>Create Survey Report</h1>
-    <form class="survey-report-form">
+    <form class="survey-report-form" #addSurveyReport="ngForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
             <label for="claim-id">ClaimId:</label>
-            <input type="text" id="claim-id" name="claim-id" required>
+            <input type="text" id="claim-id" name="claim-id" required disabled [value]="claim.claimId">
         </div>
         <div class="form-group">
             <label for="policy-no">PolicyNo:</label>
-            <input type="text" id="policy-no" name="policy-no" required>
+            <input type="text" id="policy-no" name="policy-no" required disabled [value]="claim.policyNo">
         </div>
         <div class="form-group">
             <label for="labour-charges">Labour Charges:</label>

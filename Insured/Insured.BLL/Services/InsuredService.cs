@@ -5,6 +5,14 @@ using SharedModules;
 
 namespace Insured.BLL;
 
+/// <summary>
+/// Service layer for Insured operations. Uses a generated gRPC client to call the remote ClaimsService.
+/// Responsibilities:
+/// - Map local DTOs to gRPC request DTOs via AutoMapper.
+/// - Call remote gRPC methods and interpret the CommonOutputgRPC responses.
+/// - Unpack Any-typed outputs (e.g., StringValue, ErrorsListgRPC) using TryUnpack to obtain concrete types.
+/// - Translate gRPC responses into local SharedModules.CommonOutput results.
+/// </summary>
 public class InsuredService:IInsuredService
 {
     private readonly ClaimsService.ClaimsServiceClient _client;
@@ -15,14 +23,29 @@ public class InsuredService:IInsuredService
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Adds a new claim by calling the remote gRPC AddNewClaimAsync method.
+    /// Behavior:
+    /// - Maps local ClaimDetailRequestDTO to ClaimDetailRequestDTOgRPC.
+    /// - Awaits the CommonOutputgRPC response which contains a StatusCode and an Any Output.
+    /// - If StatusCode == Ok and the Any contains a StringValue, unpacks to get the claim id string.
+    /// - If StatusCode == Badrequest and the Any contains ErrorsListgRPC, unpacks and maps each error into local PropertyValidationResponse.
+    /// - Throws an exception for unexpected states; caller handles exceptions and converts to HTTP responses in controller.
+    /// 
+    /// Key helper explained:
+    /// - output.Output.TryUnpack(out T typed) attempts to unpack a protobuf Any into the concrete message type T.
+    ///   Returns true when the Any holds the expected type, false otherwise.
+    /// </summary>
     public async Task<CommonOutput> AddNewClaim(ClaimDetailRequestDTO claim){
 
         CommonOutput result;
 
         try{
+            // Map local DTO to gRPC DTO and call remote method.
             CommonOutputgRPC output=await _client.AddNewClaimAsync(_mapper.Map<ClaimDetailRequestDTOgRPC>(claim));
 
             if(output.StatusCode==STATUSCODE.Ok){
+                // When Ok, output is expected to carry a Google.Protobuf.WellKnownTypes.StringValue with the claim id.
                 if(output.Output.TryUnpack(out StringValue claimId)){
                     result=new CommonOutput{
                         Result=RESULT.SUCCESS,
@@ -30,11 +53,14 @@ public class InsuredService:IInsuredService
                     };
                 }
                 else{
+                    // Unexpected: Ok without expected payload
                     throw new Exception();
                 }
             }
             else if(output.StatusCode==STATUSCODE.Badrequest){
+                // When Badrequest, output is expected to carry validation errors (ErrorsListgRPC).
                 if(output.Output.TryUnpack(out ErrorsListgRPC errs)){
+                    // Build a local list of PropertyValidationResponse by mapping each gRPC error.
                     List<PropertyValidationResponse> errors=[];
                     foreach(var error in errs.Errors){
                         errors.Add(_mapper.Map<PropertyValidationResponse>(error));
@@ -45,31 +71,44 @@ public class InsuredService:IInsuredService
                     };
                 }
                 else{
+                    // Unexpected: Badrequest without expected error payload
                     throw new Exception();
                 }
             }
             else{
+                // Other status codes are not explicitly handled: treat as error.
                 throw new Exception();
             }
 
         }
         catch(Exception ex){
+            // Re-throw to allow higher layers (controller) to convert to HTTP error responses or logging.
+            // In production, consider logging the exception and returning a controlled error object.
             throw;
         }
 
         return result;
     }
 
+    /// <summary>
+    /// Accepts or rejects a claim by calling the remote UpdateAcceptOrRejectClaimAsync gRPC method.
+    /// Behavior:
+    /// - Constructs an AcceptReject gRPC message with claimId and boolean flag.
+    /// - Unpacks the response Any similarly to AddNewClaim for success or validation failure.
+    /// - Returns CommonOutput with RESULT.SUCCESS or RESULT.FAILURE and mapped validation errors.
+    /// </summary>
     public async Task<CommonOutput> AcceptOrRejectClaim(string claimId,AcceptRejectDTO acceptReject){
 
         CommonOutput result;
         try{
+            // Call the remote method to update claim accept/reject status.
             CommonOutputgRPC output=await _client.UpdateAcceptOrRejectClaimAsync(new AcceptReject{ClaimId=claimId,IsAccept=acceptReject.AcceptReject});
 
             if(output.StatusCode==STATUSCODE.Ok){
                 result=new CommonOutput{Result=RESULT.SUCCESS};
             }
             else if(output.StatusCode==STATUSCODE.Badrequest){
+                // Unpack validation errors if present and map them.
                 if(output.Output.TryUnpack(out ErrorsListgRPC errs)){
                     List<PropertyValidationResponse> errors=[];
                     foreach(var error in errs.Errors){
@@ -89,6 +128,7 @@ public class InsuredService:IInsuredService
             }
         }
         catch(Exception ex){
+            // Re-throw to allow controller to handle. Consider logging here.
             throw;
         }
         return result;

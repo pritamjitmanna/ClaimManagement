@@ -4,6 +4,11 @@ using SharedModules;
 
 namespace IRDA.DAL;
 
+/// <summary>
+/// Repository implementation for PendingStatusReports persistence.
+/// - Validates entities prior to insert/update using ValidationFunctions.
+/// - Performs EF Core queries and uses AsNoTracking for read operations.
+/// </summary>
 public class PendingStatusReportsRepository:IPendingStatusReports
 {
     #pragma warning disable CS0168 // Variable is declared but never used
@@ -13,6 +18,10 @@ public class PendingStatusReportsRepository:IPendingStatusReports
         _dbcontext = dbcontext;
     }
 
+    /// <summary>
+    /// Validates and inserts a new PendingStatusReports record.
+    /// - On validation failure returns CommonOutput with ValidationResult collection.
+    /// </summary>
     public async Task<CommonOutput> AddPendingStatusReportsData(PendingStatusReports status){
         CommonOutput result;
         try{
@@ -41,6 +50,9 @@ public class PendingStatusReportsRepository:IPendingStatusReports
         return result;
     }
 
+    /// <summary>
+    /// Validates and updates an existing PendingStatusReports record.
+    /// </summary>
     public async Task<CommonOutput> UpdatePendingStatusReportsData(PendingStatusReports status){
         CommonOutput result;
         try{
@@ -70,6 +82,10 @@ public class PendingStatusReportsRepository:IPendingStatusReports
     }
 
 
+    /// <summary>
+    /// Retrieves a PendingStatusReports entry by stage, month and year.
+    /// - Uses AsNoTracking and translates month index to month name via MonthName array.
+    /// </summary>
     public async Task<PendingStatusReports?> PendingStatusReportsOnMonthAndYear(Stages stage,int month, int year)
     {
 

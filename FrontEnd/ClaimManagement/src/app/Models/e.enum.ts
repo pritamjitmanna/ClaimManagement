@@ -22,3 +22,11 @@ export enum Stages
 	PendingClaims,
 	FinalizedClaims
 }
+
+export enum Roles{
+    Admin="Admin",
+    InsuranceCompany="InsuranceCompany",
+    Surveyor="Surveyor",
+    IRDA="IRDA",
+    Insurer="Insurer"
+}

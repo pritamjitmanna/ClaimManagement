@@ -4,12 +4,17 @@ import { AuthService } from '../Services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { globalVariables } from '../global_module';
 
+
 export const authGuard: CanActivateFn = async(route, state):Promise<boolean | UrlTree> => {
 
   //Commented it to make everything available for implementing them
 
   // const router=inject(Router)
 
+  // if(router.getCurrentNavigation()?.extras.state?.['navigated']){
+  //   return true
+  // }
+// console.log(router.getCurrentNavigation())
   // const isAuth=await firstValueFrom(globalVariables.isAuthenticated)
   // let roles=await firstValueFrom(globalVariables.role)
   // if(typeof(roles)==="string")roles=[roles]
@@ -22,3 +27,4 @@ export const authGuard: CanActivateFn = async(route, state):Promise<boolean | Ur
   return true
 
 };
+

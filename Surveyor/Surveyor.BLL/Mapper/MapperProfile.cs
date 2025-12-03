@@ -5,6 +5,15 @@ using Surveyor.DAL;
 
 namespace Surveyor.BLL;
 
+/// <summary>
+/// AutoMapper profile for Surveyor service:
+/// - Maps SurveyReport (DAL entity) to ReportDTO (API DTO) for read operations.
+/// - Maps SurveyReportDTO (API input) to SurveyReport (entity) for persistence.
+/// - Maps validation messages from gRPC validation response types into local PropertyValidationResponse.
+/// 
+/// Notes:
+/// - ForMember calls explicitly map fields to ensure clarity and prevent accidental mismatches.
+/// </summary>
 public class MapperProfile:Profile
 {
     public MapperProfile(){

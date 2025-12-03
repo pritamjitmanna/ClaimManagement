@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// Summary:
+// PolicyRepository provides read access to Policy entities. The GetPolicyByPolicyNo method
+// uses Include to eager-load the ClaimDetails navigation property and AsNoTracking for read-only access.
+
+using Microsoft.EntityFrameworkCore;
 
 namespace InsuranceCompany.DAL;
 
@@ -15,6 +19,10 @@ public class PolicyRepository : IPolicy
         //_logger = logger;
     }
 
+    // Fetch a policy by PolicyNo while eager-loading related ClaimDetails.
+    // - Include(p => p.ClaimDetails): loads child entities in the same query to avoid lazy-loading round-trips.
+    // - AsNoTracking(): better performance for read-only use.
+    // - FirstOrDefaultAsync(): returns the matched Policy or null.
     public async Task<Policy?> GetPolicyByPolicyNo(string policyNo)
     {
         Policy? policy;

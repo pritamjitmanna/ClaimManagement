@@ -1,0 +1,50 @@
+@if(isModelOpen){
+    <div class="modal-backdrop" (click)="closeModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Update Survey Report</h2>
+            <button class="close-btn" (click)="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <form (ngSubmit)="onSubmit()" #updateSurveyReport="ngForm">
+                <div class="form-group">
+                    <label for="LabourCharges">Labour Charges</label>
+                    <input type="number" id="LabourCharges" name="LabourCharges" ngModel #labourCharges="ngModel" required>
+                    @if(labourCharges.invalid&&labourCharges.touched&&labourCharges.errors&&labourCharges.errors['isErr']){
+                        <div class="error-message">
+                            <small>{{fieldValidations['LabourCharges']}}</small>
+                        </div>
+                    }
+                </div>
+                <div class="form-group">
+                    <label for="PartsCost">Parts Cost</label>
+                    <input type="number" id="PartsCost" name="PartsCost" ngModel #partsCost="ngModel" required>
+                    @if(partsCost.invalid&&partsCost.touched&&partsCost.errors&&partsCost.errors['isErr']){
+                        <div class="error-message">
+                            <small>{{fieldValidations['PartsCost']}}</small>
+                        </div>
+                    }
+                </div>
+                <div class="form-group">
+                    <label for="DepreciationCost">Depreciation Cost</label>
+                    <input type="number" id="DepreciationCost" name="DepreciationCost" ngModel #depreciationCost="ngModel" required>
+                    @if(depreciationCost.invalid&&depreciationCost.touched&&depreciationCost.errors&&depreciationCost.errors['isErr']){
+                        <div class="error-message">
+                            <small>{{fieldValidations['DepreciationCost']}}</small>
+                        </div>
+                    }
+                </div>
+                <div class="form-group">
+                    <label for="AccidentDetails">Accident Details</label>
+                    <textarea id="AccidentDetails" name="AccidentDetails" ngModel #accidentDetails="ngModel" required></textarea>
+                    @if(accidentDetails.invalid&&accidentDetails.touched&&accidentDetails.errors&&accidentDetails.errors['isErr']){
+                        <div class="error-message">
+                            <small>{{fieldValidations['AccidentDetails']}}</small>
+                        </div>
+                    }
+                </div>
+                <button type="submit" class="submit-btn" [disabled]="updateSurveyReport.invalid">Update</button>
+            </form>
+        </div>
+    </div>
+}

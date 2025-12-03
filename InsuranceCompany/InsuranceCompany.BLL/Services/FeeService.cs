@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿// Summary:
+// FeeService mediates between controllers and IFee repository. It fetches Fee entities based on estimated loss
+// and maps them to FeeDTO using AutoMapper. Built-in usage: async/await, try/catch, mapper.Map<T>.
+
+using AutoMapper;
 using InsuranceCompany.DAL;
 
 namespace InsuranceCompany.BLL;
@@ -26,8 +30,10 @@ public class FeeService : IFeeService
         try
         {
 
+            // Repository returns Fee? after an EF range query (AsNoTracking + Where + FirstOrDefaultAsync).
             Fee? fee = await _feeRepository.GetFeesByEstimatedLoss(estimatedLoss);
 
+            // AutoMapper maps null to null or maps Fee properties to FeeDTO.
             fees = _mapper.Map<FeeDTO>(fee);
 
         }

@@ -21,4 +21,11 @@ public class ValidationFunctions
         bool IsValid = Validator.TryValidateObject(claimDetail, vc, results, true);
         return IsValid;
     }
+
+    public static bool ValidateModel(Surveyor surveyor, ref ICollection<ValidationResult> results)
+    {
+        ValidationContext vc = new ValidationContext(surveyor);
+        bool IsValid = Validator.TryValidateObject(surveyor, vc, results, true);
+        return IsValid;
+    }
 }

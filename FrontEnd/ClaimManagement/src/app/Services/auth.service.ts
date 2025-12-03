@@ -32,9 +32,20 @@ export class AuthService{
             this.decodeTokenUserRole()
             return new CommonOutput(RESULT.SUCCESS)
         } catch (err:any) {
+            console.log(err)
             return new CommonOutput(RESULT.FAILURE,err)
         }
         
+    }
+
+    async register(details:{userName:string,emailAddress:string,password:string,roles:string[]}):Promise<CommonOutput>{
+        const URL=this.BASE_URL+"register"
+        try{
+            const data=await firstValueFrom(this.http.post<{userName:string,emailAddress:string}>(URL,details))
+            return new CommonOutput(RESULT.SUCCESS,data)
+        } catch(err:any){
+            return new CommonOutput(RESULT.FAILURE,err)
+        }
     }
     
     logout(){

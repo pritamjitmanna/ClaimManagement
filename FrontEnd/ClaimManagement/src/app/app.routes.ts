@@ -11,6 +11,8 @@ import { SurveyReportComponent } from './Components/surveyreports/survey-report/
 import { authGuard } from './Gaurds/auth.guard';
 import { Notfound404Component } from './Components/notfound404/notfound404.component';
 import { Internalservererror500Component } from './Components/internalservererror500/internalservererror500.component';
+import { permissionGuard } from './Gaurds/permission.guard';
+import { ProfileComponent } from './Components/profile/profile.component';
 
 export const routes: Routes = [
     {
@@ -24,6 +26,10 @@ export const routes: Routes = [
     {
         path:'login',
         component:LoginComponent
+    },
+    {
+        path:'profile',
+        component:ProfileComponent
     },
     {
         path:'addclaim',
@@ -67,9 +73,9 @@ export const routes: Routes = [
         }
     },
     {
-        path:'createsurveyreport',
+        path:'createsurveyreport/:id',
         component:AddSurveyReportComponent,
-        canActivate:[authGuard],
+        canActivate:[permissionGuard,authGuard],
         data:{
             role:[
                 "Surveyor"
@@ -77,7 +83,7 @@ export const routes: Routes = [
         }
     },
     {
-        path:'surveyreport',
+        path:'surveyreport/:id',
         component:SurveyReportComponent,
         canActivate:[authGuard],
         data:{

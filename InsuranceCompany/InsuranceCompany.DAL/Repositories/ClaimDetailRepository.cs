@@ -1,4 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// Summary:
+// ClaimDetailRepository manages ClaimDetail entities: adding, updating, and querying claims.
+// It demonstrates model validation prior to persistence, and various read queries using EF Core's LINQ providers.
+// Important EF Core functions used:
+// - AddAsync/SaveChangesAsync: to persist new entities.
+// - AsNoTracking: for read-only queries to avoid change tracking overhead.
+// - Where: filter records; can be chained for multiple conditions.
+// - SumAsync/CountAsync: aggregate functions executed on the database side.
+// - Update: marks an entity as modified and SaveChangesAsync persists the change.
+
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace InsuranceCompany.DAL;
@@ -15,9 +25,10 @@ public class ClaimDetailRepository : IClaimDetail
         _dbContext = dbContext;
     }
 
-
-
-    
+    // Adds a new ClaimDetail after validating the model.
+    // ValidationFunctions.ValidateModel: custom validation routine that populates ValidationResult collection.
+    // If valid: AddAsync (asynchronous add to change tracker) followed by SaveChangesAsync to persist to DB.
+    // Returns CommonOutput containing success/failure and either ClaimId or validation errors.
     public async Task<CommonOutput> AddNewClaim(ClaimDetail claimDetail)
     {
         CommonOutput result;
@@ -61,6 +72,8 @@ public class ClaimDetailRepository : IClaimDetail
         return result;
     }
 
+    // Returns all claims with ClaimStatus.Open using AsNoTracking and ToListAsync.
+    // AsNoTracking improves query performance since returned entities are not tracked for changes.
     public async Task<ICollection<ClaimDetail>> GetAllOpenClaims()
     {
         ICollection<ClaimDetail> claims = new List<ClaimDetail>();
@@ -82,6 +95,9 @@ public class ClaimDetailRepository : IClaimDetail
         return claims;
     }
 
+    // Computes total payments for claims that occurred in a specific month/year and have company approval.
+    // Uses SumAsync to compute sum at DB level; Select projects AmtApprovedBySurveyor values.
+    // Note: casting to int assumes the resulting sum is non-nullable; be careful in real-world code for possible null.
     public async Task<int> PaymentStatusOnMonthAndYear(int month, int year)
     {
 
@@ -106,7 +122,8 @@ public class ClaimDetailRepository : IClaimDetail
 
 
 
-
+    // Returns counts for different stages (NewClaims, PendingClaims, FinalizedClaims) for a given month/year.
+    // Uses CountAsync which is translated to a SQL COUNT(*) with provided filters.
     public async Task<int> GetClaimsCountForStageTypeBasedOnMonthAndYear(Stages stage, int month, int year)
     {
         int count = 0;
@@ -138,6 +155,8 @@ public class ClaimDetailRepository : IClaimDetail
     }
 
 
+    // Update a claim after validation. Update marks the entity as Modified in the context.
+    // SaveChangesAsync then persists the change to the database.
     public async Task<CommonOutput> UpdateClaim(ClaimDetail claimDetail)
     {
 
@@ -180,11 +199,7 @@ public class ClaimDetailRepository : IClaimDetail
         return result;
     }
 
-
-
-
-    //--Other functions--
-
+    // Retrieves a single ClaimDetail by PolicyNo. Uses FirstOrDefaultAsync to return null if not found.
     public async Task<ClaimDetail?> GetClaimByPolicyNo(string policyNo)
     {
 
@@ -206,6 +221,7 @@ public class ClaimDetailRepository : IClaimDetail
         return claim;
     }
 
+    // Retrieves a single ClaimDetail by ClaimId.
     public async Task<ClaimDetail?> GetClaimByClaimId(string claimId)
     {
 
@@ -227,6 +243,7 @@ public class ClaimDetailRepository : IClaimDetail
         return claim;
     }
 
+    // Gets all closed claims. ToListAsync materializes results into a collection.
     public async Task<ICollection<ClaimDetail>> GetAllCloseClaims()
     {
         ICollection<ClaimDetail> claims = new List<ClaimDetail>();
