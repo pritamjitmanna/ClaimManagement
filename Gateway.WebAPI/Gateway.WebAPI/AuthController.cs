@@ -1,13 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AutoMapper;
-using Google.Protobuf.WellKnownTypes;
-using gRPCClaimsService.Protos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using SharedModules;
 
 namespace Gateway.WebAPI;
 
@@ -98,12 +94,15 @@ public class AuthController:ControllerBase
     public async Task<IActionResult> Login([FromBody]LoginUserModel loginUserModel){
         try{
             var user=await _userManager.FindByEmailAsync(loginUserModel.EmailAddress);
+            // Console.WriteLine(user);
             if(user!=null&& await _userManager.CheckPasswordAsync(user,loginUserModel.Password)){
                 var userRole=await _userManager.GetRolesAsync(user);
 
                 var authClaims=new List<Claim>{
                     new(ClaimTypes.Name,user.UserName),
                     new(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+                    new("profileSet",user.profileSet.ToString()),
+                    new("profileId",user.profileId.ToString()!)
                 };
 
                 foreach(var role in userRole){

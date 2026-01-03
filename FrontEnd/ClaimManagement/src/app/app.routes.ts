@@ -17,7 +17,8 @@ import { ProfileComponent } from './Components/profile/profile.component';
 export const routes: Routes = [
     {
         path:'',
-        component:HomeComponent
+        component:HomeComponent,
+        canActivate:[authGuard]
     },
     {
         path:'register',
@@ -58,7 +59,8 @@ export const routes: Routes = [
         data:{
             role:[
                 "InsuranceCompany",
-                "Insurer"
+                "Insurer",
+                "Surveyor",
             ]
         }
     },

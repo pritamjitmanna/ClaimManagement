@@ -52,7 +52,7 @@ export class AuthService{
         localStorage.removeItem("loginData")
         globalVariables.isAuthenticated.next(false);
         
-        this.router.navigate([''])
+        this.router.navigate(['login'])
     }
     
     decodeTokenUserRole(){
@@ -72,8 +72,13 @@ export class AuthService{
             globalVariables.isAuthenticated.next(true);
             globalVariables.token=this.JWTObj["token"]
             const decodedToken:{[key:string]: string}=jwtDecode(this.JWTObj["token"])
+            // console.log(decodedToken)
             globalVariables.username.next(decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"])
             var temp=decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+            var profileSetFlag=decodedToken["profileSet"]
+            var userId=decodedToken["profileId"]
+            if(profileSetFlag==="True")globalVariables.profileSet.next(true)
+            if(userId!==null && userId!==undefined)globalVariables.userId.next(Number.parseInt(userId))
             let roles;
             if(typeof(temp)==='string')roles=[temp]
             else roles=temp

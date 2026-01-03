@@ -2,12 +2,19 @@
     <div class="navbar-left">
         <a routerLink="" class="navbar-logo">Insurance</a>
         <ul class="navbar-menu">
-            <li><a routerLink="/addclaim">Add New Claim</a></li>
-            <li><a routerLink="/irda">IRDA</a></li>
-            <li><a routerLink="/createsurveyreport">Create Report</a></li>
-            <li><a routerLink="/surveyreport">Report</a></li>
-            <li><a routerLink="/claims">Claims</a></li>
-            <li><a routerLink="/claim">Claim</a></li>
+            @if(roles.includes('Insurer')){
+                <li><a routerLink="/addclaim">Add New Claim</a></li>
+            }
+            @if(roles.includes('IRDA')){
+                <li><a routerLink="/irda">IRDA</a></li>
+            }
+            @if(roles.includes('Surveyor')){
+                <!-- <li><a routerLink="/createsurveyreport/">Create Report</a></li> -->
+            }
+            @if(roles.includes('InsuranceCompany')){
+                <li><a routerLink="/claims">Claims</a></li>
+                <li><a routerLink="/claim">Claim</a></li>
+            }
             <!-- <li><a href="#">About</a></li> -->
         </ul>
     </div>
@@ -16,8 +23,9 @@
         <a routerLink="/register" class="btn signup">Sign Up</a>
         <div class="profile-dropdown">
             <img src="user.jpg" alt="User Profile" class="profile-img">
-             <span></span>
+            <span></span>
             <div class="dropdown-content">
+                <p class="username">{{username}}</p>
                 <a routerLink="/profile">Profile</a>
                 <button (click)="logoutClick()">Logout</button>
             </div>

@@ -31,6 +31,7 @@ export class ClaimComponent {
     route.params.subscribe(
       async(params:Params)=>{
         const claimId=params["id"]
+        const rolesArray=await firstValueFrom(globalVariables.role);
         if(sessionStorage.getItem(claimId)===null){
 
           let result:CommonOutput=await claimsService.getClaimById(claimId)
@@ -51,6 +52,16 @@ export class ClaimComponent {
           }
         }
         else this.claim=JSON.parse(sessionStorage.getItem(claimId)!)
+        if(rolesArray.includes("Surveyor")){
+          if(this.claim.surveyorID!==null){
+            const surveyorId=await firstValueFrom(globalVariables.userId);
+            console.log(surveyorId)
+            if(this.claim.surveyorID!==surveyorId){
+              accessoriesService.alertShow("Unauthorized Access","danger")
+              router.navigate([''])
+            }
+          }
+        }
         this.isLoading=false
       }
     )

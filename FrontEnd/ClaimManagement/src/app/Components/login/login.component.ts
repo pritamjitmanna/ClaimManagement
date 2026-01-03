@@ -1,10 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { globalModules } from '../../global_module';
+import { globalModules, globalVariables } from '../../global_module';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../Services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { RESULT } from '../../Models/e.enum';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',

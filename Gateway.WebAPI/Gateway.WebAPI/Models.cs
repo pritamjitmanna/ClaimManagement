@@ -41,7 +41,8 @@ public class LoginUserModel
 
 public class AuthUser:IdentityUser
 {
-
+    public bool profileSet{get;set;}
+    public int? profileId{get;set;}
 }
  
 

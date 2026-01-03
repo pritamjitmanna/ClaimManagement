@@ -15,25 +15,25 @@
     color: #333;
 }
 
-.navigation-section {
+.home-section {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.nav-item {
+.home-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
 }
 
-.nav-item label {
+.home-item label {
     font-weight: bold;
     color: #333;
 }
 
-.nav-item input {
+.home-item input {
     width: 100%;
     max-width: 300px;
     padding: 10px;
@@ -42,7 +42,7 @@
     font-size: 16px;
 }
 
-.nav-btn {
+.home-btn {
     padding: 10px 20px;
     border: none;
     background: #007bff;
@@ -54,6 +54,6 @@
     text-decoration: none;
 }
 
-.nav-btn:hover {
+.home-btn:hover {
     background: #0056b3;
 }

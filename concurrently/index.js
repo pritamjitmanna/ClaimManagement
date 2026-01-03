@@ -6,7 +6,7 @@ let services = ["InsuranceCompany", "Insurer", "IRDA", "Surveyor"];
 let args = process.argv.slice(2); // Assuming args are passed as command line arguments
 
 commands.push({
-    command: `dotnet run --project ${path.join('..', 'Gateway.WebAPI', 'Gateway.WebAPI.csproj')}`,
+    command: `dotnet run --project ${path.join('..', 'Gateway.WebAPI', 'Gateway.WebAPI', 'Gateway.WebAPI.csproj')}`,
     name: "GateWay"
 });
 

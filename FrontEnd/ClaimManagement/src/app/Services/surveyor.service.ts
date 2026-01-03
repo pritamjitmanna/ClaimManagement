@@ -7,6 +7,7 @@ import { CommonOutput } from "../Models/common-output.model";
 import { RESULT } from "../Models/e.enum";
 import { SurveyReport } from "../Models/survey-report.model";
 import { UpdateSurveyReport } from "../Models/update-survey-report.model";
+import { SurveyorProfile } from "../Models/surveyor-profile.model";
 
 
 @Injectable()
@@ -53,10 +54,27 @@ export class SurveyorService{
         }
     }
 
-    async updateSurveyReport(claimId:string,details:UpdateSurveyReport):Promise<CommonOutput>{
-        
+    async addSurveyorDetails(username:string,surveyorDetails:SurveyorProfile):Promise<CommonOutput>{
+        try{
+            const URL=this.BASE_URL+'surveyors/addsurveyor/'+username;
+            const output:CommonOutput=await firstValueFrom(this.http.post<CommonOutput>(URL,surveyorDetails,{headers:this.header}));
+            return new CommonOutput(RESULT.SUCCESS,output);
+        }
+        catch(err:any){
+            return new CommonOutput(RESULT.FAILURE,err);
+        }
+    }
 
-        return new CommonOutput(RESULT.SUCCESS,{});
+    async updateSurveyReport(claimId:string,details:UpdateSurveyReport):Promise<CommonOutput>{
+        try{
+            const URL=this.BASE_URL+`surveyReport/${claimId}`;
+            const output:CommonOutput=await firstValueFrom(this.http.patch<CommonOutput>(URL,details,{headers:this.header}));
+            return new CommonOutput(RESULT.SUCCESS,output);
+        }
+        catch(err:any){
+            return new CommonOutput(RESULT.FAILURE,err);
+        }
+
     }
 
     

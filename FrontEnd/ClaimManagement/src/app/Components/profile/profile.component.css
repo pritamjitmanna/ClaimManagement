@@ -76,6 +76,20 @@
   transform: translateY(0);
 }
 
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+input.ng-touched.ng-invalid {
+    border-color: red;
+  }
+
+input.ng-touched.ng-valid {
+    border-color: green;
+}
+
 @media (max-width: 480px) {
   .profile-form {
     margin: 12px;

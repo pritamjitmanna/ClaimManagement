@@ -29,6 +29,14 @@
                 Update
             </button>
         }
+        @if(roles.includes('Surveyor')){
+            <a class="create-link" [routerLink]='["../../createsurveyreport", claim.claimId]' [state]="{claimId: claim.claimId}">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.1464 0.146447C12.3417 -0.0488155 12.6583 -0.0488155 12.8536 0.146447L15.8536 3.14645C16.0488 3.34171 16.0488 3.65829 15.8536 3.85355L5.85355 13.8536C5.75979 13.9473 5.63261 14 5.5 14H2.5C2.22386 14 2 13.7761 2 13.5V10.5C2 10.3674 2.05268 10.2402 2.14645 10.1464L12.1464 0.146447ZM13.2071 2.5L11.5 0.792893L13.7071 2.5L13.2071 2.5ZM1 12V13H2V12H1ZM12 1L3 10H4V11H5V10H6L15 1H12Z" fill="currentColor"/>
+                </svg>
+                Create Survey Report
+            </a>
+        }
         <h2>Claim Details</h2>
         <div class="details">
             <div class="important-info">

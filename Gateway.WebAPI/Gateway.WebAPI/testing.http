@@ -2,6 +2,7 @@
 
 ###
 GET {{Testing_HostAddress}}/api/claims
+Authorization: Bearer {{$processEnv.BEARER_TOKEN}}
 ###
 GET {{Testing_HostAddress}}/api/claims/closed
 
@@ -20,6 +21,7 @@ Content-Type: application/json
 
 ###
 GET {{Testing_HostAddress}}/IRDA/claimStatus/report/5/2024
+
 
 ###
 GET {{Testing_HostAddress}}/api/surveyReport/CLSO182024

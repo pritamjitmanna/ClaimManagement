@@ -1,6 +1,11 @@
 ﻿using System.Reflection;
 using System.Security.Claims;
 using Ocelot.Configuration;
+using System.Globalization;
+using Microsoft.AspNetCore.Identity;
+using System.Text;
+using Ocelot.Middleware;
+using System.Text.Json;
 
 namespace Gateway.WebAPI;
 
@@ -64,6 +69,77 @@ public static class OcelotAuthorize{
     }
 }
 
+public class ProfileSetMiddleware
+{   
+    private readonly RequestDelegate _next;
+
+    public ProfileSetMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context,UserManager<AuthUser> _userManager)
+    {
+        try
+        {
+            DownstreamRoute route = (DownstreamRoute)context.Items["DownstreamRoute"];
+            
+            await _next(context);
+
+            if(context.Request.Path.StartsWithSegments("/api/surveyors/addsurveyor", out var remainder))
+            {
+                // remainder e.g. "/johndoe"
+                var username = remainder.Value.TrimStart('/');
+                    if (context.Items.TryGetValue("DownstreamResponse", out var downstream))
+                    {
+                        var response = downstream as DownstreamResponse;
+
+                        if (response?.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            var body = await response.Content.ReadAsStringAsync();
+                            var user=await _userManager.FindByNameAsync(username);
+                            using var json = JsonDocument.Parse(body);
+                            var profileId = json.RootElement.GetProperty("output").GetInt32();
+                            if(user!=null)
+                            {
+                                if (!user.profileSet)
+                                {
+                                    user.profileSet=true;
+                                    user.profileId=profileId;
+                                    await _userManager.UpdateAsync(user);
+                                }
+                            }
+                            else
+                            {
+                                await context.Response.WriteAsync("User not found");
+                            }
+                        }
+                    }                        
+
+            
+                                
+            }
+            
+               
+        }
+        catch(Exception ex)
+        {
+            // Handle exception (logging, etc.)
+            throw;
+        }
+
+        
+    }
+} 
+
+public static class ProfileSetMiddlewareExtensions
+{
+    public static IApplicationBuilder UseProfileSetMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<ProfileSetMiddleware>();
+    }
+}
+
 // Summary:
 // This static helper implements a custom authorization check used by Ocelot's pipeline configuration.
 // The Authorize(HttpContext) method inspects the configured DownstreamRoute.RouteClaimsRequirement
@@ -88,4 +164,6 @@ public static class OcelotAuthorize{
 // - Authorize(HttpContext ctx):
 //   - Extracts the DownstreamRoute from ctx.Items and reads AuthenticationOptions.AuthenticationProviderKey.
 //   - If authentication provider key is empty the route is allowed (no auth required).
+
+
 

@@ -7,10 +7,20 @@
         </div>
         <div class="modal-body">
             <form (ngSubmit)="onSubmit()" #updateSurveyReport="ngForm">
+                @if(isTotalAmountError){
+                    <div class="error-message">
+                        <small>{{fieldValidations['TotalAmount']}}</small>
+                    </div>
+                }
                 <div class="form-group">
                     <label for="LabourCharges">Labour Charges</label>
                     <input type="number" id="LabourCharges" name="LabourCharges" ngModel #labourCharges="ngModel" required>
-                    @if(labourCharges.invalid&&labourCharges.touched&&labourCharges.errors&&labourCharges.errors['isErr']){
+                    @if(labourCharges.invalid && labourCharges.touched && labourCharges.errors && labourCharges.errors['required']){
+                        <div class="error-message">
+                            <small>Labour Charges is required</small>
+                        </div>
+                    }
+                    @if(labourCharges.errors&&labourCharges.errors['isErr']){
                         <div class="error-message">
                             <small>{{fieldValidations['LabourCharges']}}</small>
                         </div>
@@ -19,7 +29,12 @@
                 <div class="form-group">
                     <label for="PartsCost">Parts Cost</label>
                     <input type="number" id="PartsCost" name="PartsCost" ngModel #partsCost="ngModel" required>
-                    @if(partsCost.invalid&&partsCost.touched&&partsCost.errors&&partsCost.errors['isErr']){
+                    @if(partsCost.invalid && partsCost.touched && partsCost.errors && partsCost.errors['required']){
+                        <div class="error-message">
+                            <small>Parts Cost is required</small>
+                        </div>
+                    }
+                    @if(partsCost.errors&&partsCost.errors['isErr']){
                         <div class="error-message">
                             <small>{{fieldValidations['PartsCost']}}</small>
                         </div>
@@ -28,7 +43,12 @@
                 <div class="form-group">
                     <label for="DepreciationCost">Depreciation Cost</label>
                     <input type="number" id="DepreciationCost" name="DepreciationCost" ngModel #depreciationCost="ngModel" required>
-                    @if(depreciationCost.invalid&&depreciationCost.touched&&depreciationCost.errors&&depreciationCost.errors['isErr']){
+                    @if(depreciationCost.invalid && depreciationCost.touched && depreciationCost.errors && depreciationCost.errors['required']){
+                        <div class="error-message">
+                            <small>Depreciation Cost is required</small>
+                        </div>
+                    }
+                    @if(depreciationCost.errors&&depreciationCost.errors['isErr']){
                         <div class="error-message">
                             <small>{{fieldValidations['DepreciationCost']}}</small>
                         </div>
@@ -37,7 +57,12 @@
                 <div class="form-group">
                     <label for="AccidentDetails">Accident Details</label>
                     <textarea id="AccidentDetails" name="AccidentDetails" ngModel #accidentDetails="ngModel" required></textarea>
-                    @if(accidentDetails.invalid&&accidentDetails.touched&&accidentDetails.errors&&accidentDetails.errors['isErr']){
+                    @if(accidentDetails.invalid && accidentDetails.touched && accidentDetails.errors && accidentDetails.errors['required']){
+                        <div class="error-message">
+                            <small>Accident Details is required</small>
+                        </div>
+                    }
+                    @if(accidentDetails.errors&&accidentDetails.errors['isErr']){
                         <div class="error-message">
                             <small>{{fieldValidations['AccidentDetails']}}</small>
                         </div>

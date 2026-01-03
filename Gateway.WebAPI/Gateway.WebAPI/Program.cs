@@ -8,9 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using Ocelot.Authorization;
-using gRPCClaimsService.Protos;
-using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -111,7 +108,9 @@ var configuration = new OcelotPipelineConfiguration
         
     }
 };
+
 await app.UseOcelot(configuration);
+app.UseProfileSetMiddleware();
 
 app.Run();
 

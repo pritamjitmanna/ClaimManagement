@@ -9,21 +9,28 @@ export const authGuard: CanActivateFn = async(route, state):Promise<boolean | Ur
 
   //Commented it to make everything available for implementing them
 
-  // const router=inject(Router)
+  const router=inject(Router)
+  
 
-  // if(router.getCurrentNavigation()?.extras.state?.['navigated']){
-  //   return true
-  // }
+  if(router.getCurrentNavigation()?.extras.state?.['navigated']){
+    return true
+  }
 // console.log(router.getCurrentNavigation())
-  // const isAuth=await firstValueFrom(globalVariables.isAuthenticated)
-  // let roles=await firstValueFrom(globalVariables.role)
-  // if(typeof(roles)==="string")roles=[roles]
-  // let expectedRoles:string[]=Array.from(route.data['role'])
+  const isAuth=await firstValueFrom(globalVariables.isAuthenticated)
+  let roles=await firstValueFrom(globalVariables.role)
+  let profileSet=await firstValueFrom(globalVariables.profileSet)
+  if(typeof(roles)==="string")roles=[roles]
+  let expectedRoles:string[] | null=(route.data['role']?Array.from(route.data['role']):null)
 
-  // if (isAuth==false || (route.data['role'] && expectedRoles.some(item=>roles.includes(item))===false)) {
-  //   router.navigate(['login']);
-  //   return false;
-  // }
+  if (isAuth==false || (route.data['role'] &&  expectedRoles && expectedRoles.some(item=>roles.includes(item))===false)) {
+    router.navigate(['login']);
+    return false;
+  }
+
+  if(roles.includes("Surveyor") && profileSet===false){
+    router.navigate(['profile'])
+    return false
+  }
   return true
 
 };

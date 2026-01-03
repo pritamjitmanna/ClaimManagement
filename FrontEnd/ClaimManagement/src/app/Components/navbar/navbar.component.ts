@@ -1,5 +1,5 @@
 import { Component,OnInit } from '@angular/core';
-import { globalModules } from '../../global_module';
+import { globalModules, globalVariables } from '../../global_module';
 import { AuthService } from '../../Services/auth.service';
 import { Router } from '@angular/router';
 
@@ -15,9 +15,18 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent  {
 
-  
+  username:string=""
+  roles:string[]=[]
   constructor(private authService:AuthService){
     this.authService.decodeTokenUserRole()
+    globalVariables.username.subscribe((value:string)=>{
+      this.username=value
+    })
+    globalVariables.role.subscribe(
+      (roles:string[])=>{
+        this.roles=roles
+      }
+    )
   }
 
 

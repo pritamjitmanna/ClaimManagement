@@ -1,28 +1,47 @@
 <div class="container home-page-container">
   <h1>Insurance Management System</h1>
-  <div class="navigation-section">
-      <div class="nav-item">
+  <div class="home-section">
+    @if(roles.includes('InsuranceCompany')){
+      <div class="home-item">
           <label for="claims-list">Go to Claims List:</label>
-          <a id="claims-list" class="btn nav-btn" [routerLink]="['claims']">Claims List Page</a>
+          <a id="claims-list" class="btn home-btn" [routerLink]="['claims']">Claims List Page</a>
       </div>
-      <div class="nav-item">
-          <label for="irda-page">Go to IRDA Portal:</label>
-          <a id="irda-page" class="btn nav-btn" routerLink="/irda">IRDA Page</a>
-      </div>
-      <div class="nav-item">
-          <label for="survey-report-page">Create Survey Report:</label>
-          <a id="survey-report-page" class="btn nav-btn" routerLink="/createsurveyreport">Survey Report Page</a>
-      </div>
-      <div class="nav-item">
-          <label for="individual-claim-page">View Individual Claim:</label>
-          <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>
-          <button id="individual-claim-page" class="btn nav-btn" (click)="fetchClaim(claimId.value)">Individual Claim Page</button>
-      </div>
-      <div class="nav-item">
-          <label for="estimated-loss-surveyors">View Individual Claim:</label>
-          <input type="number" id="estimated-loss-surveyors" placeholder="Enter Estimated Loss" #estimatedLoss>
-          <button id="estimated-loss-surveyors-btn" class="btn nav-btn" (click)="fetchSurveyors(estimatedLoss.value)">Fetch Surveyors</button>
-      </div>
+      <div class="home-item">
+            <label for="estimated-loss-surveyors">View Surveyor List by Estimated Loss:</label>
+            <input type="number" id="estimated-loss-surveyors" placeholder="Enter Estimated Loss" #estimatedLoss>
+            <button id="estimated-loss-surveyors-btn" class="btn home-btn" (click)="fetchSurveyors(estimatedLoss.value)">Fetch Surveyors</button>
+        </div>
+        <div class="home-item">
+            <label for="individual-claim-page">View Individual Claim:</label>
+            <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>
+            <button id="individual-claim-page" class="btn home-btn" (click)="fetchClaim(claimId.value)">Individual Claim Page</button>
+        </div>
+    }
+    @if(roles.includes('IRDA')){
+        <div class="home-item">
+            <label for="irda-page">Go to IRDA Portal:</label>
+            <a id="irda-page" class="btn home-btn" routerLink="/irda">IRDA Page</a>
+        </div>
+    }
+    @if(roles.includes('Surveyor')){
+        <div class="home-item">
+            <label for="get-survey-report">Get Survey Report:</label>
+            <input type="text" id="get-survey-report" placeholder="Enter Claim ID" #surveyClaimId>
+            <button id="get-survey-report-page" class="btn home-btn" (click)="fetchSurveyReport(surveyClaimId.value)">Survey Report</button>
+        </div>
+        <div class="home-item">
+            <label for="individual-claim-page">View Individual Claim:</label>
+            <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>
+            <button id="individual-claim-page" class="btn home-btn" (click)="fetchClaim(claimId.value)">Individual Claim Page</button>
+        </div>
+    }
+    @if(roles.includes('Insurer')){
+        <div class="home-item">
+            <label for="individual-claim-page">View Individual Claim:</label>
+            <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>
+            <button id="individual-claim-page" class="btn home-btn" (click)="fetchClaim(claimId.value)">Individual Claim Page</button>
+        </div>
+    }
   </div>
 
   

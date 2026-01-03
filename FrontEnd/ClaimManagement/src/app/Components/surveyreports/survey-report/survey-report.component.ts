@@ -6,11 +6,13 @@ import { RESULT } from '../../../Models/e.enum';
 import { SurveyReport } from '../../../Models/survey-report.model';
 import { AccessoriesService } from '../../../Services/accessories.service';
 import { UpdateSurveyReportModalComponent } from "../update-survey-report-modal/update-survey-report-modal.component";
+import { UpdateSurveyReport } from '../../../Models/update-survey-report.model';
+import { LoadingComponent } from "../../loading/loading.component";
 
 @Component({
   selector: 'app-survey-report',
   standalone: true,
-  imports: [UpdateSurveyReportModalComponent],
+  imports: [UpdateSurveyReportModalComponent, LoadingComponent],
   providers:[SurveyorService],
   templateUrl: './survey-report.component.html',
   styleUrl: './survey-report.component.css'
@@ -44,6 +46,13 @@ export class SurveyReportComponent {
       } 
     )
 
+  }
+
+  setNewValues(details:UpdateSurveyReport):void{
+    this.surveyReport.labourCharges=details.labourCharges===null?this.surveyReport.labourCharges:details.labourCharges;
+    this.surveyReport.partsCost=details.partsCost===null?this.surveyReport.partsCost:details.partsCost;
+    this.surveyReport.depreciationCost=details.depreciationCost===null?this.surveyReport.depreciationCost:details.depreciationCost;
+    this.surveyReport.accidentDetails=details.accidentDetails===null?this.surveyReport.accidentDetails:details.accidentDetails;
   }
 
   openModal(){

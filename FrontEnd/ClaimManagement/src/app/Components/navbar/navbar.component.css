@@ -135,3 +135,26 @@ body {
 .profile-dropdown:hover .dropdown-content {
     display: block;
 }
+
+/* Username header inside the dropdown */
+.dropdown-content .username {
+  display: block;
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #007bff;                /* Accent color to match navbar */
+  background: #f6fbff;           /* Subtle contrast from white content */
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ensure dropdown content looks tidy when opened */
+.dropdown-content {
+  min-width: 220px;
+  padding: 0;                    /* username has its own padding */
+}

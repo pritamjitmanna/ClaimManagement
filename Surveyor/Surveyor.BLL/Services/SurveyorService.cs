@@ -104,6 +104,18 @@ public class SurveyorService:ISurveyorService
             else{
                 throw new Exception();
             }
+            SurveyReport? survey=await _surveyorRepository.GetSurveyReport(surveyReport.ClaimId);
+            if(survey!=null){
+                return new CommonOutput{
+                    Result=RESULT.FAILURE,
+                    Output=new List<PropertyValidationResponse>{
+                        new() {
+                            Property="ClaimId",
+                            ErrorMessage="A Survey Report already exists for the given ClaimId"
+                        }
+                    }
+                };
+            }
 
             SurveyReport report=_mapper.Map<SurveyReport>(surveyReport);
 
@@ -130,7 +142,7 @@ public class SurveyorService:ISurveyorService
                     if(output.Result==RESULT.FAILURE){
                         List<PropertyValidationResponse> temp=(List<PropertyValidationResponse>)output.Output;
                         temp.Add(new PropertyValidationResponse{
-                            Property="Claim",
+                            Property="ClaimId",
                             ErrorMessage="There's some error while updating the Amount in InsuranceCompany, try again after sometime."
                         });
                         output.Output=temp;
@@ -209,7 +221,7 @@ public class SurveyorService:ISurveyorService
                     if(result.Result==RESULT.FAILURE){
                         List<PropertyValidationResponse> temp=(List<PropertyValidationResponse>)result.Output;
                         temp.Add(new PropertyValidationResponse{
-                            Property="Claim",
+                            Property="ClaimId",
                             ErrorMessage="There's some error while updating the Amount in InsuranceCompany, try again after sometime."
                         });
                         result.Output=temp;

@@ -65,9 +65,12 @@
 .accident-details-section p {
     color: #666;
     line-height: 1.6;
+    /* Ensure long/unbroken text wraps and respects container width to avoid horizontal scroll */
+    white-space: pre-wrap; /* keep existing line breaks but allow wrapping */
+    word-wrap: break-word; /* Legacy name, widely supported */
+    overflow-wrap: break-word; /* Preferred name */
+    word-break: break-word; /* Break long words if necessary */
 }
-
-/* Styles for the update button */
 .update-btn {
     display: block;
     width: 100%;
