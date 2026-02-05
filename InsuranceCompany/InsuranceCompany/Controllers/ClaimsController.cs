@@ -4,8 +4,11 @@
 // - Action methods return appropriate HTTP status codes (200/204/400/404/500) depending on the service output.
 // - Methods are asynchronous and rely on await for non-blocking DB/service calls.
 
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using InsuranceCompany.BLL;
 using InsuranceCompany.DAL;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using SharedModules;
 
@@ -18,13 +21,15 @@ public class ClaimsController : ControllerBase
     #pragma warning disable IDE0059 // Unnecessary assignment of a value
 #pragma warning disable CS0168 // Variable is declared but never used
     private readonly IClaimDetailService _claimDetailService;
+    private readonly IPolicyService _policyService;
     private readonly ISharedLogic _sharedLogic;
     //private readonly ILog _logger;
     const string INTERNAL_SERVER_ERROR = "There's an unexpected Internal error. Sorry for the inconvenience caused. Please try again after some time";
 
-    public ClaimsController(IClaimDetailService claimDetailService, ISharedLogic sharedLogic)
+    public ClaimsController(IClaimDetailService claimDetailService, IPolicyService policyService, ISharedLogic sharedLogic)
     {
         _claimDetailService = claimDetailService;
+        _policyService = policyService;
         _sharedLogic = sharedLogic;
         //_logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
     }
@@ -258,6 +263,57 @@ public class ClaimsController : ControllerBase
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            //_logger.Error(LogMessage(ex.Message));
+            return StatusCode(500, INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // AddNewPolicy: Need to configure in a way to take the Id of the user creating the policy. For now it is skipped, thus the endpoint is blocked for now.
+    //[HttpPost("policy/new")]
+    [ProducesResponseType(typeof(CommonOutput), StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType(typeof(CommonOutput), StatusCodes.Status400BadRequest, "application/json")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AddNewPolicy([FromBody] PolicyEntryDTO policy)
+    {
+        try
+        {
+            var userId=User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            CommonOutput result = await _policyService.AddNewPolicy(userId,policy);
+            if (result.Result == RESULT.SUCCESS)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            //_logger.Error(LogMessage(ex.Message));
+            return StatusCode(500, INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    [HttpGet("policy/{policyNo}")]
+    [ProducesResponseType(typeof(Policy), StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetPolicyByPolicyNo(string policyNo)
+    {
+        try
+        {
+            var userId=User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            CommonOutput result = await _policyService.GetPolicyByPolicyNo(userId,policyNo);
+            if (result.Result == RESULT.SUCCESS)
+            {
+                Policy? policy = (Policy?)result.Output;
+                return Ok(policy);
+            }
+            if(result.Output==null){
+                return NotFound();
+            }
+            return BadRequest(result.Output);
         }
         catch (Exception ex)
         {

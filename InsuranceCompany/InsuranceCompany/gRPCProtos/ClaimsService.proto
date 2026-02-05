@@ -14,28 +14,22 @@ package claims;
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
+import "SharedProtos.proto";
 
 // ---------------------------Service----------------------------
 
 service ClaimsService {
-    rpc AddNewClaim(ClaimDetailRequestDTOgRPC)returns (CommonOutputgRPC); 
-    rpc GetClaimByClaimId(GetClaimByIdString)returns (CommonOutputgRPC);
-    rpc GetPolicyByPolicyNo(GetPolicyNoString)returns (CommonOutputgRPC);
-    rpc GetClaimStatusReports(GetClaimStatusReportsMonthAndYear)returns (CommonOutputgRPC);
-    rpc GetPaymentStatusReports(GetPaymentStatusReportsMonthAndYear)returns (CommonOutputgRPC);
-    rpc UpdateClaimAmountApprovedBySurveyor(UpdateClaimAmountApprovedBySurveyorClaimIdClaimant)returns (CommonOutputgRPC);
-    rpc UpdateAcceptOrRejectClaim(AcceptReject)returns (CommonOutputgRPC);
+    rpc AddNewClaim(ClaimDetailRequestDTOgRPC)returns (shared.CommonOutputgRPC); 
+    rpc GetClaimByClaimId(GetClaimByIdString)returns (shared.CommonOutputgRPC);
+    rpc GetClaimStatusReports(GetClaimStatusReportsMonthAndYear)returns (shared.CommonOutputgRPC);
+    rpc GetPaymentStatusReports(GetPaymentStatusReportsMonthAndYear)returns (shared.CommonOutputgRPC);
+    rpc UpdateClaimAmountApprovedBySurveyor(UpdateClaimAmountApprovedBySurveyorClaimIdClaimant)returns (shared.CommonOutputgRPC);
+    rpc UpdateAcceptOrRejectClaim(AcceptReject)returns (shared.CommonOutputgRPC);
+    
 
 }
 
 // -------------------------Enums------------------------------
-
-enum STATUSCODE{
-    OK=0;
-    BADREQUEST=1;
-    INTERNALSERVERERROR=2;
-    NOTFOUND=3;
-}
 
 enum CLAIMSTATUS
 {
@@ -60,9 +54,7 @@ message GetClaimByIdString{
     string ClaimId=1;
 }
 
-message GetPolicyNoString{
-    string PolicyNo=1;
-}
+
 
 message GetClaimStatusReportsMonthAndYear{
     int32 Month=1;
@@ -85,27 +77,11 @@ message UpdateClaimAmountApprovedBySurveyorClaimIdClaimant{
 }
 
 
-
 message ClaimDetailRequestDTOgRPC {
     google.protobuf.StringValue PolicyNo=1;
     google.protobuf.Int32Value EstimatedLoss=2;
     google.protobuf.Timestamp DateOfAccident=3; 
 }
-
-message CommonOutputgRPC {
-    google.protobuf.Any Output=1;
-    STATUSCODE StatusCode=2;
-}
-
-message PropertyValidationResponsegRPC{
-    string Property=1;
-    string ErrorMessage=2;
-}
-
-message ErrorsListgRPC{
-    repeated PropertyValidationResponsegRPC Errors=1;
-}
-
 
 message ClaimDTOgRPC{
     string ClaimId=1;
@@ -120,16 +96,7 @@ message ClaimDTOgRPC{
     google.protobuf.Int32Value SurveyorFees=10;
 }
 
-message PolicyDTOgRPC
-{
-    string PolicyNo=1; 
-    string InsuredFirstName=2; 
-    string InsuredLastName=3;
-    google.protobuf.Timestamp DateOfInsurance=4; 
-    google.protobuf.StringValue EmailId=5; 
-    string VehicleNo=6; 
-    bool Status=7; 
-}
+
 
 message ClaimStatusReportDTOgRPC{
     STAGES Stage=1;

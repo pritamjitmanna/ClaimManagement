@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using gRPCClaimsService.Protos;
+using gRPCSharedProtos.Protos;
 using SharedModules;
 using Surveyor.DAL;
 

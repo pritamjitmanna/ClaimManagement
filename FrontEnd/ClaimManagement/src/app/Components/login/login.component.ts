@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { RESULT } from '../../Models/e.enum';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { AccessoriesService } from '../../Services/accessories.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent {
 
   @ViewChild("login") login!:NgForm
 
-  constructor(private authService:AuthService,private router:Router){}
+  constructor(private authService:AuthService,private accessoriesService:AccessoriesService,private router:Router){}
 
   async onSubmit(){
     let data=await this.authService.login(this.login.value)
@@ -28,7 +29,7 @@ export class LoginComponent {
         this.router.navigate(['internalservererror'])
       }
       else{
-        console.log(data.output)
+        this.accessoriesService.alertShow("Invalid Credentials! Please try again.","danger")
       }
     }
     else{

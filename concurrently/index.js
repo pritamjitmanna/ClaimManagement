@@ -2,7 +2,7 @@ const concurrently=require("concurrently")
 const path = require('path');
 
 let commands = [];
-let services = ["InsuranceCompany", "Insurer", "IRDA", "Surveyor"];
+let services = ["InsuranceCompany", "Insured", "IRDA", "Surveyor"];
 let args = process.argv.slice(2); // Assuming args are passed as command line arguments
 
 commands.push({

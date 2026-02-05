@@ -76,9 +76,11 @@ export class AuthService{
             globalVariables.username.next(decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"])
             var temp=decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
             var profileSetFlag=decodedToken["profileSet"]
-            var userId=decodedToken["profileId"]
+            var profileId=decodedToken["profileId"]
+            var userId=decodedToken["sub"]
+            globalVariables.userId.next(userId)
             if(profileSetFlag==="True")globalVariables.profileSet.next(true)
-            if(userId!==null && userId!==undefined)globalVariables.userId.next(Number.parseInt(userId))
+            if(profileId!==null && profileId!==undefined)globalVariables.profileId.next(Number.parseInt(profileId))
             let roles;
             if(typeof(temp)==='string')roles=[temp]
             else roles=temp

@@ -2,7 +2,9 @@
 // PolicyRepository provides read access to Policy entities. The GetPolicyByPolicyNo method
 // uses Include to eager-load the ClaimDetails navigation property and AsNoTracking for read-only access.
 
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using SharedModules;
 
 namespace InsuranceCompany.DAL;
 
@@ -41,5 +43,40 @@ public class PolicyRepository : IPolicy
         }
 #pragma warning restore CS0168 // Variable is declared but never used
         return policy;
+    }
+
+    public async Task<CommonOutput> AddNewPolicy(Policy policy)
+    {
+        CommonOutput result;
+        try
+        {
+            ICollection<ValidationResult> validationResults = new List<ValidationResult>();
+            bool IsValid = ValidationFunctions.ValidateModel(policy, ref validationResults);
+            if (!IsValid)
+            {
+                result=new CommonOutput
+                {
+                    Result = RESULT.FAILURE,
+                    Output=validationResults
+                };
+            }
+            else
+            {
+                await _dbContext.Policies.AddAsync(policy);
+                await _dbContext.SaveChangesAsync();
+                result=new CommonOutput
+                {
+                    Result = RESULT.SUCCESS,
+                    Output = policy.PolicyNo
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            //Log
+            //_logger.Error("Ran with this problem " + ex.Message + " in PolicyRepository");
+            throw;
+        }
+        return result;
     }
 }

@@ -19,5 +19,6 @@ export const globalVariables={
     role:new BehaviorSubject<Array<string>>([]),
     surveyorRespectiveFlag:new BehaviorSubject<boolean>(false),
     profileSet:new BehaviorSubject<boolean>(false),
-    userId:new BehaviorSubject<number|null>(null)
+    profileId:new BehaviorSubject<number|null>(null),
+    userId:new BehaviorSubject<string>(""),
 }

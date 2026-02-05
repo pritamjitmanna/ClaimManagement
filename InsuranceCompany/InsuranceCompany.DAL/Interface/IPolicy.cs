@@ -1,4 +1,6 @@
-﻿namespace InsuranceCompany.DAL;
+﻿using SharedModules;
+
+namespace InsuranceCompany.DAL;
 
 /// <summary>
 /// This interface deals with the Policy Table operations.
@@ -11,4 +13,6 @@ public interface IPolicy
     /// <param name="policyNo"></param>
     /// <returns>Policy?</returns>
     Task<Policy?> GetPolicyByPolicyNo(string policyNo);
+
+    Task<CommonOutput> AddNewPolicy(Policy policy);
 }

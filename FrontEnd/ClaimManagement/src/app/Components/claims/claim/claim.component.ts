@@ -54,8 +54,8 @@ export class ClaimComponent {
         else this.claim=JSON.parse(sessionStorage.getItem(claimId)!)
         if(rolesArray.includes("Surveyor")){
           if(this.claim.surveyorID!==null){
-            const surveyorId=await firstValueFrom(globalVariables.userId);
-            console.log(surveyorId)
+            const surveyorId=await firstValueFrom(globalVariables.profileId);
+            // console.log(surveyorId)
             if(this.claim.surveyorID!==surveyorId){
               accessoriesService.alertShow("Unauthorized Access","danger")
               router.navigate([''])

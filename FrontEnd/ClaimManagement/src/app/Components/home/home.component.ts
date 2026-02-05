@@ -27,6 +27,10 @@ export class HomeComponent{
     this.router.navigate(['claim',claimId])
   }
 
+  fetchPolicy(policyId:string){
+    this.router.navigate(['policy',policyId])
+  }
+
   fetchSurveyors(estimatedLoss:string){
     this.accessoriesService.emitEstimatedLossValue(parseInt(estimatedLoss))
   }

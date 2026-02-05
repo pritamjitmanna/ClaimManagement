@@ -4,6 +4,7 @@ namespace InsuranceCompany.DAL;
 
 public class Policy
 {
+        public required string PolicyUserId { get; set; }
         [Length(7, 7, ErrorMessage = "PolicyNo should be of 7 characters")]
         public required string PolicyNo { get; set; }
 

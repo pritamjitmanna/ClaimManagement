@@ -267,6 +267,25 @@
             "Role": "Insurer"
         }    
     },
+    {
+        "DownstreamPathTemplate": "/api/policy/addpolicy",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5025  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/policy/addpolicy",  
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "Insurer"
+        }    
+    },
     
     
     {

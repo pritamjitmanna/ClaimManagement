@@ -28,4 +28,11 @@ public class ValidationFunctions
         bool IsValid = Validator.TryValidateObject(surveyor, vc, results, true);
         return IsValid;
     }
+
+    public static bool ValidateModel(Policy policy, ref ICollection<ValidationResult> results)
+    {
+        ValidationContext vc = new ValidationContext(policy);
+        bool IsValid = Validator.TryValidateObject(policy, vc, results, true);
+        return IsValid;
+    }
 }

@@ -1,0 +1,45 @@
+syntax = "proto3";
+option csharp_namespace = "gRPCPoliciesService.Protos";
+package policy;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "SharedProtos.proto";
+
+
+//-------------------Service--------------------
+
+service PoliciesService{
+    rpc GetPolicyByPolicyNo(GetPolicyNoString)returns (shared.CommonOutputgRPC);
+    rpc AddNewPolicy(PolicyRequestDTOgRPC)returns (shared.CommonOutputgRPC);
+}
+
+
+
+
+//----------------------Models---------------------
+
+
+
+message PolicyDTOgRPC
+{
+    string PolicyNo=1; 
+    string InsuredFirstName=2; 
+    string InsuredLastName=3;
+    google.protobuf.Timestamp DateOfInsurance=4; 
+    google.protobuf.StringValue EmailId=5; 
+    string VehicleNo=6; 
+    bool Status=7; 
+}
+
+message GetPolicyNoString{
+    string PolicyNo=1;
+}
+
+message PolicyRequestDTOgRPC{
+    google.protobuf.StringValue InsuredFirstName=1;
+    google.protobuf.StringValue InsuredLastName=2;
+    google.protobuf.Timestamp DateOfInsurance=3;
+    google.protobuf.StringValue VehicleNo=4;
+}

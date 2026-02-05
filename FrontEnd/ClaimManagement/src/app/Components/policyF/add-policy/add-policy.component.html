@@ -1,0 +1,64 @@
+<div class="container">
+    <div class="form-wrapper">
+        <h2>Insurance Policy Form</h2>
+        <form  (ngSubmit)="submitPolicy()" #addPolicy="ngForm">
+            <div class="form-group">
+                <label for="InsuredFirstName">Insured First Name</label>
+                <input type="text" id="InsuredFirstName" name="InsuredFirstName" ngModel #InsuredFirstName="ngModel" required>
+                @if(InsuredFirstName.invalid && InsuredFirstName.touched && InsuredFirstName.errors && InsuredFirstName.errors['required']){
+                    <div class="error-message">
+                        <small>Insured First Name is required</small>
+                    </div>
+                }
+                @if(InsuredFirstName.errors && InsuredFirstName.errors['isErr']){
+                    <div class="error-message">
+                        <small>{{fieldValidations['InsuredFirstName']}}</small>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label for="InsuredLastName">Insured Last Name</label>
+                <input type="text" id="InsuredLastName" name="InsuredLastName" ngModel #InsuredLastName="ngModel" required>
+                @if(InsuredLastName.invalid && InsuredLastName.touched && InsuredLastName.errors && InsuredLastName.errors['required']){
+                    <div class="error-message">
+                        <small>Insured Last Name is required</small>
+                    </div>
+                }
+                @if(InsuredLastName.errors && InsuredLastName.errors['isErr']){
+                    <div class="error-message">
+                        <small>{{fieldValidations['InsuredLastName']}}</small>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label for="DateOfInsurance">Date of Insurance</label>
+                <input type="date" id="DateOfInsurance" name="DateOfInsurance" ngModel #DateOfInsurance="ngModel" required>
+                @if(DateOfInsurance.invalid && DateOfInsurance.touched && DateOfInsurance.errors && DateOfInsurance.errors['required']){
+                    <div class="error-message">
+                        <small>Date Of Insurance is required</small>
+                    </div>
+                }
+                @if(DateOfInsurance.errors && DateOfInsurance.errors['isErr']){
+                    <div class="error-message">
+                        <small>{{fieldValidations['DateOfInsurance']}}</small>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label for="VehicleNo">Vehicle Number</label>
+                <input type="text" id="VehicleNo" name="VehicleNo" ngModel #VehicleNo="ngModel" required>
+                @if(VehicleNo.invalid && VehicleNo.touched && VehicleNo.errors && VehicleNo.errors['required']){
+                    <div class="error-message">
+                        <small>Vehicle Number is required</small>
+                    </div>
+                }
+                @if(VehicleNo.errors && VehicleNo.errors['isErr']){
+                    <div class="error-message">
+                        <small>{{fieldValidations['VehicleNo']}}</small>
+                    </div>
+                }
+            </div>
+            <button type="submit" [disabled]="addPolicy.invalid">Submit Policy</button>
+        </form>
+    </div>
+</div>

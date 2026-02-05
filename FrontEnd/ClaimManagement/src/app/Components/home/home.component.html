@@ -41,6 +41,11 @@
             <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>
             <button id="individual-claim-page" class="btn home-btn" (click)="fetchClaim(claimId.value)">Individual Claim Page</button>
         </div>
+        <div class="home-item">
+            <label for="individual-policy-page">View Individual Policy:</label>
+            <input type="text" id="individual-policy-id" placeholder="Enter Policy ID" #policyId>
+            <button id="individual-policy-page" class="btn home-btn" (click)="fetchPolicy(policyId.value)">Individual Policy Page</button>
+        </div>
     }
   </div>
 

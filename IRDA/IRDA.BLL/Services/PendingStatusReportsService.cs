@@ -2,6 +2,7 @@
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using gRPCClaimsService.Protos;
+using gRPCSharedProtos.Protos;
 using IRDA.DAL;
 using SharedModules;
 

@@ -1,0 +1,50 @@
+[
+  {
+    "ClaimId": "CLMA332024",
+    "PolicyNo": "MA33724",
+    "EstimatedLoss": 6000,
+    "DateOfAccident": "2024-07-28T00:00:00",
+    "ClaimStatus": 1,
+    "SurveyorID": null,
+    "AmtApprovedBySurveyor": null,
+    "InsuranceCompanyApproval": "0",
+    "WithdrawClaim": 0,
+    "SurveyorFees": 1000
+  },
+  {
+    "ClaimId": "CLMA6B2025",
+    "PolicyNo": "MA6B325",
+    "EstimatedLoss": 15000,
+    "DateOfAccident": "2025-08-28T00:00:00",
+    "ClaimStatus": 1,
+    "SurveyorID": null,
+    "AmtApprovedBySurveyor": null,
+    "InsuranceCompanyApproval": "0",
+    "WithdrawClaim": 0,
+    "SurveyorFees": null
+  },
+  {
+    "ClaimId": "CLPR882024",
+    "PolicyNo": "PR88624",
+    "EstimatedLoss": 15000,
+    "DateOfAccident": "2024-07-25T00:00:00",
+    "ClaimStatus": 0,
+    "SurveyorID": null,
+    "AmtApprovedBySurveyor": null,
+    "InsuranceCompanyApproval": "0",
+    "WithdrawClaim": 0,
+    "SurveyorFees": 6000
+  },
+  {
+    "ClaimId": "CLSO182024",
+    "PolicyNo": "SO18824",
+    "EstimatedLoss": 6000,
+    "DateOfAccident": "2024-05-30T00:00:00",
+    "ClaimStatus": 1,
+    "SurveyorID": 11,
+    "AmtApprovedBySurveyor": 5900,
+    "InsuranceCompanyApproval": "0",
+    "WithdrawClaim": 0,
+    "SurveyorFees": null
+  }
+]

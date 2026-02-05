@@ -34,3 +34,16 @@ Content-Type: application/json
     "labourCharges":2100,
     "partsCost":4500
 }
+
+
+###
+POST {{Testing_HostAddress}}/api/policy/addpolicy
+Content-Type: application/json
+Authorization: Bearer {{$processEnv.BEARER_TOKEN}}
+
+{
+  "insuredFirstName": "Pritamjit",
+  "insuredLastName": "Manna",
+  "dateOfInsurance": "2026-06-15",
+  "vehicleNo": "HR26DK8337"
+}

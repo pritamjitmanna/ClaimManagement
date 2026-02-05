@@ -53,6 +53,11 @@ public class AutoMapperProfile : Profile
             .ForMember(s=>s.LastName,opt=>opt.MapFrom(sd=>sd.LastName))
             .ForMember(s=>s.EstimateLimit,opt=>opt.MapFrom(sd=>sd.EstimateLimit));
 
+        CreateMap<PolicyEntryDTO,Policy>()
+            .ForMember(p=>p.InsuredFirstName,opt=>opt.MapFrom(pd=>pd.InsuredFirstName))
+            .ForMember(p=>p.InsuredLastName,opt=>opt.MapFrom(pd=>pd.InsuredLastName))
+            .ForMember(p=>p.DateOfInsurance,opt=>opt.MapFrom(pd=>pd.DateOfInsurance));
+
         
     }
 }

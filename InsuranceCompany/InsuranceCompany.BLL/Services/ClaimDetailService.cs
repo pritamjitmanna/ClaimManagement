@@ -164,72 +164,86 @@ public class ClaimDetailService : IClaimDetailService
         try
         {
 
-            Policy? policy = await _policyService.GetPolicyByPolicyNo(claimDetail.PolicyNo);
-            if (policy == null)
+            CommonOutput policyOutput = await _policyService.GetPolicyByPolicyNo(null,claimDetail.PolicyNo);
+            if (policyOutput.Result == RESULT.FAILURE)
             {
-                result = new CommonOutput
+                if (policyOutput.Output == null)
                 {
-                    Result = RESULT.FAILURE,
-                    Output = new List<PropertyValidationResponse>
+                    result = new CommonOutput
                     {
-                        new PropertyValidationResponse
+                        Result = RESULT.FAILURE,
+                        Output = new List<PropertyValidationResponse>
                         {
-                            Property="PolicyNo",
-                            ErrorMessage="Policy does not exist"
+                            new PropertyValidationResponse
+                            {
+                                Property="PolicyNo",
+                                ErrorMessage="Policy does not exist"
+                            }
                         }
-                    }
-                };
-            }
-            else if (policy.status == false)
-            {
-                result = new CommonOutput
-                {
-                    Result = RESULT.FAILURE,
-                    Output = new List<PropertyValidationResponse>
-                    {
-                        new PropertyValidationResponse
-                        {
-                            Property="PolicyNo",
-                            ErrorMessage="Policy status is false"
-                        }
-                    }
-                };
-            }
-            else if (policy.DateOfInsurance >= claimDetail.DateOfAccident)
-            {
-                result = new CommonOutput
-                {
-                    Result = RESULT.FAILURE,
-                    Output = new List<PropertyValidationResponse>
-                    {
-                        new PropertyValidationResponse
-                        {
-                            Property="DateOfAccident",
-                            ErrorMessage="DateOfAccident cannot be less than Policy DateOfInsurance"
-                        }
-                    }
-                };
-            }
-            else
-            {
-                //ClaimDetail? prevClaimIfAny = await _claimDetailRepository.GetClaimByPolicyNo(claimDetail.PolicyNo);
-                // Using in-memory LINQ on the policy's ClaimDetails collection:
-                ClaimDetail? prevClaimIfAny = policy.ClaimDetails.Where(cd=>cd.DateOfAccident.Year==((DateOnly)claimDetail.DateOfAccident).Year).FirstOrDefault();
-                if (prevClaimIfAny == null)
-                {
-                    ClaimDetail req = _mapper.Map<ClaimDetail>(claimDetail);
-                    req.ClaimId = GenerateClaimID(claimDetail);
-                    result = await _claimDetailRepository.AddNewClaim(req);
-
-                    GetErrorListInRequiredFormat(ref result);
-
+                    };
                 }
                 else
                 {
-                    throw new MaximumClaimLimitReachedException("You cannot raise claim request for a policy number twice in a year.");
+                    //To write claim authorization error...
+                    result=new CommonOutput
+                    {
+                        Result = RESULT.FAILURE,
+                        Output = policyOutput.Output
+                    };
                 }
+            }
+            else {
+                Policy policy = (Policy)policyOutput.Output;
+                if (policy.status == false){
+                    result = new CommonOutput
+                    {
+                        Result = RESULT.FAILURE,
+                        Output = new List<PropertyValidationResponse>
+                        {
+                            new PropertyValidationResponse
+                            {
+                                Property="PolicyNo",
+                                ErrorMessage="Policy status is false"
+                            }
+                        }
+                    };
+                }
+                else if (policy.DateOfInsurance >= claimDetail.DateOfAccident)
+                {
+                    result = new CommonOutput
+                    {
+                        Result = RESULT.FAILURE,
+                        Output = new List<PropertyValidationResponse>
+                        {
+                            new PropertyValidationResponse
+                            {
+                                Property="DateOfAccident",
+                                ErrorMessage="DateOfAccident cannot be less than Policy DateOfInsurance"
+                            }
+                        }
+                    };
+                }
+                else
+                {
+                    //ClaimDetail? prevClaimIfAny = await _claimDetailRepository.GetClaimByPolicyNo(claimDetail.PolicyNo);
+                    // Using in-memory LINQ on the policy's ClaimDetails collection:
+                    ClaimDetail? prevClaimIfAny = policy.ClaimDetails.Where(cd=>cd.DateOfAccident.Year==((DateOnly)claimDetail.DateOfAccident).Year).FirstOrDefault();
+                    if (prevClaimIfAny == null)
+                    {
+                        ClaimDetail req = _mapper.Map<ClaimDetail>(claimDetail);
+                        req.ClaimId = GenerateClaimID(claimDetail);
+                        result = await _claimDetailRepository.AddNewClaim(req);
+
+                        GetErrorListInRequiredFormat(ref result);
+
+                    }
+                    else
+                    {
+                        throw new MaximumClaimLimitReachedException("You cannot raise claim request for a policy number twice in a year.");
+                    }
 
 
+                }
             }
             
             

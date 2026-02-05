@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using gRPCClaimsService.Protos;
+using gRPCPoliciesService.Protos;
+using gRPCSharedProtos.Protos;
 using SharedModules;
 using Surveyor.DAL;
 
@@ -23,11 +25,13 @@ public class SurveyorService:ISurveyorService
 
     private readonly ISurveyor _surveyorRepository;
     private readonly ClaimsService.ClaimsServiceClient _claimsServiceClient;
+    private readonly PoliciesService.PoliciesServiceClient _policiesServiceClient;
     private readonly IMapper _mapper;
 
-    public SurveyorService(ISurveyor surveyorRepository,ClaimsService.ClaimsServiceClient claimsServiceClient,IMapper mapper){
+    public SurveyorService(ISurveyor surveyorRepository,ClaimsService.ClaimsServiceClient claimsServiceClient,PoliciesService.PoliciesServiceClient policiesServiceClient,IMapper mapper){
         _surveyorRepository = surveyorRepository;
         _claimsServiceClient = claimsServiceClient;
+        _policiesServiceClient = policiesServiceClient;
         _mapper = mapper;
     }
 
@@ -77,7 +81,7 @@ public class SurveyorService:ISurveyorService
                 throw new Exception();
             }
 
-            result=await _claimsServiceClient.GetPolicyByPolicyNoAsync(new GetPolicyNoString{
+            result=await _policiesServiceClient.GetPolicyByPolicyNoAsync(new GetPolicyNoString{
                 PolicyNo=surveyReport.PolicyNo
             });
             

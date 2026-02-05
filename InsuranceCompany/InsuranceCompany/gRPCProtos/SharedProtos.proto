@@ -1,0 +1,29 @@
+syntax = "proto3";
+option csharp_namespace = "gRPCSharedProtos.Protos";
+
+
+import "google/protobuf/any.proto";
+package shared;
+
+
+message CommonOutputgRPC {
+    google.protobuf.Any Output=1;
+    STATUSCODE StatusCode=2;
+}
+
+
+message PropertyValidationResponsegRPC{
+    string Property=1;
+    string ErrorMessage=2;
+}
+
+message ErrorsListgRPC{
+    repeated PropertyValidationResponsegRPC Errors=1;
+}
+
+enum STATUSCODE{
+    OK=0;
+    BADREQUEST=1;
+    INTERNALSERVERERROR=2;
+    NOTFOUND=3;
+}

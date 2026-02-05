@@ -1,6 +1,7 @@
 #pragma warning disable CS8604 // Possible null reference argument.
 
 using gRPCClaimsService.Protos;
+using gRPCPoliciesService.Protos;
 using Microsoft.EntityFrameworkCore;
 using Surveyor.BLL;
 using Surveyor.DAL;
@@ -14,12 +15,13 @@ builder.Services.AddDbContext<SurveyorDBContext>(options=>{
     });
 
 builder.Services.AddGrpcClient<ClaimsService.ClaimsServiceClient>(options=>options.Address=new Uri(builder.Configuration.GetSection("URLs").GetSection("InsuranceCompanyURL").Value));
+builder.Services.AddGrpcClient<PoliciesService.PoliciesServiceClient>(options=>options.Address=new Uri(builder.Configuration.GetSection("URLs").GetSection("InsuranceCompanyURL").Value));
 
 builder.Services.AddScoped<ISurveyor,SurveyorRepository>();
 builder.Services.AddScoped<ISurveyorService,SurveyorService>();
 
 
-builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MapperProfile>());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

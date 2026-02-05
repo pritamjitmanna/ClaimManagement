@@ -74,6 +74,7 @@ public class InsuranceCompanyDBContext:DbContext
         // IsRequired() makes the PolicyNo FK NOT NULL on ClaimDetail.
         // OnDelete(DeleteBehavior.Cascade) means deleting a Policy removes related ClaimDetails.
         modelBuilder.Entity<Policy>().HasMany(p => p.ClaimDetails).WithOne(p => p.Policy).IsRequired().HasForeignKey(c => c.PolicyNo).OnDelete(DeleteBehavior.Cascade).HasConstraintName("Fk_Policy_ClaimDetail");
+        modelBuilder.Entity<Policy>().Property(p=>p.status).HasDefaultValue(true);
 
         // Surveyor: primary key and relationship configuration.
         // HasMany/WithOne maps Surveyor -> ClaimDetails.
@@ -111,11 +112,11 @@ public class InsuranceCompanyDBContext:DbContext
         // Seed Policy data:
         // DateOnly.FromDateTime(DateTime.ParseExact(...)) ensures the date is parsed in a culture-invariant way.
         // This avoids locale-dependent parsing issues and stores only the date portion.
-        modelBuilder.Entity<Policy>().HasData([
-            new Policy { PolicyNo = "MA33724", InsuredFirstName = "Pritamjit", InsuredLastName = "Manna", DateOfInsurance = DateOnly.FromDateTime(DateTime.ParseExact("2024-03-14", "yyyy-MM-dd", CultureInfo.InvariantCulture)), EmailId = "pm@cognizant.com", VehicleNo = "HR26DK8337", status = true },
-            new Policy { PolicyNo = "PR88624", InsuredFirstName = "Manna", InsuredLastName = "Pritamjit", DateOfInsurance = DateOnly.FromDateTime(DateTime.ParseExact("2024-03-13", "yyyy-MM-dd", CultureInfo.InvariantCulture)), EmailId = "mp@cognizant.com", VehicleNo = "WB31W6886", status = true },
-            new Policy { PolicyNo = "SO18824", InsuredFirstName = "Souvik", InsuredLastName = "Maity", DateOfInsurance = DateOnly.FromDateTime(DateTime.ParseExact("2024-03-15", "yyyy-MM-dd", CultureInfo.InvariantCulture)), EmailId = "ms@cognizant.com", VehicleNo = "WB32U3188", status = false },
-        ]);
+        // modelBuilder.Entity<Policy>().HasData([
+        //     new Policy { PolicyNo = "MA33724", InsuredFirstName = "Pritamjit", InsuredLastName = "Manna", DateOfInsurance = DateOnly.FromDateTime(DateTime.ParseExact("2024-03-14", "yyyy-MM-dd", CultureInfo.InvariantCulture)), EmailId = "pm@cognizant.com", VehicleNo = "HR26DK8337", status = true },
+        //     new Policy { PolicyNo = "PR88624", InsuredFirstName = "Manna", InsuredLastName = "Pritamjit", DateOfInsurance = DateOnly.FromDateTime(DateTime.ParseExact("2024-03-13", "yyyy-MM-dd", CultureInfo.InvariantCulture)), EmailId = "mp@cognizant.com", VehicleNo = "WB31W6886", status = true },
+        //     new Policy { PolicyNo = "SO18824", InsuredFirstName = "Souvik", InsuredLastName = "Maity", DateOfInsurance = DateOnly.FromDateTime(DateTime.ParseExact("2024-03-15", "yyyy-MM-dd", CultureInfo.InvariantCulture)), EmailId = "ms@cognizant.com", VehicleNo = "WB32U3188", status = false },
+        // ]);
 
         // Seed Fee data: fee brackets mapping estimate ranges to a fee amount.
         modelBuilder.Entity<Fee>().HasData([

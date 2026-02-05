@@ -13,6 +13,8 @@ import { Notfound404Component } from './Components/notfound404/notfound404.compo
 import { Internalservererror500Component } from './Components/internalservererror500/internalservererror500.component';
 import { permissionGuard } from './Gaurds/permission.guard';
 import { ProfileComponent } from './Components/profile/profile.component';
+import { AddPolicyComponent } from './Components/policyF/add-policy/add-policy.component';
+import { PolicyComponent } from './Components/policyF/policy/policy.component';
 
 export const routes: Routes = [
     {
@@ -91,6 +93,28 @@ export const routes: Routes = [
         data:{
             role:[
                 "Surveyor"
+            ]
+        }
+    },
+    {
+        path:'createpolicy',
+        component:AddPolicyComponent,
+        canActivate:[authGuard],
+        data:{
+            role:[
+                "Insurer",
+                "InsuranceCompany"
+            ]
+        }
+    },
+    {
+        path:'policy/:id',
+        component:PolicyComponent,
+        canActivate:[authGuard],
+        data:{
+            role:[
+                "Insurer",
+                "InsuranceCompany"
             ]
         }
     },

@@ -8,6 +8,8 @@
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using gRPCClaimsService.Protos;
+using gRPCPoliciesService.Protos;
+using gRPCSharedProtos.Protos;
 using InsuranceCompany.BLL;
 using InsuranceCompany.BLL.RequestDTO;
 using InsuranceCompany.DAL;
@@ -56,6 +58,17 @@ public class GRPCAutoMapperProfile:Profile
         .ForMember(crg=>crg.Month,opt=>opt.MapFrom(cr=>cr.Month))
         .ForMember(crg=>crg.Amount,opt=>opt.MapFrom(cr=>cr.Amount))
         .ForMember(crg=>crg.Year,opt=>opt.MapFrom(cr=>cr.Year));
+        
+        CreateMap<PolicyRequestDTOgRPC,PolicyEntryDTO>()
+        .ForMember(prdg=>prdg.InsuredFirstName,opt=>opt.MapFrom(ped=>ped.InsuredFirstName))
+        .ForMember(prdg=>prdg.InsuredLastName,opt=>opt.MapFrom(ped=>ped.InsuredLastName))
+        .ForMember(prdg => prdg.DateOfInsurance, opt =>
+        {
+            // PreCondition ensures DateOfInsurance exists before conversion.
+            opt.PreCondition(pedg => pedg.DateOfInsurance != null);
+            opt.MapFrom(pedg => DateOnly.FromDateTime(pedg.DateOfInsurance.ToDateTime()));
+        })
+        .ForMember(prdg=>prdg.VehicleNo,opt=>opt.MapFrom(ped=>ped.VehicleNo));
 
         // Map Policy -> PolicyDTOgRPC; DateOfInsurance is converted to Timestamp with UTC kind.
         CreateMap<Policy, PolicyDTOgRPC>()

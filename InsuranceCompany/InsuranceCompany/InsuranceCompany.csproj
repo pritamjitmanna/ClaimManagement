@@ -1,30 +1,42 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="4.0.0-rc2" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.62.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
+    <PackageReference Include="Google.Protobuf" Version="3.33.4" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.62.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.63.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.76.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.76.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.15.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="gRPCProtos\ClaimsService.proto" GrpcServices="Server" />
+    <Protobuf Include="gRPCProtos\SharedProtos.proto" GrpcServices="None" ProtoRoot="gRPCProtos"/>
+    <Protobuf Include="gRPCProtos\ClaimsService.proto" GrpcServices="Server" ProtoRoot="gRPCProtos"/>
+    <Protobuf Include="gRPCProtos\PoliciesService.proto" GrpcServices="Server" ProtoRoot="gRPCProtos"/>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\InsuranceCompany.DAL\InsuranceCompany.DAL.csproj" />
     <ProjectReference Include="..\InsuranceCompany.BLL\InsuranceCompany.BLL.csproj" />
+    <ProjectReference Include="..\..\SharedModules\SharedModules.csproj" />
   </ItemGroup>
 </Project>

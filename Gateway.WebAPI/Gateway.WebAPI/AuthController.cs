@@ -100,6 +100,7 @@ public class AuthController:ControllerBase
 
                 var authClaims=new List<Claim>{
                     new(ClaimTypes.Name,user.UserName),
+                    new(JwtRegisteredClaimNames.Sub,user.Id),
                     new(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                     new("profileSet",user.profileSet.ToString()),
                     new("profileId",user.profileId.ToString()!)

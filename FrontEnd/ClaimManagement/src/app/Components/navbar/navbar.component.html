@@ -4,6 +4,7 @@
         <ul class="navbar-menu">
             @if(roles.includes('Insurer')){
                 <li><a routerLink="/addclaim">Add New Claim</a></li>
+                <li><a routerLink="/createpolicy">Add New Policy</a></li>
             }
             @if(roles.includes('IRDA')){
                 <li><a routerLink="/irda">IRDA</a></li>

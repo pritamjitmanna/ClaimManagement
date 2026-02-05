@@ -10,6 +10,7 @@ namespace InsuranceCompany;
 
 using Grpc.Core;
 using gRPCClaimsService.Protos;
+using gRPCSharedProtos.Protos;
 using InsuranceCompany.BLL;
 using Google.Protobuf.WellKnownTypes;
 using Google.Protobuf;
@@ -19,6 +20,8 @@ using InsuranceCompany.DAL;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using SharedModules;
 using InsuranceCompany.BLL.RequestDTO;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 public class ClaimsServices:ClaimsService.ClaimsServiceBase
 {
@@ -116,34 +119,7 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
         }
     }
 
-    // GetPolicyByPolicyNo:
-    // - Delegates to PolicyService; maps Policy to PolicyDTOgRPC on success.
-    // - Returns STATUSCODE.Notfound when policy doesn't exist.
-    public async override Task<CommonOutputgRPC> GetPolicyByPolicyNo(GetPolicyNoString request,ServerCallContext context){
-        try
-        {
-            Policy? output=await _policyService.GetPolicyByPolicyNo(request.PolicyNo);
-            if (output!=null)
-            {
-                return await Task.FromResult(new CommonOutputgRPC{
-                    Output=Any.Pack(_mapper.Map<PolicyDTOgRPC>(output)),
-                    StatusCode=STATUSCODE.Ok
-                });
-            }
-            return await Task.FromResult(new CommonOutputgRPC{
-                StatusCode=STATUSCODE.Notfound
-            });
-
-        }
-        catch(Exception ex)
-        {
-            //_logger.Error(LogMessage(   ex.Message));
-            return await Task.FromResult(new CommonOutputgRPC{
-                Output=Any.Pack(new StringValue{Value=INTERNAL_SERVER_ERROR}),
-                StatusCode=STATUSCODE.Internalservererror
-            });
-        }
-    }
+    
 
     // GetClaimStatusReports:
     // - Receives month/year, calls SharedLogic.GetClaimStatusReports which returns a list of ClaimStatusReportDTO.
@@ -273,5 +249,7 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
         }
 
     }
+
+
     
 }

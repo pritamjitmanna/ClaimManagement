@@ -1,4 +1,5 @@
 ﻿using Insured.BLL;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using SharedModules;
 
@@ -66,6 +67,45 @@ public class InsuredController:ControllerBase
         }
         catch(Exception ex){
             // Generic error mapping; consider returning structured error objects and logging the detailed exception.
+            return StatusCode(500,"Internal Server Error");
+        }
+    }
+
+    [HttpGet("/api/policy/{policyNumber}")]
+    public async Task<IActionResult> GetPolicyByPolicyNumber(string policyNumber)
+    {
+        try
+        {
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var output = await _insuredService.GetPolicyByPolicyNumber(token, policyNumber);
+            if (output.Result == RESULT.SUCCESS)
+            {
+                return Ok(output);
+            }
+            return BadRequest(output);
+        }
+        catch (Exception ex)
+        {
+            // For simplicity a generic 500 is returned. In production expose minimal info and log the exception.
+            return StatusCode(500, "Internal Server Error");
+        }
+    }
+
+
+    // Override controller route so this action is rooted at /api/policy instead of /api/claims
+    [HttpPost("/api/policy/addpolicy")]
+    public async Task<IActionResult> AddNewPolicy([FromBody]PolicyEntryDTO policy){
+        try{
+            var token=await HttpContext.GetTokenAsync("access_token");
+            CommonOutput output = await _insuredService.AddNewPolicy(token,policy);
+            Console.WriteLine(output);
+            if(output.Result==RESULT.SUCCESS){
+                return Ok(output);
+            }
+            return BadRequest(output);
+        }
+        catch(Exception ex){
+            // For simplicity a generic 500 is returned. In production expose minimal info and log the exception.
             return StatusCode(500,"Internal Server Error");
         }
     }

@@ -17,7 +17,7 @@ namespace InsuranceCompany.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -136,49 +136,23 @@ namespace InsuranceCompany.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PolicyUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("VehicleNo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("status")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.HasKey("PolicyNo")
                         .HasName("Pk_Policy");
 
                     b.ToTable("Policies");
-
-                    b.HasData(
-                        new
-                        {
-                            PolicyNo = "MA33724",
-                            DateOfInsurance = new DateOnly(2024, 3, 14),
-                            EmailId = "pm@cognizant.com",
-                            InsuredFirstName = "Pritamjit",
-                            InsuredLastName = "Manna",
-                            VehicleNo = "HR26DK8337",
-                            status = true
-                        },
-                        new
-                        {
-                            PolicyNo = "PR88624",
-                            DateOfInsurance = new DateOnly(2024, 3, 13),
-                            EmailId = "mp@cognizant.com",
-                            InsuredFirstName = "Manna",
-                            InsuredLastName = "Pritamjit",
-                            VehicleNo = "WB31W6886",
-                            status = true
-                        },
-                        new
-                        {
-                            PolicyNo = "SO18824",
-                            DateOfInsurance = new DateOnly(2024, 3, 15),
-                            EmailId = "ms@cognizant.com",
-                            InsuredFirstName = "Souvik",
-                            InsuredLastName = "Maity",
-                            VehicleNo = "WB32U3188",
-                            status = false
-                        });
                 });
 
             modelBuilder.Entity("InsuranceCompany.DAL.Surveyor", b =>

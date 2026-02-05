@@ -45,7 +45,7 @@ builder.Services.AddScoped<IPendingStatusReportsService,PendingStatusReportsServ
 builder.Services.AddScoped<IPendingStatusReports,PendingStatusReportsRepository>();
 
 
-builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MapperProfile>());
 
 
 

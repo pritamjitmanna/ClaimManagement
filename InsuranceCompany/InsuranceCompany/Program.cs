@@ -19,11 +19,16 @@
 // - UseSwagger/UseSwaggerUI: enables interactive OpenAPI UI in development.
 // - MapGrpcService<T> and MapControllers: map gRPC and MVC endpoints into the request pipeline.
 
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using System.Text.Json.Serialization;
 using InsuranceCompany;
 using InsuranceCompany.BLL;
 using InsuranceCompany.DAL;
+using InsuranceCompany.gRPCServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +60,26 @@ builder.Services.AddAutoMapper(typeof(GRPCAutoMapperProfile));
 
 // Register gRPC server support so gRPC services can be mapped later.
 builder.Services.AddGrpc();
+
+JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+builder.Services.AddAuthentication(options=>{
+    options.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme=JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme=JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options=>{
+    options.SaveToken=true;
+    options.RequireHttpsMetadata=false;
+    options.MapInboundClaims = false; // IMPORTANT
+#pragma warning disable CS8604 // Possible null reference argument.
+    options.TokenValidationParameters=new TokenValidationParameters{
+        ValidateIssuer=true,
+        ValidateAudience=true,
+        ValidIssuer=builder.Configuration["JWT:Issuer"],
+        ValidAudience=builder.Configuration["JWT:Audience"],
+        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+    };
+#pragma warning restore CS8604 // Possible null reference argument.
+});
 
 // Register MVC controllers and configure JSON serialization behavior.
 // - JsonStringEnumConverter: serializes enums as strings instead of numeric values.
@@ -90,6 +115,7 @@ var app = builder.Build();
 // Map gRPC service implementation to handle gRPC calls.
 // MapGrpcService<T>() wires up the gRPC service type into the Kestrel endpoints.
 app.MapGrpcService<ClaimsServices>();
+app.MapGrpcService<PoliciesServices>();
 // Note: browser requests to gRPC endpoints require a gRPC-web client or a non-browser gRPC client.
 
 // Apply the configured CORS policy to pipeline so HTTP endpoints accept requests from configured origins.
