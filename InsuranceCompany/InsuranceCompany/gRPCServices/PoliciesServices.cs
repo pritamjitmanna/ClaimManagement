@@ -17,6 +17,9 @@ namespace InsuranceCompany.gRPCServices
 {
     public class PoliciesServices:PoliciesService.PoliciesServiceBase
     {
+        #pragma warning disable CS8604 // Possible null reference argument.
+        #pragma warning disable CS0168 // Variable is declared but never used
+        #pragma warning disable CS8602 //Dereference of a possibly null reference.
         private readonly IPolicyService _policyService;
         private readonly IMapper _mapper;
 
@@ -37,6 +40,7 @@ namespace InsuranceCompany.gRPCServices
             {
                 var userId=context.GetHttpContext().User.FindFirstValue(JwtRegisteredClaimNames.Sub);
                 CommonOutput result=await _policyService.GetPolicyByPolicyNo(userId,request.PolicyNo);
+
                 if (result.Result == RESULT.SUCCESS)
                 {
                     return await Task.FromResult(new CommonOutputgRPC{
@@ -54,7 +58,7 @@ namespace InsuranceCompany.gRPCServices
                 {
                     return await Task.FromResult(new CommonOutputgRPC{
                         Output=Any.Pack(new StringValue{Value=result.Output.ToString()}),
-                        StatusCode=STATUSCODE.Badrequest
+                        StatusCode=STATUSCODE.Unauthorized
                     });
                 }
 
@@ -107,6 +111,10 @@ namespace InsuranceCompany.gRPCServices
                 });
             }
         }
+        #pragma warning restore CS8604 // Possible null reference argument.
+        #pragma warning restore CS0168 // Variable is declared but never used
+        #pragma warning restore CS8602 //Dereference of a possibly null reference.
     
     }
+    
 }

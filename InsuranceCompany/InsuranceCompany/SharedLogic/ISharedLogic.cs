@@ -6,7 +6,7 @@ namespace InsuranceCompany;
 
 public interface ISharedLogic
 {
-    Task<CommonOutput> AddClaimSharedLogic(ClaimDetailRequestDTO claimDetail);
+    Task<CommonOutput> AddClaimSharedLogic(string userId,ClaimDetailRequestDTO claimDetail);
     Task<CommonOutput> GetClaimByClaimId(string ClaimId);
     Task<CommonOutput> GetClaimStatusReports(int month, int year);
 

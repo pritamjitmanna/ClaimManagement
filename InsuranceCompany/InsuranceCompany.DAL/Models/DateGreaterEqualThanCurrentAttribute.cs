@@ -19,7 +19,7 @@ public class DateGreaterEqualThanCurrentAttribute : ValidationAttribute
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         // Expecting a DateOnly value; perform direct comparison with today's date.
-        var val = (DateOnly)value;
+        var val = (DateOnly?)value;
 
         // If the provided date is today or later, validation succeeds.
         if (val >= DateOnly.FromDateTime(DateTime.Today)) return ValidationResult.Success;

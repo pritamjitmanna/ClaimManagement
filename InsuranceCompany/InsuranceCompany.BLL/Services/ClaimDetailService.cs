@@ -156,7 +156,7 @@ public class ClaimDetailService : IClaimDetailService
     //   3. Determine if a claim for the same policy exists in the same year (in-memory LINQ on policy.ClaimDetails).
     // - Uses AutoMapper to map request DTO to ClaimDetail entity.
     // - Calls AddNewClaim in repository (which performs model validation and persistence).
-    public async Task<CommonOutput> AddNewClaim(ClaimDetailRequestDTO claimDetail)
+    public async Task<CommonOutput> AddNewClaim(string userId,ClaimDetailRequestDTO claimDetail)
     {
 
         
@@ -164,7 +164,7 @@ public class ClaimDetailService : IClaimDetailService
         try
         {
 
-            CommonOutput policyOutput = await _policyService.GetPolicyByPolicyNo(null,claimDetail.PolicyNo);
+            CommonOutput policyOutput = await _policyService.GetPolicyByPolicyNo(userId,claimDetail.PolicyNo);
             if (policyOutput.Result == RESULT.FAILURE)
             {
                 if (policyOutput.Output == null)
@@ -232,6 +232,7 @@ public class ClaimDetailService : IClaimDetailService
                     {
                         ClaimDetail req = _mapper.Map<ClaimDetail>(claimDetail);
                         req.ClaimId = GenerateClaimID(claimDetail);
+                        req.ClaimUserId=userId;
                         result = await _claimDetailRepository.AddNewClaim(req);
 
                         GetErrorListInRequiredFormat(ref result);

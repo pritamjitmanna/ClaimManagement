@@ -18,6 +18,8 @@ namespace Insured.BLL;
 /// </summary>
 public class InsuredService:IInsuredService
 {
+    #pragma warning disable IDE0059 // Unnecessary assignment of a value
+    #pragma warning disable CS0168 // Variable is declared but never used
     private readonly ClaimsService.ClaimsServiceClient _claimsclient;
     private readonly PoliciesService.PoliciesServiceClient _policyclient;
     private readonly IMapper _mapper;
@@ -221,6 +223,8 @@ public class InsuredService:IInsuredService
             {
                 { "authorization", $"Bearer {token}" }
             };
+
+            
             // Call the remote method to get policy by policy number.
             CommonOutputgRPC output = await _policyclient.GetPolicyByPolicyNoAsync(new GetPolicyNoString { PolicyNo = policyNumber }, headers);
 
@@ -241,26 +245,27 @@ public class InsuredService:IInsuredService
                     throw new Exception();
                 }
             }
-            else if (output.StatusCode == STATUSCODE.Badrequest)
+            else if (output.StatusCode == STATUSCODE.Notfound)
             {
-                // When Badrequest, output is expected to carry validation errors (ErrorsListgRPC).
-                if (output.Output.TryUnpack(out ErrorsListgRPC errs))
+                result=new CommonOutput
                 {
-                    // Build a local list of PropertyValidationResponse by mapping each gRPC error.
-                    List<PropertyValidationResponse> errors = [];
-                    foreach (var error in errs.Errors)
-                    {
-                        errors.Add(_mapper.Map<PropertyValidationResponse>(error));
-                    }
+                  Result=RESULT.FAILURE,
+                  Output=null  
+                };
+            }
+            else if (output.StatusCode == STATUSCODE.Unauthorized)
+            {
+                if (output.Output.TryUnpack(out StringValue errStr))
+                {
                     result = new CommonOutput
                     {
                         Result = RESULT.FAILURE,
-                        Output = errors
+                        Output = errStr.Value
                     };
                 }
                 else
                 {
-                    // Unexpected: Badrequest without expected error payload
+                    // Unexpected: Ok without expected payload
                     throw new Exception();
                 }
             }
@@ -280,5 +285,6 @@ public class InsuredService:IInsuredService
 
         return result;
     }
-
+#pragma warning restore CS0168 // Variable is declared but never used
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 }

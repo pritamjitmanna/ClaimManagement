@@ -10,8 +10,11 @@ import "SharedProtos.proto";
 
 //-------------------Service--------------------
 
+// Service for managing insurance policies
 service PoliciesService{
+    // Retrieves a policy by its policy number
     rpc GetPolicyByPolicyNo(GetPolicyNoString)returns (shared.CommonOutputgRPC);
+    // Adds a new insurance policy
     rpc AddNewPolicy(PolicyRequestDTOgRPC)returns (shared.CommonOutputgRPC);
 }
 

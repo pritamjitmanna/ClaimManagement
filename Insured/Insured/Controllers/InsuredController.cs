@@ -1,4 +1,5 @@
-﻿using Insured.BLL;
+﻿using Grpc.Core;
+using Insured.BLL;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using SharedModules;
@@ -23,6 +24,9 @@ namespace Insured;
 [ApiController]
 public class InsuredController:ControllerBase
 {
+    #pragma warning disable IDE0059 // Unnecessary assignment of a value
+    #pragma warning disable CS0168 // Variable is declared but never used
+    #pragma warning disable CS8604 // Possible null reference argument.
 
     private readonly IInsuredService _insuredService;
     public InsuredController(IInsuredService insuredService){
@@ -71,33 +75,42 @@ public class InsuredController:ControllerBase
         }
     }
 
-    [HttpGet("/api/policy/{policyNumber}")]
-    public async Task<IActionResult> GetPolicyByPolicyNumber(string policyNumber)
+    [HttpGet("/api/policy/{PolicyNumber}")]
+    [ProducesResponseType(typeof(PolicyResponseDTO),StatusCodes.Status200OK,"application/json")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string),StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetPolicyByPolicyNumber(string PolicyNumber)
     {
+
         try
         {
             var token = await HttpContext.GetTokenAsync("access_token");
-            var output = await _insuredService.GetPolicyByPolicyNumber(token, policyNumber);
+            var output = await _insuredService.GetPolicyByPolicyNumber(token, PolicyNumber);
             if (output.Result == RESULT.SUCCESS)
             {
-                return Ok(output);
+                return Ok(output.Output);
             }
-            return BadRequest(output);
+            return NotFound();          // Sending 404 for unauthorized access also as we don't want to leak the existence of the policy number. In production, consider more nuanced error handling and logging for unauthorized access attempts.
         }
         catch (Exception ex)
         {
             // For simplicity a generic 500 is returned. In production expose minimal info and log the exception.
             return StatusCode(500, "Internal Server Error");
         }
+
     }
 
 
     // Override controller route so this action is rooted at /api/policy instead of /api/claims
     [HttpPost("/api/policy/addpolicy")]
     public async Task<IActionResult> AddNewPolicy([FromBody]PolicyEntryDTO policy){
-        try{
+
+        try
+        {
             var token=await HttpContext.GetTokenAsync("access_token");
+
             CommonOutput output = await _insuredService.AddNewPolicy(token,policy);
+
             Console.WriteLine(output);
             if(output.Result==RESULT.SUCCESS){
                 return Ok(output);
@@ -109,5 +122,7 @@ public class InsuredController:ControllerBase
             return StatusCode(500,"Internal Server Error");
         }
     }
-
+#pragma warning restore CS0168 // Variable is declared but never used
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+#pragma warning restore CS8604 // Possible null reference argument.
 }

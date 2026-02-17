@@ -23,7 +23,7 @@ public class SharedLogic:ISharedLogic
     // - Performs basic validation for required fields (PolicyNo, EstimatedLoss, DateOfAccident).
     // - If validation passes, delegates to ClaimDetailService.AddNewClaim and returns its CommonOutput.
     // - Catches domain-specific MaximumClaimLimitReachedException and converts it to a CommonOutput failure.
-    public async Task<CommonOutput> AddClaimSharedLogic(ClaimDetailRequestDTO claimDetail){
+    public async Task<CommonOutput> AddClaimSharedLogic(string userId,ClaimDetailRequestDTO claimDetail){
         try
         {
             List<PropertyValidationResponse> errors = new List<PropertyValidationResponse>();
@@ -49,7 +49,7 @@ public class SharedLogic:ISharedLogic
             }
 
             // Delegate to the service layer; the service handles deeper business rules and persistence.
-            CommonOutput result = await _claimDetailService.AddNewClaim(claimDetail);
+            CommonOutput result = await _claimDetailService.AddNewClaim(userId,claimDetail);
             return result;
         }
         catch (MaximumClaimLimitReachedException ex)

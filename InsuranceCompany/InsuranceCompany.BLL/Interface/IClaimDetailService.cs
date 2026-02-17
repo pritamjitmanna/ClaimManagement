@@ -8,7 +8,7 @@ public interface IClaimDetailService
     Task<IEnumerable<ClaimListOpenDTO>> ListAllOpenClaims();
     Task<IEnumerable<ClaimListOpenDTO>> ListAllClosedClaims();
     Task<ClaimListOpenDTO?> GetClaimByClaimId(string claimId);
-    Task<CommonOutput> AddNewClaim(ClaimDetailRequestDTO claimDetail);
+    Task<CommonOutput> AddNewClaim(string userId,ClaimDetailRequestDTO claimDetail);
     Task<CommonOutput> UpdateClaim(string claimID, UpdateClaimDTO value);
     Task<CommonOutput> UpdateClaimSurveyorFees(string claimID);
     Task<CommonOutput> UpdateClaimAmtApprovedBySurveyor(string claimID, int claimant);

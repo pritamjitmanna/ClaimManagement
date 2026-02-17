@@ -36,20 +36,20 @@ public class PolicyService : IPolicyService
         try
         {
             Policy? policy = await _policyRepository.GetPolicyByPolicyNo(policyNo);
-            if(userId!=null&&policy.PolicyUserId != userId)     //--- To change when claim userId is added
-            {
-                result=new CommonOutput
-                {
-                    Result=RESULT.FAILURE,
-                    Output="Unauthorized access to the policy."
-                };
-            }
-            else if (policy == null)
+            if (policy == null)
             {
                 result=new CommonOutput
                 {
                     Result=RESULT.FAILURE,
                     Output=null
+                };
+            }
+            else if(policy.PolicyUserId != userId)     //--- To change when claim userId is added
+            {
+                result=new CommonOutput
+                {
+                    Result=RESULT.FAILURE,
+                    Output="Unauthorized access to the policy."
                 };
             }
             else
@@ -110,7 +110,8 @@ public class PolicyService : IPolicyService
         {
             List<PropertyValidationResponse> validationErrors = new List<PropertyValidationResponse>();
 
-            foreach (var err in (ICollection<ValidationResult>)result.Output)
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            foreach (var err in (ICollection<ValidationResult>?)result.Output)
             {
                 validationErrors.Add(
                     new PropertyValidationResponse
@@ -119,6 +120,7 @@ public class PolicyService : IPolicyService
                         ErrorMessage = err.ErrorMessage
                     });
             }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             result.Output = validationErrors;
         }

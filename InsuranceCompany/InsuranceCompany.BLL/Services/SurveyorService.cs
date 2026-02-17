@@ -13,6 +13,9 @@ namespace InsuranceCompany.BLL;
 
 public class SurveyorService : ISurveyorService
 {
+    #pragma warning disable CS8602 // Dereference of a possibly null reference.
+    #pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable CS0168 // Variable is declared but never used
 
     private readonly ISurveyor _surveyorRepository;
     private readonly IMapper _mapper;
@@ -33,9 +36,6 @@ public class SurveyorService : ISurveyorService
     {
 
         List<SurveyorDTO> surveyors = new List<SurveyorDTO>();
-
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
-#pragma warning disable CS0168 // Variable is declared but never used
         try
         {
             var result = await _surveyorRepository.GetAllSurveyorsForEstimatedLoss(estimatedLoss);
@@ -51,8 +51,6 @@ public class SurveyorService : ISurveyorService
             //_logger.Error("Ran with this problem " + ex.Message + " in SurveyorService");
             throw;
         }
-#pragma warning restore CS0168 // Variable is declared but never used
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
 
         return surveyors;
     }
@@ -66,8 +64,6 @@ public class SurveyorService : ISurveyorService
 
 
         SurveyorDTO? surveyor;
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
-#pragma warning disable CS0168 // Variable is declared but never used
         try
         {
             var temp = await _surveyorRepository.GetMinAllocatedSurveyorBasedOnEstimatedLoss(EstimatedLoss);
@@ -78,8 +74,6 @@ public class SurveyorService : ISurveyorService
             //log
             throw;
         }
-#pragma warning restore CS0168 // Variable is declared but never used
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
         return surveyor;
     }
 
@@ -89,9 +83,6 @@ public class SurveyorService : ISurveyorService
     public async Task<SurveyorDTO?> GetSurveyorById(int surveyorId)
     {
         SurveyorDTO? surveyor;
-
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
-#pragma warning disable CS0168 // Variable is declared but never used
         try
         {
             var temp = await _surveyorRepository.GetSurveyorById(surveyorId);
@@ -101,8 +92,7 @@ public class SurveyorService : ISurveyorService
         {
             throw;
         }
-#pragma warning restore CS0168 // Variable is declared but never used
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
+
         return surveyor;
     }
 
@@ -148,7 +138,7 @@ public class SurveyorService : ISurveyorService
         {
             List<PropertyValidationResponse> validationErrors = new List<PropertyValidationResponse>();
 
-            foreach (var err in (ICollection<ValidationResult>)result.Output)
+            foreach (var err in (ICollection<ValidationResult>?)result.Output)
             {
                 validationErrors.Add(
                     new PropertyValidationResponse
@@ -162,5 +152,8 @@ public class SurveyorService : ISurveyorService
         }
     }
 
+    #pragma warning restore CS8602 // Dereference of a possibly null reference.
+    #pragma warning restore CS0168 // Variable is declared but never used
+    #pragma warning restore IDE0059 // Unnecessary assignment of a value
 }
 

@@ -56,8 +56,9 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
     public async override Task<CommonOutputgRPC> AddNewClaim(ClaimDetailRequestDTOgRPC request,ServerCallContext context){
 
         try{
+            var userId=context.GetHttpContext().User.FindFirstValue(JwtRegisteredClaimNames.Sub);
             ClaimDetailRequestDTO claimDetail=_mapper.Map<ClaimDetailRequestDTO>(request);
-            CommonOutput result=await _sharedLogic.AddClaimSharedLogic(claimDetail);
+            CommonOutput result=await _sharedLogic.AddClaimSharedLogic(userId,claimDetail);
             if(result.Result==RESULT.SUCCESS){
                 return await Task.FromResult(new CommonOutputgRPC{
                     StatusCode=STATUSCODE.Ok,

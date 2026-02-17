@@ -18,12 +18,21 @@ import "SharedProtos.proto";
 
 // ---------------------------Service----------------------------
 
+// ClaimsService provides RPC methods for managing insurance claims.
+// It allows clients to create new claims, retrieve claim information,
+// generate status reports, and update claim approvals.
 service ClaimsService {
+    // Creates a new insurance claim with the provided claim details.
     rpc AddNewClaim(ClaimDetailRequestDTOgRPC)returns (shared.CommonOutputgRPC); 
+    // Retrieves claim information by claim ID.
     rpc GetClaimByClaimId(GetClaimByIdString)returns (shared.CommonOutputgRPC);
+    // Retrieves claim status reports for a specified month and year.
     rpc GetClaimStatusReports(GetClaimStatusReportsMonthAndYear)returns (shared.CommonOutputgRPC);
+    // Retrieves payment status reports for a specified month and year.
     rpc GetPaymentStatusReports(GetPaymentStatusReportsMonthAndYear)returns (shared.CommonOutputgRPC);
+    // Updates the claim amount approved by the surveyor for a specific claim and claimant.
     rpc UpdateClaimAmountApprovedBySurveyor(UpdateClaimAmountApprovedBySurveyorClaimIdClaimant)returns (shared.CommonOutputgRPC);
+    // Accepts or rejects a claim based on the provided decision.
     rpc UpdateAcceptOrRejectClaim(AcceptReject)returns (shared.CommonOutputgRPC);
     
 

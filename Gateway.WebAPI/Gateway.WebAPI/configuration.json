@@ -286,7 +286,25 @@
             "Role": "Insurer"
         }    
     },
-    
+    {
+        "DownstreamPathTemplate": "/api/policy/{policyNumber}",  
+        "DownstreamScheme": "http",  
+        "DownstreamHostAndPorts": [  
+            {  
+            "Host": "localhost",  
+            "Port": 5025  
+            }  
+        ],  
+        "UpstreamPathTemplate": "/api/policy/{policyNumber}",  
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions":{
+            "AuthenticationProviderKey":"Bearer",
+            "AllowedScopes":[]
+        },
+        "RouteClaimsRequirement": {
+            "Role": "Insurer"
+        }    
+    },
     
     {
         "DownstreamPathTemplate": "/IRDA/claimStatus/report/{month}/{year}",  

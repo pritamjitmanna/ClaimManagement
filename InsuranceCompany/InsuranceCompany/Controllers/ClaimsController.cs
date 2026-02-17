@@ -20,6 +20,7 @@ public class ClaimsController : ControllerBase
 {
     #pragma warning disable IDE0059 // Unnecessary assignment of a value
 #pragma warning disable CS0168 // Variable is declared but never used
+#pragma warning disable CS8604 // Possible null reference argument.
     private readonly IClaimDetailService _claimDetailService;
     private readonly IPolicyService _policyService;
     private readonly ISharedLogic _sharedLogic;
@@ -181,7 +182,7 @@ public class ClaimsController : ControllerBase
     public async Task<IActionResult> AddNewClaim([FromBody] ClaimDetailRequestDTO claimDetail)
     {
         try{
-            CommonOutput result=await _sharedLogic.AddClaimSharedLogic(claimDetail);
+            CommonOutput result=await _sharedLogic.AddClaimSharedLogic(null,claimDetail);   //To change when claim userId is added. For now, it is passed as null and the service will handle it accordingly.
             if(result.Result==RESULT.SUCCESS){
                 return Ok(result);
             }
@@ -326,5 +327,6 @@ public class ClaimsController : ControllerBase
     {
         return "Ran with this problem " + message + " in ClaimsController";
     }
+    #pragma warning restore CS8604 // Possible null reference argument.
 }
 

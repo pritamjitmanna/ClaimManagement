@@ -114,6 +114,8 @@ export class ClaimComponent {
     this.claim.claimStatus=details.ClaimStatus===null?this.claim.claimStatus:details.ClaimStatus
     this.claim.surveyorID=details.SurveyorID===null?this.claim.surveyorID:details.SurveyorID
     this.claim.insuranceCompanyApproval=details.InsuranceCompanyApproval===null?this.claim.insuranceCompanyApproval:details.InsuranceCompanyApproval
+
+    sessionStorage.setItem(this.claim.claimId,JSON.stringify(this.claim))
   }
 
 

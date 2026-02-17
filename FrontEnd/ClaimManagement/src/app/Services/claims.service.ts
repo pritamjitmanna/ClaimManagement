@@ -7,6 +7,7 @@ import { ClaimStatus, RESULT } from "../Models/e.enum";
 import { globalVariables } from "../global_module";
 import { UpdateClaim } from "../Models/update-claim.model";
 import { Policy } from "../Models/policy.model";
+import { PolicyResponse } from "../Models/policy-response.model";
 
 @Injectable()
 export class ClaimsService{
@@ -107,9 +108,16 @@ export class ClaimsService{
 
     }
 
-    // async getPolicyByUserId(userId:string):Promise<CommonOutput>{
-        
-    // }
+    async getPolicyByPolicyNumber(policyNumber:string):Promise<CommonOutput>{
+        try{
+            const URL=this.BASE_URL+`policy/${policyNumber}`
+            const result:PolicyResponse=await firstValueFrom(this.http.get<PolicyResponse>(URL,{headers:this.header}))
+            return new CommonOutput(RESULT.SUCCESS,result)
+        }
+        catch(err:any){
+            return new CommonOutput(RESULT.FAILURE,err)
+        }
+    }
 
     async addNewPolicy(details:Policy):Promise<CommonOutput>{
         try{

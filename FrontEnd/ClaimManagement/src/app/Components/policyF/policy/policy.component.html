@@ -1,1 +1,40 @@
-<p>policy works!</p>
+@if(isLoading){
+    <app-loading></app-loading>
+}
+@else {
+    <div class="container">
+        <h2>Policy Details</h2>
+        <div class="details">
+            <div class="important-info">
+                <div class="info-item">
+                    <label for="policyNo">Policy No:</label>
+                    <span id="policyNo">{{policy.policyNo}}</span>
+                </div>
+                <div class="info-item">
+                    <label for="status">Status:</label>
+                    <span id="status" class="approval" [class]="policy.status ? 'status-active' : 'status-inactive'">
+                        {{policy.status ? 'Active' : 'Inactive'}}
+                    </span>
+                </div>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <label for="insuredFirstName">First Name:</label>
+                    <span id="insuredFirstName">{{policy.insuredFirstName}}</span>
+                </div>
+                <div class="grid-item">
+                    <label for="insuredLastName">Last Name:</label>
+                    <span id="insuredLastName">{{policy.insuredLastName}}</span>
+                </div>
+                <div class="grid-item">
+                    <label for="vehicleNo">Vehicle No:</label>
+                    <span id="vehicleNo">{{policy.vehicleNo}}</span>
+                </div>
+                <div class="grid-item">
+                    <label for="dateOfInsurance">Date of Insurance:</label>
+                    <span id="dateOfInsurance">{{policy.dateOfInsurance | date}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}

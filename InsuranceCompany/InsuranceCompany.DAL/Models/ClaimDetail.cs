@@ -5,6 +5,7 @@ namespace InsuranceCompany.DAL;
 
 public class ClaimDetail
 {
+    public string ClaimUserId { get; set; }
     [Length(10, 10, ErrorMessage = "The length of the ClaimId must be 10 characters.")]
     public required string ClaimId { get; set; }
     public string PolicyNo { get; set; }

@@ -12,7 +12,7 @@ namespace InsuranceCompany.DAL;
 
 public class SurveyorRepository : ISurveyor
 {
-
+#pragma warning disable CS0168 // Variable is declared but never used
     private readonly InsuranceCompanyDBContext _dbContext;
     //private readonly ILog _logger;
 
@@ -31,7 +31,6 @@ public class SurveyorRepository : ISurveyor
     public async Task<Surveyor?> GetMinAllocatedSurveyorBasedOnEstimatedLoss(int estimatedLoss)
     {
         Surveyor? surveyor = null;
-#pragma warning disable CS0168 // Variable is declared but never used
         try
         {
             // The LINQ query will be translated by EF Core into SQL. AsNoTracking avoids tracking to reduce memory overhead.
@@ -43,7 +42,7 @@ public class SurveyorRepository : ISurveyor
             //_logger.Error("Ran with this problem " + ex.Message + " in SurveyorRepository");
             throw;
         }
-#pragma warning restore CS0168 // Variable is declared but never used
+
         return surveyor;
     }
 
@@ -55,7 +54,6 @@ public class SurveyorRepository : ISurveyor
     {
 
         IEnumerable<Surveyor> surveyors = new List<Surveyor>();
-#pragma warning disable CS0168 // Variable is declared but never used
         try
         {
             // AsNoTracking combined with Include is fine for read-only scenarios and avoids creating tracked entities.
@@ -67,7 +65,6 @@ public class SurveyorRepository : ISurveyor
             //_logger.Error("Ran with this problem " + ex.Message + " in SurveyorRepository");
             throw;
         }
-#pragma warning restore CS0168 // Variable is declared but never used
 
         return surveyors;
     }
@@ -81,7 +78,7 @@ public class SurveyorRepository : ISurveyor
 
 
         Surveyor? surveyor;
-#pragma warning disable CS0168 // Variable is declared but never used
+
         try
         {
 
@@ -95,7 +92,6 @@ public class SurveyorRepository : ISurveyor
             //_logger.Error("Ran with this problem " + ex.Message + " in SurveyorRepository");
             throw;
         }
-#pragma warning restore CS0168 // Variable is declared but never used
         return surveyor;
     }
 
@@ -150,4 +146,6 @@ public class SurveyorRepository : ISurveyor
         }
         return isDeleted;
     } 
+
+    #pragma warning restore CS0168 // Variable is declared but never used
 }
