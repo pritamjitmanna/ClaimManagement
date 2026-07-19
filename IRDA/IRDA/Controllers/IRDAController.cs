@@ -96,6 +96,9 @@ public class IRDAController:ControllerBase
             if(output.Result==RESULT.FAILURE){
                 return BadRequest(output);
             }
+            Response.Headers.Append("Receiver-Id","[IC]");
+            Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o"));
+            output.Message=$"[IRDA fetched Claim Status Report for {month}/{year}]";
             return Ok(output);
         }
         catch(Exception ex){
@@ -117,6 +120,9 @@ public class IRDAController:ControllerBase
             if(output.Result==RESULT.FAILURE){
                 return BadRequest(output);
             }
+            Response.Headers.Append("Receiver-Id","[IC]");
+            Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o"));
+            output.Message=$"[IRDA fetched Payment Status Report for {month}/{year}]";
             return Ok(output);
         }
         catch(Exception ex){

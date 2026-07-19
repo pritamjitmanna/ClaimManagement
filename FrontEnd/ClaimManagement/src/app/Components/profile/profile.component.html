@@ -1,4 +1,5 @@
 <form id="surveyorProfileform" class="profile-form" #surveyorProfileForm="ngForm" (ngSubmit)="onSubmit()">
+  <input id="SurveyorUserId" name="SurveyorUserId" type="text" ngModel #SurveyorUserId="ngModel" hidden/>
   <div class="form-row">
     <label for="FirstName">First Name</label>
     <input id="FirstName" name="FirstName" type="text" placeholder="Enter first name" ngModel #FirstName="ngModel" required/>

@@ -93,6 +93,8 @@ export class IrdaComponent {
     let month:number=Number(this.MonthYear.value['month-year'].split('-')[1])
     let year:number=Number(this.MonthYear.value['month-year'].split('-')[0])
     
+    console.log(month,year)
+
     let result:CommonOutput=await this.irdaService.pullPaymentStatus(month,year)
     if(result.result==RESULT.SUCCESS){
       this.accessoriesService.alertShow(`Data related to payment status is successfully fetched to the database. Use 'Payment Status' to check`,"success")

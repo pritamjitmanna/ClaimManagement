@@ -2,13 +2,14 @@ import { Component,OnInit } from '@angular/core';
 import { globalModules, globalVariables } from '../../global_module';
 import { AuthService } from '../../Services/auth.service';
 import { Router } from '@angular/router';
+import { BreadcrumbComponent } from '../Notification/breadcrumb/breadcrumb.component';
 
 
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [globalModules],
+  imports: [globalModules,BreadcrumbComponent],
   providers:[AuthService],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
@@ -16,6 +17,7 @@ import { Router } from '@angular/router';
 export class NavbarComponent  {
 
   username:string=""
+  isAuthenticated:boolean=false
   roles:string[]=[]
   constructor(private authService:AuthService){
     this.authService.decodeTokenUserRole()
@@ -27,6 +29,9 @@ export class NavbarComponent  {
         this.roles=roles
       }
     )
+    globalVariables.isAuthenticated.subscribe((value:boolean)=>{
+      this.isAuthenticated=value
+    })
   }
 
 

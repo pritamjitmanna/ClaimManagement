@@ -8,4 +8,5 @@ public class CommonOutput
 {
     public RESULT Result { get; set; }
     public object? Output { get; set; }
+    public string? Message { get; set; } 
 }

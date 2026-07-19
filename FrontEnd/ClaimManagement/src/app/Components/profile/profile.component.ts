@@ -27,16 +27,25 @@ export class ProfileComponent {
     EstimateLimit:""
   }
 
+
   constructor(private surveyorService:SurveyorService,private accessoriesService:AccessoriesService,private router:Router){}
 
   async onSubmit(){
     let value=this.surveyorProfileForm.value;
     let username=await firstValueFrom(globalVariables.username);
+    value.SurveyorUserId=await firstValueFrom(globalVariables.userId);
     let result:CommonOutput=await this.surveyorService.addSurveyorDetails(username,value);
     if(result.result===RESULT.SUCCESS){
           this.accessoriesService.alertShow(`Congratulations! Your Profile is added`,"success")
           globalVariables.profileSet.next(true);
-          globalVariables.userId.next(result.output);
+
+          //Set profileSet flag to true in localStorage else on reload it will be false and user will be redirected to profile page
+          const token=localStorage.getItem('loginData');
+          if(token){
+            const loginData=JSON.parse(token);
+            loginData.profileSet=true;
+            localStorage.setItem('loginData',JSON.stringify(loginData));
+          }
           this.router.navigate([''])
         }
         else{
@@ -44,6 +53,7 @@ export class ProfileComponent {
           let error_block=result.output.error.output
     
           if(err_status===0||err_status>=500){
+            console.log(result.output);
             this.router.navigate(['internalservererror'])
           }
           else if(err_status===400){

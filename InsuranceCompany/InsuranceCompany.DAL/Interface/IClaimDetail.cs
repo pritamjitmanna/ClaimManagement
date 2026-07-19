@@ -7,13 +7,13 @@ using SharedModules;
 public interface IClaimDetail
 {
 
-    Task<ICollection<ClaimDetail>> GetAllCloseClaims();
+    Task<ICollection<ClaimDetail>> GetAllCloseClaims(string userId,List<string> roles);
 
     /// <summary>
     /// This function returns the list of all open claims in the claim detail table.
     /// </summary>
     /// <returns>IEnumerable<ClaimDetail></returns>
-    Task<ICollection<ClaimDetail>> GetAllOpenClaims();
+    Task<ICollection<ClaimDetail>> GetAllOpenClaims(string userId,List<string> roles);
 
     /// <summary>
     /// This function adds a new claim to the claimDetails table. It first checks for the Validation errors using the ValidationContext, then adds the details.

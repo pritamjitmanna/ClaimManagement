@@ -20,16 +20,21 @@
         </ul>
     </div>
     <div class="navbar-right">
-        <a routerLink="/login" class="btn login">Login</a>
-        <a routerLink="/register" class="btn signup">Sign Up</a>
-        <div class="profile-dropdown">
-            <img src="user.jpg" alt="User Profile" class="profile-img">
-            <span></span>
-            <div class="dropdown-content">
-                <p class="username">{{username}}</p>
-                <a routerLink="/profile">Profile</a>
-                <button (click)="logoutClick()">Logout</button>
+        @if (!isAuthenticated) {
+            <a routerLink="/login" class="btn login">Login</a>
+            <a routerLink="/register" class="btn signup">Sign Up</a>
+        }
+        @else {
+            <app-breadcrumb></app-breadcrumb>
+            <div class="profile-dropdown">
+                <img src="user.jpg" alt="User Profile" class="profile-img">
+                <span></span>
+                <div class="dropdown-content">
+                    <p class="username">{{username}}</p>
+                    <a routerLink="/profile">Profile</a>
+                    <button (click)="logoutClick()">Logout</button>
+                </div>
             </div>
-        </div>
+        }
     </div>
 </nav>

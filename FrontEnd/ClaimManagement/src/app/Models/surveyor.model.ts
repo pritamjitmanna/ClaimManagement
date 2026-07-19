@@ -1,6 +1,6 @@
 export class Surveyor{
     constructor(
-        public surveyorId:number,
+        public surveyorUserId:string,
         public firstName:string,
         public lastName:string,
         public estimateLimit:number,

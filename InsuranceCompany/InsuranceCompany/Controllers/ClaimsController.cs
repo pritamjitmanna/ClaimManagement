@@ -48,7 +48,9 @@ public class ClaimsController : ControllerBase
 
         try
         {
-            IEnumerable<ClaimListOpenDTO> claims = await _claimDetailService.ListAllOpenClaims();
+            var userId=User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var roles=User.FindAll(ClaimTypes.Role).Select(r=>r.Value).ToList();
+            IEnumerable<ClaimListOpenDTO> claims = await _claimDetailService.ListAllOpenClaims(userId,roles);
             if (claims.Count() == 0)
             {
                 return StatusCode(204, claims);
@@ -75,7 +77,10 @@ public class ClaimsController : ControllerBase
     {
         try
         {
-            IEnumerable<ClaimListOpenDTO> claims = await _claimDetailService.ListAllClosedClaims();
+            var userId=User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var roles=User.FindAll(ClaimTypes.Role).Select(r=>r.Value).ToList();
+            if(roles.Contains("InsuranceCompany"))userId+=" -IC";
+            IEnumerable<ClaimListOpenDTO> claims = await _claimDetailService.ListAllClosedClaims(userId,roles);
             if (claims.Count() == 0)
             {
                 return StatusCode(204, claims);
@@ -101,11 +106,13 @@ public class ClaimsController : ControllerBase
     {
         try
         {
-
-            CommonOutput output=await _sharedLogic.GetClaimByClaimId(ClaimId);
+            var userId=User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var roles=User.FindAll(ClaimTypes.Role).Select(r=>r.Value).ToList();
+            CommonOutput output=await _sharedLogic.GetClaimByClaimId(userId,roles,ClaimId);
             if(output.Result==RESULT.SUCCESS){
                 return Ok(output.Output);
             }
+            //Here even if the claim is unauthorized, we are returning 404 because we don't want to reveal the existence of the claim to unauthorized users. This is a common security practice to prevent information disclosure.
             return NotFound();
 
         }
@@ -182,7 +189,7 @@ public class ClaimsController : ControllerBase
     public async Task<IActionResult> AddNewClaim([FromBody] ClaimDetailRequestDTO claimDetail)
     {
         try{
-            CommonOutput result=await _sharedLogic.AddClaimSharedLogic(null,claimDetail);   //To change when claim userId is added. For now, it is passed as null and the service will handle it accordingly.
+            CommonOutput result=await _sharedLogic.AddClaimSharedLogic(null,[],claimDetail);   //To change when claim userId is added. For now, it is passed as null and the service will handle it accordingly.
             if(result.Result==RESULT.SUCCESS){
                 return Ok(result);
             }
@@ -211,6 +218,10 @@ public class ClaimsController : ControllerBase
             var result = await _claimDetailService.UpdateClaim(claimID, updateDTO);
             if (result.Result == RESULT.SUCCESS)
             {
+                string[] strings = result.Message.Split('#');
+                Response.Headers.Append("Receiver-Id", strings[0]);
+                Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o")); // ISO 8601 format for timestamp
+                result.Message = strings[1];
                 return Ok(result);
             }
             return BadRequest(result);
@@ -261,6 +272,10 @@ public class ClaimsController : ControllerBase
             CommonOutput result = await _claimDetailService.UpdateClaimSurveyorFees(claimId);
             if (result.Result == RESULT.SUCCESS)
             {
+                string[] strings=result.Message.Split("#");
+                Response.Headers.Append("Receiver-Id",strings[0]);
+                Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o"));
+                result.Message=strings[1];
                 return Ok(result);
             }
             return BadRequest(result);
@@ -305,7 +320,8 @@ public class ClaimsController : ControllerBase
         try
         {
             var userId=User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            CommonOutput result = await _policyService.GetPolicyByPolicyNo(userId,policyNo);
+            var roles=User.FindAll(ClaimTypes.Role).Select(r=>r.Value).ToList();
+            CommonOutput result = await _policyService.GetPolicyByPolicyNo(userId,roles,policyNo);
             if (result.Result == RESULT.SUCCESS)
             {
                 Policy? policy = (Policy?)result.Output;

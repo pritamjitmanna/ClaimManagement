@@ -19,7 +19,7 @@ import { LoadingComponent } from "../loading/loading.component";
 })
 export class ClaimsComponent{
     
-    claims:ClaimDetail[]=[]
+    claims:ClaimDetail[]|null=[]
     openClaims:ClaimDetail[]|undefined=undefined
     closedClaims:ClaimDetail[]|undefined=undefined
     tab:string="Open"
@@ -54,20 +54,22 @@ export class ClaimsComponent{
         let output:CommonOutput=await this.claimsService.getOpenClaims()
 
         if(output.result===RESULT.SUCCESS){
-            this.openClaims=output.output===null?[]:output.output
+            this.openClaims=output.output
         }
         else{
             if(output.output.status===0||output.output.status>=500){
                 this.router.navigate(['internalservererror'])
             }
         }
+        
     }
 
     async getAllClosedClaims(){
         let output:CommonOutput=await this.claimsService.getClosedClaims()
+        
 
         if(output.result===RESULT.SUCCESS){
-            this.closedClaims=output.output===null?[]:output.output
+            this.closedClaims=output.output
         }
         else{
             if(output.output.status===0||output.output.status>=500){

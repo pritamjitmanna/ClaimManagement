@@ -17,8 +17,8 @@ public class ClaimDetail
     [DateLessThanCurrent(ErrorMessage = "The DateOfAccident must be less than current date.")]
     public DateOnly DateOfAccident { get; set; }
     public ClaimStatus ClaimStatus { get; set; }
-
-    public int? SurveyorID { get; set; }
+    
+    public string? SurveyorUserId { get; set; }
     public Surveyor? Surveyor { get; set; }
 
     [Range(0, int.MaxValue, ErrorMessage = "AmountApprovedBySurveyor must be non-negative")]

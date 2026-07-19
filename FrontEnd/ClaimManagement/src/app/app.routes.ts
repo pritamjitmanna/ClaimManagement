@@ -50,7 +50,9 @@ export const routes: Routes = [
         canActivate:[authGuard],
         data:{
             role:[
-                "InsuranceCompany"
+                "InsuranceCompany",
+                "Insurer",
+                "Surveyor"
             ]
         }
     },
@@ -89,7 +91,7 @@ export const routes: Routes = [
     {
         path:'surveyreport/:id',
         component:SurveyReportComponent,
-        canActivate:[authGuard],
+        canActivate:[permissionGuard,authGuard],
         data:{
             role:[
                 "Surveyor"

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using System.Text;
 using Ocelot.Middleware;
 using System.Text.Json;
+using Gateway.WebAPI.Notifications;
+using System.Text.RegularExpressions;
 
 namespace Gateway.WebAPI;
 
@@ -25,6 +27,7 @@ public static class OcelotAuthorize{
     {
         DownstreamRoute route = (DownstreamRoute)ctx.Items["DownstreamRoute"];
         string key = route.AuthenticationOptions.AuthenticationProviderKey;
+        Console.WriteLine("--------------");
         if (key == null || key == "") return true;
         if (route.RouteClaimsRequirement.Count == 0) return true;
         //flag for authorization
@@ -37,13 +40,15 @@ public static class OcelotAuthorize{
         foreach (KeyValuePair<string, string> reqclaim in required)
         {
 
-            string[] values=reqclaim.Value.Split(",").Select(inp=>inp.Trim()).ToArray();   //Gives the matches for the claims present in the configuration.json. Here it is only Role, it gives all the roles present.
+            string[] values=reqclaim.Value.Split(",").Select(inp=>inp.Trim()).ToArray();   //Gives the matches for the claims present in the `configuration.json`. Here it is only Role, it gives all the roles present.
 
 
             bool possible=false;
 
             foreach(var val in values){
                 var vals=claims.Where(cl=>GetClaimTypeValue(cl.Type).Equals(reqclaim.Key,StringComparison.CurrentCultureIgnoreCase) && cl.Value==val).Select(cl=>cl.Value).ToList();
+                // var v=claims.Where(cl=>GetClaimTypeValue(cl.Type).Equals(reqclaim.Key,StringComparison.CurrentCultureIgnoreCase)).ToList();
+                // foreach(var q in v)Console.WriteLine(q);
                 if(vals.Count>0){
                     possible=true;
                     break;
@@ -63,7 +68,6 @@ public static class OcelotAuthorize{
         Type type = typeof(ClaimTypes);
         FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Static);
         var values=fieldInfos.Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToDictionary(fi => fi.GetValue(null)!.ToString()!, fi => fi.Name);
-        Console.WriteLine(values);
         
         return values;
     }
@@ -96,16 +100,12 @@ public class ProfileSetMiddleware
 
                         if (response?.StatusCode == System.Net.HttpStatusCode.OK)
                         {
-                            var body = await response.Content.ReadAsStringAsync();
                             var user=await _userManager.FindByNameAsync(username);
-                            using var json = JsonDocument.Parse(body);
-                            var profileId = json.RootElement.GetProperty("output").GetInt32();
                             if(user!=null)
                             {
                                 if (!user.profileSet)
                                 {
                                     user.profileSet=true;
-                                    user.profileId=profileId;
                                     await _userManager.UpdateAsync(user);
                                 }
                             }
@@ -115,10 +115,7 @@ public class ProfileSetMiddleware
                             }
                         }
                     }                        
-
-            
-                                
-            }
+                }
             
                
         }
@@ -137,6 +134,117 @@ public static class ProfileSetMiddlewareExtensions
     public static IApplicationBuilder UseProfileSetMiddleware(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<ProfileSetMiddleware>();
+    }
+}
+
+
+
+public class NotificationMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ChannelBackgroundService _channelBackgroundService;
+    public NotificationMiddleware(RequestDelegate next, ChannelBackgroundService channelBackgroundService)
+    {
+        _next = next;
+        _channelBackgroundService = channelBackgroundService;
+    }
+
+    public async Task InvokeAsync(HttpContext context,UserManager<AuthUser> _userManager)
+    {
+        try
+        {
+            DownstreamRoute route = (DownstreamRoute)context.Items["DownstreamRoute"];
+            await _next(context);
+
+            if(context.Items.TryGetValue("DownstreamResponse", out var downstream))
+            {
+                var response = downstream as DownstreamResponse;
+                string receiverIdsValue = string.Empty;
+                // Console.WriteLine(receiverIdsValue);
+                DateTimeOffset timestamp = DateTimeOffset.UtcNow;
+                if(response?.Headers!=null){
+                    foreach(var header in response.Headers){
+                        if(header.Key.Equals("Receiver-Id", StringComparison.OrdinalIgnoreCase)){
+                            receiverIdsValue=header.Values.FirstOrDefault();
+                        }
+                        else if(header.Key.Equals("X-Timestamp", StringComparison.OrdinalIgnoreCase)){
+                            if(DateTimeOffset.TryParse(header.Values.FirstOrDefault(), out var parsedTimestamp)){
+                                timestamp=parsedTimestamp;
+                            }
+                        }
+                    }
+                }
+                
+
+                if (receiverIdsValue!=string.Empty &&response?.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var body = await response.Content.ReadAsStringAsync();
+                    using var json = JsonDocument.Parse(body);
+                    List<string> receiverIdValues;
+                    string pattern = @"\[(?<content>[^\]]+)\]";                    
+                    MatchCollection matchesI = Regex.Matches(receiverIdsValue, pattern);
+                    receiverIdValues = [.. matchesI.Cast<Match>().Select(m => m.Groups["content"].Value)];
+                    List<string> messages=new List<string>();
+                    
+                    var messageElement = json.RootElement.GetProperty("message").GetString();
+                    MatchCollection matches = Regex.Matches(messageElement, pattern);
+                    messages = [.. matches.Cast<Match>().Select(m => m.Groups["content"].Value)];
+                    for(int i=0;i<receiverIdValues.Count;i++)
+                    {
+                        string receiverIdValue = receiverIdValues[i];
+                        if (receiverIdValue == "IC")
+                        {                           
+                            var users = await _userManager.GetUsersInRoleAsync("InsuranceCompany");
+                            receiverIdValue = users.Select(u => u.Id).FirstOrDefault(); 
+                        }
+                        string message = messages[i];
+                        // Console.WriteLine($"Receiver ID: {receiverIdValue}, Message: {message}");
+                        bool notificationResult = await helperPushMessage(new NotificationModel
+                        {
+                            ToUserId = receiverIdValue,
+                            Message = message,
+                            Timestamp = timestamp,
+                            IsRead = false
+                        });
+                        if (notificationResult)
+                        {
+                            Console.WriteLine("Notification queued successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to queue notification.");
+                        }
+                    }
+                    // We can do one thing, we can send the message created from the microservice side only along with the response, the message will have a format like "Claim created successfully for user {userId}" and we can extract the userId from the message and send the notification to that user. This way we don't have to make any assumptions about the response structure. Also in that case, we don't need to write if else block as to for which endpoint the message should be sent. If the response body has the message field, we can just extract it.
+
+                    //Also we can delete the message field while sending it from here to frontend as it is not required. Now, I have used JsonDocument which is immutable, thus I will change the logic later maybe.
+
+                    // json.Remove()
+                }
+            }
+            
+        }
+        catch(Exception ex)
+        {
+            // Handle exception (logging, etc.)
+            Console.WriteLine($"Error in NotificationMiddleware: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task<bool> helperPushMessage(NotificationModel notificationModel)
+    {
+        // Implementation for pushing notification message
+        bool result= await _channelBackgroundService.QueueModelAsync(notificationModel);
+        return result;
+    }
+}
+
+public static class NotificationMiddlewareExtensions
+{
+    public static IApplicationBuilder UseNotificationMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<NotificationMiddleware>();
     }
 }
 

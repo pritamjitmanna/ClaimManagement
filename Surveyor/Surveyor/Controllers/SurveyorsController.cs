@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using SharedModules;
 using Surveyor.BLL;
 using Surveyor.DAL;
@@ -29,8 +30,9 @@ public class SurveyorsController:ControllerBase
     [HttpGet("{claimId}")]
     public async Task<IActionResult> GetSurveyReport(string claimId){
         try{
+            var token=await HttpContext.GetTokenAsync("access_token");
             // Calls service to fetch report DTO; returns 404 when not found to indicate resource absence.
-            ReportDTO? report=await _surveyorService.GetSurveyReport(claimId);
+            ReportDTO? report=await _surveyorService.GetSurveyReport(token, claimId);
             if(report==null){
                 return NotFound();
             }
@@ -47,15 +49,20 @@ public class SurveyorsController:ControllerBase
     public async Task<IActionResult> AddSurveyReport(SurveyReportDTO surveyReport){
         
         try{
+            var token=await HttpContext.GetTokenAsync("access_token");
             // Add a new survey report using service; service returns CommonOutput with validation errors when applicable.
-            CommonOutput output=await _surveyorService.AddNewSurveyReport(surveyReport);
+            CommonOutput output=await _surveyorService.AddNewSurveyReport(token,surveyReport);
             if(output.Result==RESULT.FAILURE){
                 return BadRequest(output);
             }
+            string[] strings=output.Message.Split("#");
+            Response.Headers.Append("Receiver-Id",strings[0]);
+            Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o"));
+            output.Message=strings[1];
             return Ok(output);
         }
         catch(Exception ex){
-            return StatusCode(500,"Internal Surver Error");
+            return StatusCode(500, ex.Message);
         }
     }
 
@@ -63,15 +70,20 @@ public class SurveyorsController:ControllerBase
     public async Task<IActionResult> UpdateSurveyReport(string claimId,UpdateReportDTO updateReportDTO)
     {   
         try{
+            var token=await HttpContext.GetTokenAsync("access_token");
             // Update a report: returns 400 when validation fails, 200 on success.
-            CommonOutput output=await _surveyorService.UpdateSurveyReport(claimId,updateReportDTO);
+            CommonOutput output=await _surveyorService.UpdateSurveyReport(token,claimId,updateReportDTO);
             if(output.Result==RESULT.FAILURE){
                 return BadRequest(output);
             }
+            string[] strings=output.Message.Split("#");
+            Response.Headers.Append("Receiver-Id",strings[0]);
+            Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o"));
+            output.Message=strings[1];
             return Ok(output);
         }
         catch(Exception ex){
-            return StatusCode(500, "Internal Server Error");
+            return StatusCode(500, ex.Message);
         }
     }
 

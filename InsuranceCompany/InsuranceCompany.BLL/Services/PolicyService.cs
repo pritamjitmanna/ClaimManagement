@@ -27,7 +27,7 @@ public class PolicyService : IPolicyService
     // GetPolicyByPolicyNo:
     // - Delegates to repository GetPolicyByPolicyNo (which uses EF Include and AsNoTracking).
     // - Uses await to asynchronously obtain result and returns Policy or null.
-    public async Task<CommonOutput> GetPolicyByPolicyNo(string userId,string policyNo)
+    public async Task<CommonOutput> GetPolicyByPolicyNo(string userId,List<string> roles, string policyNo)
     {
 
         CommonOutput result;
@@ -44,7 +44,7 @@ public class PolicyService : IPolicyService
                     Output=null
                 };
             }
-            else if(policy.PolicyUserId != userId)     //--- To change when claim userId is added
+            else if(roles.Contains("Insurer")&&policy.PolicyUserId != userId)     
             {
                 result=new CommonOutput
                 {

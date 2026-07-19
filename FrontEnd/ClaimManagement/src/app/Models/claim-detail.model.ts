@@ -7,11 +7,11 @@ export class ClaimDetail{
         public policyNo:string,
         public estimatedLoss:number,
         public dateOfAccident:Date,
-        public amtApprovedBySurveyor:number, 
+        public amtApprovedBySurveyor:number|null=null, 
         public insuranceCompanyApproval:boolean, 
         public withdrawClaim:WITHDRAWSTATUS, 
         public claimStatus:ClaimStatus,
-        public surveyorID:number|null=null,
+        public surveyorUserId:string|null=null,
         public surveyorFees:number|null=null
     ){}
 }

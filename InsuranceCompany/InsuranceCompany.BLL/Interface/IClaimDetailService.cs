@@ -5,10 +5,10 @@ using SharedModules;
 
 public interface IClaimDetailService
 {
-    Task<IEnumerable<ClaimListOpenDTO>> ListAllOpenClaims();
-    Task<IEnumerable<ClaimListOpenDTO>> ListAllClosedClaims();
-    Task<ClaimListOpenDTO?> GetClaimByClaimId(string claimId);
-    Task<CommonOutput> AddNewClaim(string userId,ClaimDetailRequestDTO claimDetail);
+    Task<IEnumerable<ClaimListOpenDTO>> ListAllOpenClaims(string userId,List<string> roles);
+    Task<IEnumerable<ClaimListOpenDTO>> ListAllClosedClaims(string userId,List<string> roles);
+    Task<CommonOutput> GetClaimByClaimId(string userId,List<string> roles, string claimId);
+    Task<CommonOutput> AddNewClaim(string userId,List<string> roles,ClaimDetailRequestDTO claimDetail);
     Task<CommonOutput> UpdateClaim(string claimID, UpdateClaimDTO value);
     Task<CommonOutput> UpdateClaimSurveyorFees(string claimID);
     Task<CommonOutput> UpdateClaimAmtApprovedBySurveyor(string claimID, int claimant);

@@ -57,8 +57,9 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
 
         try{
             var userId=context.GetHttpContext().User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var roles=context.GetHttpContext().User.FindAll(ClaimTypes.Role).Select(r=>r.Value).ToList();
             ClaimDetailRequestDTO claimDetail=_mapper.Map<ClaimDetailRequestDTO>(request);
-            CommonOutput result=await _sharedLogic.AddClaimSharedLogic(userId,claimDetail);
+            CommonOutput result=await _sharedLogic.AddClaimSharedLogic(userId,roles,claimDetail);
             if(result.Result==RESULT.SUCCESS){
                 return await Task.FromResult(new CommonOutputgRPC{
                     StatusCode=STATUSCODE.Ok,
@@ -95,8 +96,10 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
     {
         try
         {
-            CommonOutput output=await _sharedLogic.GetClaimByClaimId(request.ClaimId);
-            Console.WriteLine(output);
+            var userId=context.GetHttpContext().User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var roles=context.GetHttpContext().User.FindAll(ClaimTypes.Role).Select(r=>r.Value).ToList();
+            CommonOutput output=await _sharedLogic.GetClaimByClaimId(userId,roles,request.ClaimId);
+            // Console.WriteLine(output);
             if (output.Result==RESULT.SUCCESS)
             {
 
@@ -105,9 +108,19 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
                     StatusCode=STATUSCODE.Ok
                 });
             }
-            return await Task.FromResult(new CommonOutputgRPC{
-                StatusCode=STATUSCODE.Notfound
-            });
+            else if (output.Output == null)
+            {
+                return await Task.FromResult(new CommonOutputgRPC{
+                    StatusCode=STATUSCODE.Notfound
+                });
+            }
+            else
+            {
+                return await Task.FromResult(new CommonOutputgRPC{
+                    Output=Any.Pack(new StringValue{Value=output.Output.ToString()}),
+                    StatusCode=STATUSCODE.Unauthorized
+                });
+            }
 
         }
         catch(Exception ex)
@@ -196,7 +209,8 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
             CommonOutput result = await _sharedLogic.UpdateClaimAmountApprovedBySurveyor(request.ClaimID,request.Claimant);
             if(result.Result==RESULT.SUCCESS){
                 return await Task.FromResult(new CommonOutputgRPC{
-                    StatusCode=STATUSCODE.Ok
+                    StatusCode=STATUSCODE.Ok,
+                    Output=Any.Pack(new StringValue{Value=result.Message})
                 });
             }
             ErrorsListgRPC errors=new();
@@ -227,7 +241,8 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
             CommonOutput output=await _claimService.UpdateAcceptRejectClaim(acceptReject.ClaimId,acceptReject.IsAccept);
             if(output.Result==RESULT.SUCCESS){
                 return await Task.FromResult(new CommonOutputgRPC{
-                    StatusCode=STATUSCODE.Ok
+                    StatusCode=STATUSCODE.Ok,
+                    Output=Any.Pack(new StringValue{Value=output.Message})
                 });
             }
             ErrorsListgRPC errors=new();

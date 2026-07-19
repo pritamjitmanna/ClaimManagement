@@ -23,7 +23,7 @@ public class SharedLogic:ISharedLogic
     // - Performs basic validation for required fields (PolicyNo, EstimatedLoss, DateOfAccident).
     // - If validation passes, delegates to ClaimDetailService.AddNewClaim and returns its CommonOutput.
     // - Catches domain-specific MaximumClaimLimitReachedException and converts it to a CommonOutput failure.
-    public async Task<CommonOutput> AddClaimSharedLogic(string userId,ClaimDetailRequestDTO claimDetail){
+    public async Task<CommonOutput> AddClaimSharedLogic(string userId,List<string> roles,ClaimDetailRequestDTO claimDetail){
         try
         {
             List<PropertyValidationResponse> errors = new List<PropertyValidationResponse>();
@@ -49,7 +49,7 @@ public class SharedLogic:ISharedLogic
             }
 
             // Delegate to the service layer; the service handles deeper business rules and persistence.
-            CommonOutput result = await _claimDetailService.AddNewClaim(userId,claimDetail);
+            CommonOutput result = await _claimDetailService.AddNewClaim(userId, roles, claimDetail);
             return result;
         }
         catch (MaximumClaimLimitReachedException ex)
@@ -80,22 +80,32 @@ public class SharedLogic:ISharedLogic
     // GetClaimByClaimId:
     // - Calls into ClaimDetailService to fetch a claim DTO and wraps it into CommonOutput.
     // - Returns a success CommonOutput when found, otherwise failure.
-    public async Task<CommonOutput> GetClaimByClaimId(string ClaimId)
+    public async Task<CommonOutput> GetClaimByClaimId(string userId,List<string> roles, string claimId)
     {
 
         try
         {
-            ClaimListOpenDTO? output = await _claimDetailService.GetClaimByClaimId(ClaimId);
-            if (output != null)
+            CommonOutput result = await _claimDetailService.GetClaimByClaimId(userId, roles, claimId);
+            if(result.Result == RESULT.SUCCESS)
             {
-                return new CommonOutput{
-                    Output=output,
-                    Result=RESULT.SUCCESS,
-                };
+                return result;
             }
-            return new CommonOutput{
-                Result=RESULT.FAILURE
-            };
+            else{
+                if(result.Output == null)
+                {
+                    return new CommonOutput{
+                        Result=RESULT.FAILURE,
+                        Output=null
+                    };
+                }
+                else
+                {
+                    return new CommonOutput{
+                        Result=RESULT.FAILURE,
+                        Output=result.Output
+                    };
+                }
+            }
 
         }
         catch(Exception ex)

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './Components/navbar/navbar.component';
 import { LoadingComponent } from './Components/loading/loading.component';
-import { AlertComponent } from './Components/alert/alert.component';
+import { AlertComponent } from './Components/Notification/alert/alert.component';
 import { SurveyorslistComponent } from "./Components/surveyorslist/surveyorslist.component";
 
 @Component({

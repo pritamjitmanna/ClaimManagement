@@ -21,7 +21,7 @@ public class AutoMapperProfile : Profile
             .ForMember(cd => cd.PolicyNo, opt => opt.MapFrom(cld => cld.PolicyNo))
             .ForMember(cd => cd.EstimatedLoss, opt => opt.MapFrom(cld => cld.EstimatedLoss))
             .ForMember(cd => cd.DateOfAccident, opt => opt.MapFrom(cld => cld.DateOfAccident))
-            .ForMember(cd => cd.SurveyorID, opt => opt.MapFrom(cld => cld.SurveyorID))
+            .ForMember(cd => cd.SurveyorUserId, opt => opt.MapFrom(cld => cld.SurveyorUserId))
             .ForMember(cd => cd.AmtApprovedBySurveyor, opt => opt.MapFrom(cld => cld.AmtApprovedBySurveyor))
             .ForMember(cd => cd.WithdrawClaim, opt => opt.MapFrom(cld => cld.WithdrawClaim))
             .ForMember(cd=>cd.SurveyorFees,opt=>opt.MapFrom(cld=>cld.SurveyorFees))
@@ -42,13 +42,14 @@ public class AutoMapperProfile : Profile
         CreateMap<Surveyor, SurveyorDTO>()
             // Explicit Surveyor -> SurveyorDTO mapping; AutoMapper will also map same-named props automatically,
             // but explicit mapping clarifies intent.
-            .ForMember(fd => fd.SurveyorId, opt => opt.MapFrom(f => f.SurveyorId))
+            .ForMember(fd => fd.SurveyorUserId, opt => opt.MapFrom(f => f.SurveyorUserId))
             .ForMember(fd => fd.FirstName, opt => opt.MapFrom(f => f.FirstName))
             .ForMember(fd => fd.LastName, opt => opt.MapFrom(f => f.LastName))
             .ForMember(fd => fd.TimesAllocated, opt => opt.MapFrom(f => f.TimesAllocated))
             .ForMember(fd => fd.EstimateLimit, opt => opt.MapFrom(f => f.EstimateLimit));
 
         CreateMap<SurveyorEntryDTO,Surveyor>()
+        .ForMember(s=>s.SurveyorUserId,opt=>opt.MapFrom(sd=>sd.SurveyorUserId))
             .ForMember(s=>s.FirstName,opt=>opt.MapFrom(sd=>sd.FirstName))
             .ForMember(s=>s.LastName,opt=>opt.MapFrom(sd=>sd.LastName))
             .ForMember(s=>s.EstimateLimit,opt=>opt.MapFrom(sd=>sd.EstimateLimit));

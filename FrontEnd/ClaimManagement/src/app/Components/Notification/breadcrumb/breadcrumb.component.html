@@ -1,0 +1,28 @@
+<div class="breadcrumb" (click)="toggleDropdown()">
+  <div class="breadcrumb-trigger">
+    <span class="breadcrumb-count">{{ count }}</span>
+    <span class="breadcrumb-icon" aria-hidden="true">🔔</span>
+  </div>
+
+  <div class="breadcrumb-dropdown" [hidden]="!isOpen">
+    <div class="dropdown-header">Notifications</div>
+    <div class="dropdown-list">
+        @for(notification of notifications;track notification.id){
+            <div class="dropdown-item">
+                {{notification.message}}
+                {{notification.timestamp|date:'medium'}}
+                <button class="dropdown-button" type="button">View all</button>
+            </div>
+        }
+      
+      <!-- <div class="dropdown-item">
+        Your policy is due for review.
+        <button class="dropdown-button" type="button">View all</button>
+      </div>
+      <div class="dropdown-item">
+        Your policy is due for review.
+        <button class="dropdown-button" type="button">View all</button>
+      </div> -->
+    </div>
+  </div>
+</div>

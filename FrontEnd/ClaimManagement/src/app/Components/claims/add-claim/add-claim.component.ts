@@ -31,7 +31,7 @@ export class AddClaimComponent {
   async submitClaim(){
     let result:CommonOutput=await this.claimsService.addClaim(this.addClaim.value)
     if(result.result===RESULT.SUCCESS){
-      this.accessoriesService.alertShow(`Congratulations! Your new claim is created. The claim Id is: ${result.output}`,"success")
+      this.accessoriesService.alertShow(`Congratulations! Your new claim is created. The claim Id is: ${result.output.output}`,"success")
       this.router.navigate([''])
     }
     else{

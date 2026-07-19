@@ -1,5 +1,5 @@
 export class SurveyorProfile{
-    constructor(public firstName:string,public lastName:string,public estimateLimit:number) {
+    constructor(public surveyorUserId:string,public firstName:string,public lastName:string,public estimateLimit:number) {
         
     }
 }

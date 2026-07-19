@@ -20,6 +20,7 @@ export class HomeComponent{
     globalVariables.role.subscribe((roles:string[])=>{
       this.roles=roles
     })
+    
   }
 
 

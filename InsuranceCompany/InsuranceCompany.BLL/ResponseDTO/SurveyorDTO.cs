@@ -2,7 +2,7 @@
 
 public class SurveyorDTO
 {
-    public int SurveyorId { get; set; }
+    public string SurveyorUserId { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public int EstimateLimit { get; set; }

@@ -41,7 +41,7 @@ public class GRPCAutoMapperProfile:Profile
         .ForMember(cd=>cd.ClaimId,opt=>opt.MapFrom(cld=>cld.ClaimId))
         .ForMember(cd=>cd.PolicyNo,opt=>opt.MapFrom(cld=>cld.PolicyNo))
         .ForMember(cd=>cd.DateOfAccident,opt=>opt.MapFrom(cg=>Timestamp.FromDateTime(DateTime.SpecifyKind(cg.DateOfAccident.ToDateTime(TimeOnly.MinValue),DateTimeKind.Utc))))
-        .ForMember(cd=>cd.SurveyorID,opt=>opt.MapFrom(cld=>cld.SurveyorID))
+        .ForMember(cd=>cd.SurveyorUserId,opt=>opt.MapFrom(cld=>cld.SurveyorUserId))
         .ForMember(cd=>cd.AmtApprovedBySurveyor,opt=>opt.MapFrom(cld=>cld.AmtApprovedBySurveyor))
         .ForMember(cd=>cd.InsuranceCompanyApproval,opt=>opt.MapFrom(cld=>cld.InsuranceCompanyApproval))
         .ForMember(cd=>cd.WithdrawClaim,opt=>opt.MapFrom(cld=>cld.WithdrawClaim))

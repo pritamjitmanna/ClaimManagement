@@ -8,13 +8,13 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using Ocelot.Authorization;
+using Gateway.WebAPI.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AuthDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("Auth")));
-
-
-
+builder.Services.AddDbContext<AuthDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("Auth")),ServiceLifetime.Singleton);
+builder.Services.AddSingleton<ChannelBackgroundService>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<ChannelBackgroundService>());
 
 builder.Services.AddIdentity<AuthUser,IdentityRole>().AddEntityFrameworkStores<AuthDBContext>().AddDefaultTokenProviders();
 
@@ -64,8 +64,12 @@ builder.Services.AddCors(options =>
     builder =>
     {
         builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+        builder.WithOrigins("https://*devtunnels.ms").AllowAnyHeader().AllowAnyMethod();
     });
 });
+
+// builder.Services.AddSingleton<ChannelBackgroundService>();
+
 
 var app = builder.Build();
 
@@ -109,8 +113,11 @@ var configuration = new OcelotPipelineConfiguration
     }
 };
 
+
+
 await app.UseOcelot(configuration);
 app.UseProfileSetMiddleware();
+app.UseNotificationMiddleware();
 
 app.Run();
 

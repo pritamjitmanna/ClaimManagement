@@ -40,14 +40,14 @@ public class ClaimDetailService : IClaimDetailService
     // - Calls repository to get open claims (DAL returns collection).
     // - Uses AutoMapper to map each ClaimDetail to ClaimListOpenDTO.
     // - 'await' releases thread while DB I/O completes.
-    public async Task<IEnumerable<ClaimListOpenDTO>> ListAllOpenClaims()
+    public async Task<IEnumerable<ClaimListOpenDTO>> ListAllOpenClaims(string userId, List<string> roles)
     {
 
         ICollection<ClaimDetail> openClaims;
         List<ClaimListOpenDTO> result = new List<ClaimListOpenDTO>();
         try
         {
-            openClaims = await _claimDetailRepository.GetAllOpenClaims();
+            openClaims = await _claimDetailRepository.GetAllOpenClaims(userId,roles);
 
 
             foreach (ClaimDetail claimDetail in openClaims)
@@ -66,14 +66,14 @@ public class ClaimDetailService : IClaimDetailService
     }
 
     // ListAllClosedClaims: same pattern as ListAllOpenClaims but using GetAllCloseClaims.
-    public async Task<IEnumerable<ClaimListOpenDTO>> ListAllClosedClaims()
+    public async Task<IEnumerable<ClaimListOpenDTO>> ListAllClosedClaims(string userId, List<string> roles)
     {
 
         ICollection<ClaimDetail> closeClaims;
         List<ClaimListOpenDTO> result = new List<ClaimListOpenDTO>();
         try
         {
-            closeClaims = await _claimDetailRepository.GetAllCloseClaims();
+            closeClaims = await _claimDetailRepository.GetAllCloseClaims(userId,roles);
 
 
             foreach (ClaimDetail claimDetail in closeClaims)
@@ -156,7 +156,7 @@ public class ClaimDetailService : IClaimDetailService
     //   3. Determine if a claim for the same policy exists in the same year (in-memory LINQ on policy.ClaimDetails).
     // - Uses AutoMapper to map request DTO to ClaimDetail entity.
     // - Calls AddNewClaim in repository (which performs model validation and persistence).
-    public async Task<CommonOutput> AddNewClaim(string userId,ClaimDetailRequestDTO claimDetail)
+    public async Task<CommonOutput> AddNewClaim(string userId,List<string> roles,ClaimDetailRequestDTO claimDetail)
     {
 
         
@@ -164,33 +164,33 @@ public class ClaimDetailService : IClaimDetailService
         try
         {
 
-            CommonOutput policyOutput = await _policyService.GetPolicyByPolicyNo(userId,claimDetail.PolicyNo);
+            CommonOutput policyOutput = await _policyService.GetPolicyByPolicyNo(userId,roles,claimDetail.PolicyNo);
             if (policyOutput.Result == RESULT.FAILURE)
             {
-                if (policyOutput.Output == null)
+                // if (policyOutput.Output == null)
+                // {
+                result = new CommonOutput
                 {
-                    result = new CommonOutput
+                    Result = RESULT.FAILURE,
+                    Output = new List<PropertyValidationResponse>
                     {
-                        Result = RESULT.FAILURE,
-                        Output = new List<PropertyValidationResponse>
+                        new PropertyValidationResponse
                         {
-                            new PropertyValidationResponse
-                            {
-                                Property="PolicyNo",
-                                ErrorMessage="Policy does not exist"
-                            }
+                            Property="PolicyNo",
+                            ErrorMessage="Policy does not exist"
                         }
-                    };
-                }
-                else
-                {
-                    //To write claim authorization error...
-                    result=new CommonOutput
-                    {
-                        Result = RESULT.FAILURE,
-                        Output = policyOutput.Output
-                    };
-                }
+                    }
+                };
+                // }
+                // else
+                // {
+                //     //To write claim authorization error...
+                //     result=new CommonOutput
+                //     {
+                //         Result = RESULT.FAILURE,
+                //         Output = "Policy doesn't exist"
+                //     };
+                // }
             }
             else {
                 Policy policy = (Policy)policyOutput.Output;
@@ -301,12 +301,12 @@ public class ClaimDetailService : IClaimDetailService
             }
             else
             {
-
-                if (value.SurveyorID != null)
+                string ids="";
+                string message="";
+                if (value.SurveyorUserId != null)
                 {
-
-
-                    SurveyorDTO? surveyor = await _surveyorService.GetSurveyorById((int)value.SurveyorID);
+                    
+                    SurveyorDTO? surveyor = await _surveyorService.GetSurveyorById(value.SurveyorUserId);
                     if (surveyor == null)
                     {
                         result = new CommonOutput
@@ -325,17 +325,32 @@ public class ClaimDetailService : IClaimDetailService
                     }
                     else
                     {
-                        claim.SurveyorID = (int)value.SurveyorID;
+                        ids+=$"[{value.SurveyorUserId}]";
+                        message+=$"[Claim with Id: {claimID} has been assigned to you by Insurance Company. Please click on the link to check out the claim.]";
+                        ids+=$"[{claim.ClaimUserId}]";
+                        message+=$"[Claim with Id: {claimID} has been assigned to surveyor {value.SurveyorUserId}. Please click on the link to check out the claim.]";
+                        claim.SurveyorUserId = value.SurveyorUserId;
                     }
                 }
 
 
                 if (value.ClaimStatus != null)
                 {
+                    if (value.SurveyorUserId != null || claim.SurveyorUserId != null)
+                    {
+                        ids+=value.SurveyorUserId!=null?$"[{value.SurveyorUserId}]":$"[{claim.SurveyorUserId}]";
+                        message+=$"[Claim with Id: {claimID} has been closed by Insurance Company. Please click on the link to check out the claim.]";
+                    }
+                    ids+=$"[{claim.ClaimUserId}]";
+                    message+=$"[Claim with Id: {claimID} has been closed by Insurance Company. Please click on the link to check out the claim.]";
                     claim.ClaimStatus = (ClaimStatus)value.ClaimStatus;
                 }
                 if (value.InsuranceCompanyApproval != null)
                 {
+                    ids+=$"[{claim.SurveyorUserId}]";
+                    message+=$"[Claim with Id: {claimID} has been approved by Insurance Company. Please click on the link to check out the claim.]";
+                    ids+=$"[{claim.ClaimUserId}]";
+                    message+=$"[Claim with Id: {claimID} has been approved by Insurance Company. Please click on the link to check out the claim.]";
                     claim.InsuranceCompanyApproval = (bool)value.InsuranceCompanyApproval;
                     if ((bool)claim.InsuranceCompanyApproval == true)
                     {
@@ -344,11 +359,7 @@ public class ClaimDetailService : IClaimDetailService
                 }
 
                 result = await _claimDetailRepository.UpdateClaim(claim);
-
-
-
-
-
+                result.Message = $"{ids}#{message}";
             }
         }
         catch (Exception ex)
@@ -385,7 +396,7 @@ public class ClaimDetailService : IClaimDetailService
                     }
                 };
             }
-            else if (claim.SurveyorID == null)
+            else if (claim.SurveyorUserId == null)
             {
                 result = new CommonOutput
                 {
@@ -394,7 +405,7 @@ public class ClaimDetailService : IClaimDetailService
                     {
                         new PropertyValidationResponse
                         {
-                            Property="SurveyorId",
+                            Property="SurveyorUserId",
                             ErrorMessage="You cannot set the Amount approved when the surveyor is not assigned."
                         }
                     }
@@ -404,6 +415,7 @@ public class ClaimDetailService : IClaimDetailService
             {
                 claim.AmtApprovedBySurveyor = claimant;
                 result = await _claimDetailRepository.UpdateClaim(claim);
+                result.Message=claim.ClaimUserId;
 
                 GetErrorListInRequiredFormat(ref result);
             }
@@ -448,7 +460,7 @@ public class ClaimDetailService : IClaimDetailService
             }
             else
             {
-                if (claim.SurveyorID == null)
+                if (claim.SurveyorUserId == null)
                 {
                     result = new CommonOutput
                     {
@@ -457,7 +469,7 @@ public class ClaimDetailService : IClaimDetailService
                         {
                             new PropertyValidationResponse
                             {
-                                Property="SurveyorID",
+                                Property="SurveyorUserId",
                                 ErrorMessage="Surveyor not assigned"
                             }
                         }
@@ -474,6 +486,7 @@ public class ClaimDetailService : IClaimDetailService
                     if (result.Result == RESULT.SUCCESS)
                     {
                         result.Output = fees;
+                        result.Message=$"[{claim.SurveyorUserId}]#[Your fees has been released by the IC for the Claim {claim.ClaimId}. Kindly check out.]";
                     }
                     else
                     {
@@ -542,6 +555,7 @@ public class ClaimDetailService : IClaimDetailService
                     claim.WithdrawClaim=WITHDRAWSTATUS.WITHDRAWN;
                 }
                 result=await _claimDetailRepository.UpdateClaim(claim);
+                result.Message=claim.SurveyorUserId;
             }   
             
         }
@@ -554,17 +568,37 @@ public class ClaimDetailService : IClaimDetailService
 
 
     //---Required-----
-    public async Task<ClaimListOpenDTO?> GetClaimByClaimId(string claimId)
+    public async Task<CommonOutput> GetClaimByClaimId(string userId,List<string> roles, string claimId)
     {
-
+        CommonOutput result;
         try
         {
             ClaimDetail? claim = await _claimDetailRepository.GetClaimByClaimId(claimId);
+            
             if (claim == null)
             {
-                return null;
+                result=new CommonOutput
+                {
+                    Result=RESULT.FAILURE,
+                    Output=null
+                };
             }
-            return _mapper.Map<ClaimListOpenDTO>(claim);
+            else if((roles.Contains("Insurer")&&claim.ClaimUserId != userId)||(roles.Contains("Surveyor")&&claim.SurveyorUserId != userId))     
+            {
+                result=new CommonOutput
+                {
+                    Result=RESULT.FAILURE,
+                    Output="Unauthorized access to the claim."
+                };
+            }
+            else
+            {
+                result=new CommonOutput
+                {
+                    Result=RESULT.SUCCESS,
+                    Output=_mapper.Map<ClaimListOpenDTO>(claim)
+                };
+            }
 
         }
         catch (Exception ex)
@@ -572,6 +606,7 @@ public class ClaimDetailService : IClaimDetailService
             //_logger.Error(LogMessage(ex.Message));
             throw;
         }
+        return result;
 
     }
 
@@ -621,7 +656,7 @@ public class ClaimDetailService : IClaimDetailService
                     ClaimDetail temp = new ClaimDetail
                     {
                         ClaimId = claimID,
-                        SurveyorID = surveyor.SurveyorId
+                        SurveyorUserId = surveyor.SurveyorUserId
                     };
                     result = await _claimDetailRepository.UpdateClaim(temp);
                 }
@@ -639,7 +674,7 @@ public class ClaimDetailService : IClaimDetailService
         return result;
     }
 
-    private async Task<CommonOutput> AssignSurveyorToClaim(string claimID, int surveyorId)
+    private async Task<CommonOutput> AssignSurveyorToClaim(string claimID, string surveyorUserId)
     {
         CommonOutput result;
         try
@@ -662,7 +697,7 @@ public class ClaimDetailService : IClaimDetailService
             }
             else
             {
-                SurveyorDTO? surveyor = await _surveyorService.GetSurveyorById(surveyorId);
+                SurveyorDTO? surveyor = await _surveyorService.GetSurveyorById(surveyorUserId);
                 if (surveyor == null)
                 {
                     result = new CommonOutput
@@ -683,7 +718,7 @@ public class ClaimDetailService : IClaimDetailService
                     ClaimDetail temp = new ClaimDetail
                     {
                         ClaimId = claimID,
-                        SurveyorID = surveyor.SurveyorId
+                        SurveyorUserId = surveyor.SurveyorUserId
                     };
                     result = await _claimDetailRepository.UpdateClaim(temp);
                 }

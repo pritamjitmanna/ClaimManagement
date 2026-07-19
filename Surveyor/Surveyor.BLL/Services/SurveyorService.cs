@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using gRPCClaimsService.Protos;
 using gRPCPoliciesService.Protos;
 using gRPCSharedProtos.Protos;
@@ -35,15 +37,19 @@ public class SurveyorService:ISurveyorService
         _mapper = mapper;
     }
 
-    public async Task<CommonOutput> AddNewSurveyReport(SurveyReportDTO surveyReport){
+    public async Task<CommonOutput> AddNewSurveyReport(string token,SurveyReportDTO surveyReport){
         ClaimDTOgRPC claim;
         PolicyDTOgRPC policy;
         CommonOutput output;
         try
         {
+            var headers=new Metadata
+            {
+                {"authorization",$"Bearer {token}"}  
+            };
             CommonOutputgRPC result=await _claimsServiceClient.GetClaimByClaimIdAsync(new GetClaimByIdString{
                 ClaimId=surveyReport.ClaimId
-            });
+            },headers);
 
             if(result.StatusCode==STATUSCODE.Ok){
                 if(result.Output.TryUnpack(out ClaimDTOgRPC tempclaim)){
@@ -83,7 +89,7 @@ public class SurveyorService:ISurveyorService
 
             result=await _policiesServiceClient.GetPolicyByPolicyNoAsync(new GetPolicyNoString{
                 PolicyNo=surveyReport.PolicyNo
-            });
+            },headers);
             
 
             if(result.StatusCode==STATUSCODE.Ok){
@@ -143,12 +149,16 @@ public class SurveyorService:ISurveyorService
 
             if(output.Result==RESULT.SUCCESS){
                     output=await UpdateClaimAmtInsuranceCompany(report.ClaimId,TotalAmount);
+                    output.Message=output.Message.Replace("updated","created the survey report and updated");
                     if(output.Result==RESULT.FAILURE){
                         List<PropertyValidationResponse> temp=(List<PropertyValidationResponse>)output.Output;
                         temp.Add(new PropertyValidationResponse{
                             Property="ClaimId",
                             ErrorMessage="There's some error while updating the Amount in InsuranceCompany, try again after sometime."
                         });
+
+                        //Here we need to roll back the changes in this database also for failure.    
+
                         output.Output=temp;
                     }
                 }
@@ -163,7 +173,7 @@ public class SurveyorService:ISurveyorService
 
     }
 
-    public async Task<ReportDTO?> GetSurveyReport(string claimId){
+    public async Task<ReportDTO?> GetSurveyReport(string token,string claimId){
         try{
             SurveyReport? report=await _surveyorRepository.GetSurveyReport(claimId);
             if(report==null)return null;
@@ -175,7 +185,7 @@ public class SurveyorService:ISurveyorService
         }
     }
 
-    public async Task<CommonOutput> UpdateSurveyReport(string claimId,UpdateReportDTO updateReportDTO){
+    public async Task<CommonOutput> UpdateSurveyReport(string token,string claimId,UpdateReportDTO updateReportDTO){
         CommonOutput result;
         try{
             SurveyReport? surveyReport=await _surveyorRepository.GetSurveyReport(claimId);
@@ -247,9 +257,20 @@ public class SurveyorService:ISurveyorService
                 Claimant=claimant
             });
 
+
             if(output.StatusCode==STATUSCODE.Ok){
+                string ids="";
+                string message="";
+                ids+=$"[IC]";
+                if(output.Output.TryUnpack(out StringValue id))
+                {
+                    ids+=$"[{id.Value}]";
+                }
+                message+=$"[Surveyor has updated the claim Amount for the Claim: {claimId}. Please check on the claim by clicking on the link.]";
+                message+=$"[Surveyor has updated the claim Amount for the Claim: {claimId}. Please check on the claim by clicking on the link.]";
                 return new CommonOutput{
-                    Result=RESULT.SUCCESS
+                    Result=RESULT.SUCCESS,
+                    Message=$"{ids}#{message}"
                 };
             }
             else if(output.StatusCode==STATUSCODE.Badrequest){

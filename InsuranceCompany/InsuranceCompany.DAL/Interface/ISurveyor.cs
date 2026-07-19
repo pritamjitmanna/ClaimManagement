@@ -27,9 +27,9 @@ public interface ISurveyor
     /// </summary>
     /// <param name="surveyorId"></param>
     /// <returns>Surveyor?</returns>
-    Task<Surveyor?> GetSurveyorById(int surveyorId);
+    Task<Surveyor?> GetSurveyorById(string surveyorId);
 
     Task<CommonOutput> AddSurveyorDetails(Surveyor surveyor);
-    Task<bool> DeleteSurveyorDetails(int surveyorId);
+    Task<bool> DeleteSurveyorDetails(string surveyorId);
 
 }

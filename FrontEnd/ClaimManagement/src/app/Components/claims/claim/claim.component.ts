@@ -52,16 +52,16 @@ export class ClaimComponent {
           }
         }
         else this.claim=JSON.parse(sessionStorage.getItem(claimId)!)
-        if(rolesArray.includes("Surveyor")){
-          if(this.claim.surveyorID!==null){
-            const surveyorId=await firstValueFrom(globalVariables.profileId);
-            // console.log(surveyorId)
-            if(this.claim.surveyorID!==surveyorId){
-              accessoriesService.alertShow("Unauthorized Access","danger")
-              router.navigate([''])
-            }
-          }
-        }
+        // if(rolesArray.includes("Surveyor")){
+        //   if(this.claim.surveyorUserId!==null){
+        //     const surveyorId=await firstValueFrom(globalVariables.userId);
+        //     // console.log(surveyorId)
+        //     if(this.claim.surveyorUserId!==surveyorId){
+        //       accessoriesService.alertShow("Unauthorized Access","danger")
+        //       router.navigate([''])
+        //     }
+        //   }
+        // }
         this.isLoading=false
       }
     )
@@ -74,6 +74,7 @@ export class ClaimComponent {
 
     if(result.result===RESULT.SUCCESS){
       this.claim.withdrawClaim=(flag?WITHDRAWSTATUS.ACCEPTED:WITHDRAWSTATUS.WITHDRAWN)
+      sessionStorage.setItem(this.claim.claimId,JSON.stringify(this.claim))
       this.accessoriesService.alertShow(`Claim ${flag?"Accepted":"Rejected"}`,"success")
     }
     else{
@@ -89,6 +90,7 @@ export class ClaimComponent {
     //Gets the object {estimateStartLimit: 5000, estimateEndLimit: 10000, fees: 1000}
     if(result.result===RESULT.SUCCESS){
       this.claim.surveyorFees=result.output['fees']
+      sessionStorage.setItem(this.claim.claimId,JSON.stringify(this.claim))
       this.accessoriesService.alertShow(`Surveyor Fees ${result.output['fees']} released for the claim Id: ${this.claim.claimId}`,'success')
     }
     else{
@@ -112,10 +114,11 @@ export class ClaimComponent {
 
   setNewValues(details:UpdateClaim){
     this.claim.claimStatus=details.ClaimStatus===null?this.claim.claimStatus:details.ClaimStatus
-    this.claim.surveyorID=details.SurveyorID===null?this.claim.surveyorID:details.SurveyorID
+    this.claim.surveyorUserId=details.SurveyorUserId===null?this.claim.surveyorUserId:details.SurveyorUserId
+    
     this.claim.insuranceCompanyApproval=details.InsuranceCompanyApproval===null?this.claim.insuranceCompanyApproval:details.InsuranceCompanyApproval
-
-    sessionStorage.setItem(this.claim.claimId,JSON.stringify(this.claim))
+    if(this.claim.insuranceCompanyApproval===true)this.claim.claimStatus=ClaimStatus.Closed
+    // sessionStorage.setItem(this.claim.claimId,JSON.stringify(this.claim))
   }
 
 

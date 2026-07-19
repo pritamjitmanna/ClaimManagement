@@ -12,6 +12,11 @@ export class AccessoriesService{
     }>()
 
     surveyorEstimatedLossEmitter=new EventEmitter<number>();
+    // Send surveyor Id and details to update claim component
+    surveyorDetailsEmitter=new EventEmitter<{
+        surveyorUserId:string;
+        toShow:string
+    }>();
 
     alertShow(message:string,alertType:string){
         this.alertEmitter.emit({

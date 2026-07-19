@@ -9,37 +9,45 @@
     }
     @else{
         <div class="tabcontent" >
-            @for(item of claims;track item.claimId;){
-                <div class="claim-card">
-                    <div class="claim-row">
-                        <div class="claim-info">
-                            <label>ClaimId:</label>
-                            <span>{{item.claimId}}</span>
-                        </div>
-                        <div class="claim-info">
-                            <label>Policy No:</label>
-                            <span>{{item.policyNo}}</span>
-                        </div>
-                    </div>
-                    <div class="claim-row">
-                        <div class="claim-info">
-                            <label>Claimed:</label>
-                            <span>{{item.dateOfAccident}}</span>
-                        </div>
-                        <div class="claim-info">
-                            <label>Estimated Loss:</label>
-                            <span>{{item.estimatedLoss}}</span>
-                        </div>
-                    </div>
-                    <div class="claim-row">
-                        <div class="claim-info">
-                            <label>Surveyor Assigned:</label>
-                            <span>{{item.surveyorID===0?"Not Assigned":item.surveyorID}}</span>
-                        </div>
-                    </div>
-                    
-                    <a [routerLink]="['/claim',item.claimId]" class="details-link">View Details</a>
+            @if(claims===null){
+                <div class="no-claims">
+                    <p>No claims found.</p>
                 </div>
+            }
+            @else {
+
+                @for(item of claims;track item.claimId;){
+                    <div class="claim-card">
+                        <div class="claim-row">
+                            <div class="claim-info">
+                                <label>ClaimId:</label>
+                                <span>{{item.claimId}}</span>
+                            </div>
+                            <div class="claim-info">
+                                <label>Policy No:</label>
+                                <span>{{item.policyNo}}</span>
+                            </div>
+                        </div>
+                        <div class="claim-row">
+                            <div class="claim-info">
+                                <label>Claimed:</label>
+                                <span>{{item.dateOfAccident}}</span>
+                            </div>
+                            <div class="claim-info">
+                                <label>Estimated Loss:</label>
+                                <span>{{item.estimatedLoss}}</span>
+                            </div>
+                        </div>
+                        <div class="claim-row">
+                            <div class="claim-info">
+                                <label>Surveyor Assigned:</label>                                
+                                <span>{{item.surveyorUserId===null?"Not Assigned":item.surveyorUserId}}</span>
+                            </div>
+                        </div>
+                        
+                        <a [routerLink]="['/claim',item.claimId]" class="details-link">View Details</a>
+                    </div>
+                }
             }
         </div>
     }

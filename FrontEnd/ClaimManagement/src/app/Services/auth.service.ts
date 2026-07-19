@@ -8,6 +8,7 @@ import { CommonOutput } from "../Models/common-output.model";
 import { RESULT } from "../Models/e.enum";
 import { Router } from "@angular/router";
 import { globalVariables } from "../global_module";
+import { NotificationModel } from "../Models/notification-model";
 
 
 
@@ -15,7 +16,7 @@ import { globalVariables } from "../global_module";
     providedIn:"root"
 })
 export class AuthService{
-    private JWTObj:{token:string,expiration:Date}={token:"",expiration:new Date()}
+    private JWTObj:{token:string,expiration:Date,notifications:NotificationModel[]}={token:"",expiration:new Date(),notifications:[]}
 
     private BASE_URL="http://localhost:5179/auth/"  
     
@@ -26,8 +27,9 @@ export class AuthService{
 
         const URL=this.BASE_URL+"login"
         try {
-            const data = await firstValueFrom(this.http.post<{ emailAddress: string, password: string }>(URL, creds));
-            localStorage.setItem("loginData",JSON.stringify(data))
+            const data = await firstValueFrom(this.http.post<{ token: string, expiration: Date, notifications:NotificationModel[] }>(URL, creds));
+            // console.log(notifications)
+            localStorage.setItem("loginData",JSON.stringify(data));
             globalVariables.isAuthenticated.next(true);
             this.decodeTokenUserRole()
             return new CommonOutput(RESULT.SUCCESS)
@@ -49,7 +51,8 @@ export class AuthService{
     }
     
     logout(){
-        localStorage.removeItem("loginData")
+        localStorage.clear()
+        sessionStorage.clear()
         globalVariables.isAuthenticated.next(false);
         
         this.router.navigate(['login'])
@@ -71,6 +74,7 @@ export class AuthService{
 
             globalVariables.isAuthenticated.next(true);
             globalVariables.token=this.JWTObj["token"]
+            globalVariables.notifications.set(this.JWTObj["notifications"])
             const decodedToken:{[key:string]: string}=jwtDecode(this.JWTObj["token"])
             // console.log(decodedToken)
             globalVariables.username.next(decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"])
@@ -80,7 +84,6 @@ export class AuthService{
             var userId=decodedToken["sub"]
             globalVariables.userId.next(userId)
             if(profileSetFlag==="True")globalVariables.profileSet.next(true)
-            if(profileId!==null && profileId!==undefined)globalVariables.profileId.next(Number.parseInt(profileId))
             let roles;
             if(typeof(temp)==='string')roles=[temp]
             else roles=temp

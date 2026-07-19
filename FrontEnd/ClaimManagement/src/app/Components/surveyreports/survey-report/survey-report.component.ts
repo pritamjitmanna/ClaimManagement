@@ -1,8 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SurveyorService } from '../../../Services/surveyor.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CommonOutput } from '../../../Models/common-output.model';
-import { RESULT } from '../../../Models/e.enum';
+import { RESULT, WITHDRAWSTATUS } from '../../../Models/e.enum';
 import { SurveyReport } from '../../../Models/survey-report.model';
 import { AccessoriesService } from '../../../Services/accessories.service';
 import { UpdateSurveyReportModalComponent } from "../update-survey-report-modal/update-survey-report-modal.component";
@@ -17,16 +17,17 @@ import { LoadingComponent } from "../../loading/loading.component";
   templateUrl: './survey-report.component.html',
   styleUrl: './survey-report.component.css'
 })
-export class SurveyReportComponent {
+export class SurveyReportComponent{
 
   isLoading:boolean=false;
   surveyReport!:SurveyReport;
   @ViewChild(UpdateSurveyReportModalComponent) updateSurveyReportModal!:UpdateSurveyReportModalComponent;
-
+  acceptReject:WITHDRAWSTATUS|null=null;
   constructor(private surveyorService:SurveyorService,private accessoriesService:AccessoriesService,private route:ActivatedRoute,private router:Router){
     this.isLoading=true;
     route.params.subscribe(
       async(params:Params)=>{
+        this.acceptReject=this.router.getCurrentNavigation()?.extras.state?.['acceptReject']!==undefined?this.router.getCurrentNavigation()?.extras.state?.['acceptReject']:null;
         const claimId=params["id"];
         let result:CommonOutput=await surveyorService.getSurveyReportByClaimId(claimId);
 

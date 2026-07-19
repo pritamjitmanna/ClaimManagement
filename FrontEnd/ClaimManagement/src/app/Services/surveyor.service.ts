@@ -50,6 +50,7 @@ export class SurveyorService{
             return new CommonOutput(RESULT.SUCCESS,output);
         }
         catch(err:any){
+            console.log(err)
             return new CommonOutput(RESULT.FAILURE,err);
         }
     }

@@ -4,7 +4,7 @@ namespace InsuranceCompany.DAL;
 
 public class Surveyor
 {
-    public int SurveyorId { get; set; }
+    public required string SurveyorUserId { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     [Range(1, int.MaxValue, ErrorMessage = "The Estimated Limit must be a positive number")]

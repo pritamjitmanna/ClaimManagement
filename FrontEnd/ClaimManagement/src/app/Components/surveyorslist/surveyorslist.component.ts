@@ -27,6 +27,10 @@ export class SurveyorslistComponent implements OnInit{
 
     this.accessoriesService.surveyorEstimatedLossEmitter.subscribe(
       async (data:number)=>{
+        if(data===-1){
+          this.closeSidebar();
+          return;
+        }
         this.estimatedLoss=data
         this.openSidebar();
         let result=await this.surveyorService.getSurveyorsOnEstimatedLoss(data);
@@ -45,6 +49,13 @@ export class SurveyorslistComponent implements OnInit{
         }
       }
     )
+  }
+
+  onClickCardAssign(surveyorUserId:string, toShow:string){
+    this.accessoriesService.surveyorDetailsEmitter.emit({
+      surveyorUserId,
+      toShow
+    })
   }
 
   openSidebar() {

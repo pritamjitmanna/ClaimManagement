@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AccessoriesService } from "../../Services/accessories.service";
+import { AccessoriesService } from "../../../Services/accessories.service";
 
 
 
@@ -31,6 +31,9 @@ export class AlertComponent implements OnInit{
                 this.toShow=true
                 this.message=info.message
                 this.alertType=info.alertType
+                setTimeout(()=>{
+                    this.toShow=false
+                },2000)
             },
             error:(err:any)=>{
                 console.log(err)

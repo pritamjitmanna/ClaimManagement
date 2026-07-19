@@ -79,10 +79,8 @@ public class InsuranceCompanyDBContext:DbContext
         // Surveyor: primary key and relationship configuration.
         // HasMany/WithOne maps Surveyor -> ClaimDetails.
         // OnDelete(DeleteBehavior.SetNull) means if a Surveyor is deleted, ClaimDetails remain but their SurveyorID FK is set to NULL.
-        modelBuilder.Entity<Surveyor>().HasKey(s => s.SurveyorId).HasName("Pk_Surveyor");
-        modelBuilder.Entity<Surveyor>().HasMany(s => s.ClaimDetails).WithOne(c => c.Surveyor).HasForeignKey(c => c.SurveyorID).OnDelete(DeleteBehavior.SetNull).HasConstraintName("Fk_Surveyor_ClaimDetail");
-        // ValueGeneratedOnAdd sets SurveyorId to be database-generated (identity/auto-increment).
-        modelBuilder.Entity<Surveyor>().Property(s => s.SurveyorId).ValueGeneratedOnAdd();
+        modelBuilder.Entity<Surveyor>().HasKey(s => s.SurveyorUserId).HasName("Pk_Surveyor");
+        modelBuilder.Entity<Surveyor>().HasMany(s => s.ClaimDetails).WithOne(c => c.Surveyor).HasForeignKey(c => c.SurveyorUserId).OnDelete(DeleteBehavior.SetNull).HasConstraintName("Fk_Surveyor_ClaimDetail");
         // HasDefaultValue(0) initializes TimesAllocated to zero for new Surveyor rows.
         modelBuilder.Entity<Surveyor>().Property(s => s.TimesAllocated).HasDefaultValue(0);
 
@@ -102,12 +100,12 @@ public class InsuranceCompanyDBContext:DbContext
         // Seed Surveyor data:
         // HasData provides initial rows inserted during migrations or ensured at DB creation.
         // Seeded IDs must match configured generation strategy to avoid conflicts.
-        modelBuilder.Entity<Surveyor>().HasData([
-            new Surveyor { SurveyorId = 1, FirstName = "R", LastName = "K", EstimateLimit = 6000 },
-            new Surveyor { SurveyorId = 2, FirstName = "K", LastName = "R", EstimateLimit = 15000 },
-            new Surveyor { SurveyorId = 3, FirstName = "P", LastName = "M", EstimateLimit = 50000 },
-            new Surveyor { SurveyorId = 4, FirstName = "S", LastName = "M", EstimateLimit = 15000 }
-        ]);
+        // modelBuilder.Entity<Surveyor>().HasData([
+        //     new Surveyor { SurveyorId = 1, FirstName = "R", LastName = "K", EstimateLimit = 6000 },
+        //     new Surveyor { SurveyorId = 2, FirstName = "K", LastName = "R", EstimateLimit = 15000 },
+        //     new Surveyor { SurveyorId = 3, FirstName = "P", LastName = "M", EstimateLimit = 50000 },
+        //     new Surveyor { SurveyorId = 4, FirstName = "S", LastName = "M", EstimateLimit = 15000 }
+        // ]);
 
         // Seed Policy data:
         // DateOnly.FromDateTime(DateTime.ParseExact(...)) ensures the date is parsed in a culture-invariant way.

@@ -5,6 +5,6 @@ namespace InsuranceCompany.BLL;
 
 public interface IPolicyService
 {
-    Task<CommonOutput> GetPolicyByPolicyNo(string userId,string policyNo);
+    Task<CommonOutput> GetPolicyByPolicyNo(string userId,List<string> roles, string policyNo);
     Task<CommonOutput> AddNewPolicy(string userId, PolicyEntryDTO policy);
 }

@@ -1,0 +1,12 @@
+Notification handler.
+
+It can be created by another network call, but to keep it simple for my understanding, I am sending the message from the microservice only which would send the notification which would be consumed in gateway in middleware. Thus it saves a network call latency. There is a certain challenge though. I am not keeping the sender Id, just the receiver id in the db for access, Now when there is a notification for IC, the IC id cannot be retrived so easily as it is generally not passed around, so I would take it in the gateway only from the db(I know it is a slow db call), but it would help keep the IC id from moving around and for now I have only one IC and so can get it easily. Notifications to Surveyor or Insurer is easy as it is moving around in calls.
+
+All this can be properly handled if we used messaging queue, but for now I am keeping it aside for my understanding and keeping things simple. Messaging queue would make everything fast and smooth, for another day maybe.
+
+
+
+
+problems persisting
+
+while trying to assign surveyor, when i click the available surveyors based on estimated loss, when it is clicked for the first time, it is getting forbidden or if any other user was logged in before the token is not getting updated. When it is refreshed it is getting loaded and the endpoint runs, need to check the saving as to what problems is persisting.

@@ -25,10 +25,15 @@
     }
     @if(roles.includes('Surveyor')){
         <div class="home-item">
+          <label for="claims-list">Go to Claims List:</label>
+          <a id="claims-list" class="btn home-btn" [routerLink]="['claims']">Claims List Page</a>
+      </div>
+      
+        <!-- <div class="home-item">
             <label for="get-survey-report">Get Survey Report:</label>
             <input type="text" id="get-survey-report" placeholder="Enter Claim ID" #surveyClaimId>
             <button id="get-survey-report-page" class="btn home-btn" (click)="fetchSurveyReport(surveyClaimId.value)">Survey Report</button>
-        </div>
+        </div> -->
         <div class="home-item">
             <label for="individual-claim-page">View Individual Claim:</label>
             <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>
@@ -36,6 +41,15 @@
         </div>
     }
     @if(roles.includes('Insurer')){
+        <div class="home-item">
+          <label for="claims-list">Go to Claims List:</label>
+          <a id="claims-list" class="btn home-btn" [routerLink]="['claims']">Claims List Page</a>
+      </div>
+      <!-- Policy list -->
+        <!-- <div class="home-item">
+            <label for="claims-list">Go to Claims List:</label>
+            <a id="claims-list" class="btn home-btn" [routerLink]="['claims']">Claims List Page</a>
+        </div> -->
         <div class="home-item">
             <label for="individual-claim-page">View Individual Claim:</label>
             <input type="text" id="individual-claim-id" placeholder="Enter Claim ID" #claimId>

@@ -74,14 +74,13 @@ public class ClaimDetailRepository : IClaimDetail
 
     // Returns all claims with ClaimStatus.Open using AsNoTracking and ToListAsync.
     // AsNoTracking improves query performance since returned entities are not tracked for changes.
-    public async Task<ICollection<ClaimDetail>> GetAllOpenClaims()
+    public async Task<ICollection<ClaimDetail>> GetAllOpenClaims(string userId,List<string> roles)
     {
         ICollection<ClaimDetail> claims = new List<ClaimDetail>();
 #pragma warning disable CS0168 // Variable is declared but never used
         try
         {
-
-            claims=await _dbContext.ClaimDetails.AsNoTracking().Where(c=>c.ClaimStatus==ClaimStatus.Open).ToListAsync();
+            claims=await _dbContext.ClaimDetails.AsNoTracking().Where(c=>c.ClaimStatus==ClaimStatus.Open && (roles.Contains("InsuranceCompany")||(roles.Contains("Surveyor")&&userId==c.SurveyorUserId)||(roles.Contains("Insurer")&&userId==c.ClaimUserId))).ToListAsync();
 
             //claims = await (from x in _dbContext.ClaimDetails.AsNoTracking() where x.ClaimStatus == ClaimStatus.Open select x).ToListAsync();
         }
@@ -244,14 +243,13 @@ public class ClaimDetailRepository : IClaimDetail
     }
 
     // Gets all closed claims. ToListAsync materializes results into a collection.
-    public async Task<ICollection<ClaimDetail>> GetAllCloseClaims()
+    public async Task<ICollection<ClaimDetail>> GetAllCloseClaims(string userId,List<string> roles)
     {
         ICollection<ClaimDetail> claims = new List<ClaimDetail>();
 #pragma warning disable CS0168 // Variable is declared but never used
         try
         {
-
-            claims = await _dbContext.ClaimDetails.AsNoTracking().Where(c => c.ClaimStatus == ClaimStatus.Closed).ToListAsync();
+            claims = await _dbContext.ClaimDetails.AsNoTracking().Where(c => c.ClaimStatus == ClaimStatus.Closed && (roles.Contains("InsuranceCompany")||(roles.Contains("Surveyor")&&userId==c.SurveyorUserId)||(roles.Contains("Insurer")&&userId==c.ClaimUserId))).ToListAsync();
         }
         catch (Exception ex)
         {

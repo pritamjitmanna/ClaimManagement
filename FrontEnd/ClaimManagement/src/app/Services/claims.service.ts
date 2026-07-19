@@ -21,8 +21,8 @@ export class ClaimsService{
     async getOpenClaims():Promise<CommonOutput>{
         try{
             const URL=this.BASE_URL+"claims"
-            const openClaims:ClaimDetail[]=await firstValueFrom(this.http.get<ClaimDetail[]>(URL,{headers:this.header}).pipe(
-                map(res=>res.map(response=>this.assignNull(response)))
+            const openClaims:ClaimDetail[]|null=await firstValueFrom(this.http.get<ClaimDetail[]>(URL,{headers:this.header}).pipe(
+                map(res=>res!==null?res.map(response=>this.assignNull(response)):null)
             ))
             return new CommonOutput(RESULT.SUCCESS,openClaims)
         }
@@ -35,8 +35,8 @@ export class ClaimsService{
 
         try{
             const URL=this.BASE_URL+"claims/closed"
-            const closedClaims:ClaimDetail[]=await firstValueFrom(this.http.get<ClaimDetail[]>(URL,{headers:this.header}).pipe(
-                map(res=>res.map(response=>this.assignNull(response)))
+            const closedClaims:ClaimDetail[]|null=await firstValueFrom(this.http.get<ClaimDetail[]>(URL,{headers:this.header}).pipe(
+                map(res=>res!==null?res.map(response=>this.assignNull(response)):null)
             ))
             return new CommonOutput(RESULT.SUCCESS,closedClaims)
         }
@@ -65,7 +65,7 @@ export class ClaimsService{
             if(globalVariables.role.value.includes("InsuranceCompany"))URL+='new'
             else URL+='addclaim'
             const result:CommonOutput=await firstValueFrom(this.http.post<CommonOutput>(URL,details,{headers:this.header}))
-            return result
+            return new CommonOutput(RESULT.SUCCESS,result)
         }
         catch(err:any){
             return new CommonOutput(RESULT.FAILURE,err)
@@ -142,7 +142,7 @@ export class ClaimsService{
         response.insuranceCompanyApproval,
         response.withdrawClaim,
         response.claimStatus,
-        response.surveyorID ?? null,
+        response.surveyorUserId ?? null,
         response.surveyorFees ?? null
     )
 

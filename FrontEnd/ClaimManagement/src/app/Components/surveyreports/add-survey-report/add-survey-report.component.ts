@@ -55,6 +55,7 @@ export class AddSurveyReportComponent {
         this.router.navigate(['internalservererror'])
       }
       else if(err_status===400){
+        console.log(error_block)
         for(let prop of error_block){
           if(prop['property']==="TotalAmount")this.accessoriesService.alertShow(prop['errorMessage'],"danger")
           else{

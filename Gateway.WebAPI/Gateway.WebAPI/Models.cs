@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace Gateway.WebAPI;
@@ -42,7 +43,23 @@ public class LoginUserModel
 public class AuthUser:IdentityUser
 {
     public bool profileSet{get;set;}
-    public int? profileId{get;set;}
+}
+
+public class NotificationModel
+{
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id{ get; set;}
+    public required string ToUserId{ get; set;}
+    public required string Message{ get; set;}
+    public required DateTimeOffset Timestamp{ get; set;}
+    public bool IsRead{ get; set;} 
+}
+
+public class NotificationDTO
+{
+    public Guid Id{ get; set;}
+    public required string Message{ get; set;}
+    public required DateTimeOffset Timestamp{ get; set;}
 }
  
 

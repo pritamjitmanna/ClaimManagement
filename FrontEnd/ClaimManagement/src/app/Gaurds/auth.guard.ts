@@ -27,6 +27,7 @@ export const authGuard: CanActivateFn = async(route, state):Promise<boolean | Ur
     return false;
   }
 
+  // console.log(globalVariables.profileSet.value)
   if(roles.includes("Surveyor") && profileSet===false){
     router.navigate(['profile'])
     return false

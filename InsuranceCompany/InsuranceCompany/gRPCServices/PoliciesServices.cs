@@ -39,7 +39,8 @@ namespace InsuranceCompany.gRPCServices
             try
             {
                 var userId=context.GetHttpContext().User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-                CommonOutput result=await _policyService.GetPolicyByPolicyNo(userId,request.PolicyNo);
+                var roles=context.GetHttpContext().User.FindAll(ClaimTypes.Role).Select(r=>r.Value).ToList();
+                CommonOutput result=await _policyService.GetPolicyByPolicyNo(userId,roles,request.PolicyNo);
 
                 if (result.Result == RESULT.SUCCESS)
                 {

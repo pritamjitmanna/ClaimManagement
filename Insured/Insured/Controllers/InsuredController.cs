@@ -1,4 +1,6 @@
-﻿using Grpc.Core;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Grpc.Core;
 using Insured.BLL;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -42,8 +44,15 @@ public class InsuredController:ControllerBase
     [HttpPost("addclaim")]
     public async Task<IActionResult> AddNewClaim([FromBody]ClaimDetailRequestDTO claim){
         try{
-            CommonOutput output = await _insuredService.AddNewClaim(claim);
+            var token=await HttpContext.GetTokenAsync("access_token");
+            var readToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var userName=readToken.Claims.First(c => c.Type == ClaimTypes.Name).Value;
+            CommonOutput output = await _insuredService.AddNewClaim(token,claim);
             if(output.Result==RESULT.SUCCESS){
+                Response.Headers.Append("Receiver-Id","[IC]");
+                Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o"));
+                string template = $"[New Claim has been created with Claim Id: {output.Output} by Insurer: {userName}]. To check, click the below link.";
+                output.Message = template;
                 return Ok(output);
             }
             return BadRequest(output);
@@ -65,9 +74,13 @@ public class InsuredController:ControllerBase
         try{
             CommonOutput output= await _insuredService.AcceptOrRejectClaim(claimId,acceptReject);
             if(output.Result==RESULT.SUCCESS){
-                return Ok();
+                string[] strings=output.Message.Split("#");
+                Response.Headers.Append("Receiver-Id",strings[0]);  
+                Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o"));
+                output.Message=strings[1];  
+                return Ok(output);
             }
-            return BadRequest(output.Output);
+            return BadRequest(output);
         }
         catch(Exception ex){
             // Generic error mapping; consider returning structured error objects and logging the detailed exception.
@@ -108,11 +121,16 @@ public class InsuredController:ControllerBase
         try
         {
             var token=await HttpContext.GetTokenAsync("access_token");
-
+            var readToken=new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var userName=readToken.Claims.First(c=>c.Type==ClaimTypes.Name).Value;
             CommonOutput output = await _insuredService.AddNewPolicy(token,policy);
 
-            Console.WriteLine(output);
+            // Console.WriteLine(output);
             if(output.Result==RESULT.SUCCESS){
+                Response.Headers.Append("Receiver-Id","[IC]");
+                Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o"));
+                string template = $"[New Policy has been created with Policy Number: {output.Output} by Insurer: {userName}]";
+                output.Message = template;
                 return Ok(output);
             }
             return BadRequest(output);

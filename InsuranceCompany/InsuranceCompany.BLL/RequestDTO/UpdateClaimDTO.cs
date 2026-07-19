@@ -6,6 +6,6 @@ namespace InsuranceCompany.BLL;
 public class UpdateClaimDTO
 {
     public ClaimStatus? ClaimStatus { get; set; }
-    public int? SurveyorID { get; set; }
+    public string? SurveyorUserId { get; set; }
     public bool? InsuranceCompanyApproval { get; set; }
 }

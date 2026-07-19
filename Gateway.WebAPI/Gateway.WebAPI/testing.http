@@ -47,3 +47,7 @@ Authorization: Bearer {{$processEnv.BEARER_TOKEN}}
   "dateOfInsurance": "2026-06-15",
   "vehicleNo": "HR26DK8337"
 }
+
+
+###
+GET {{Testing_HostAddress}}/auth/testchannel

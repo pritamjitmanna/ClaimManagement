@@ -57,8 +57,8 @@ namespace InsuranceCompany.DAL.Migrations
                     b.Property<int?>("SurveyorFees")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SurveyorID")
-                        .HasColumnType("int");
+                    b.Property<string>("SurveyorUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("WithdrawClaim")
                         .ValueGeneratedOnAdd()
@@ -70,7 +70,7 @@ namespace InsuranceCompany.DAL.Migrations
 
                     b.HasIndex("PolicyNo");
 
-                    b.HasIndex("SurveyorID");
+                    b.HasIndex("SurveyorUserId");
 
                     b.ToTable("ClaimDetails");
                 });
@@ -161,11 +161,8 @@ namespace InsuranceCompany.DAL.Migrations
 
             modelBuilder.Entity("InsuranceCompany.DAL.Surveyor", b =>
                 {
-                    b.Property<int>("SurveyorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SurveyorId"));
+                    b.Property<string>("SurveyorUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("EstimateLimit")
                         .HasColumnType("int");
@@ -183,44 +180,10 @@ namespace InsuranceCompany.DAL.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.HasKey("SurveyorId")
+                    b.HasKey("SurveyorUserId")
                         .HasName("Pk_Surveyor");
 
                     b.ToTable("Surveyors");
-
-                    b.HasData(
-                        new
-                        {
-                            SurveyorId = 1,
-                            EstimateLimit = 6000,
-                            FirstName = "R",
-                            LastName = "K",
-                            TimesAllocated = 0
-                        },
-                        new
-                        {
-                            SurveyorId = 2,
-                            EstimateLimit = 15000,
-                            FirstName = "K",
-                            LastName = "R",
-                            TimesAllocated = 0
-                        },
-                        new
-                        {
-                            SurveyorId = 3,
-                            EstimateLimit = 50000,
-                            FirstName = "P",
-                            LastName = "M",
-                            TimesAllocated = 0
-                        },
-                        new
-                        {
-                            SurveyorId = 4,
-                            EstimateLimit = 15000,
-                            FirstName = "S",
-                            LastName = "M",
-                            TimesAllocated = 0
-                        });
                 });
 
             modelBuilder.Entity("InsuranceCompany.DAL.ClaimDetail", b =>
@@ -234,7 +197,7 @@ namespace InsuranceCompany.DAL.Migrations
 
                     b.HasOne("InsuranceCompany.DAL.Surveyor", "Surveyor")
                         .WithMany("ClaimDetails")
-                        .HasForeignKey("SurveyorID")
+                        .HasForeignKey("SurveyorUserId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("Fk_Surveyor_ClaimDetail");
 

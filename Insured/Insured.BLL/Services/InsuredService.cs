@@ -44,13 +44,17 @@ public class InsuredService:IInsuredService
     /// - output.Output.TryUnpack(out T typed) attempts to unpack a protobuf Any into the concrete message type T.
     ///   Returns true when the Any holds the expected type, false otherwise.
     /// </summary>
-    public async Task<CommonOutput> AddNewClaim(ClaimDetailRequestDTO claim){
+    public async Task<CommonOutput> AddNewClaim(string token,ClaimDetailRequestDTO claim){
 
         CommonOutput result;
 
         try{
+            var headers=new Metadata
+            {
+                {"authorization",$"Bearer {token}"}  
+            };
             // Map local DTO to gRPC DTO and call remote method.
-            CommonOutputgRPC output=await _claimsclient.AddNewClaimAsync(_mapper.Map<ClaimDetailRequestDTOgRPC>(claim));
+            CommonOutputgRPC output=await _claimsclient.AddNewClaimAsync(_mapper.Map<ClaimDetailRequestDTOgRPC>(claim),headers);
 
             if(output.StatusCode==STATUSCODE.Ok){
                 // When Ok, output is expected to carry a Google.Protobuf.WellKnownTypes.StringValue with the claim id.
@@ -113,7 +117,19 @@ public class InsuredService:IInsuredService
             CommonOutputgRPC output=await _claimsclient.UpdateAcceptOrRejectClaimAsync(new AcceptReject{ClaimId=claimId,IsAccept=acceptReject.AcceptReject});
 
             if(output.StatusCode==STATUSCODE.Ok){
-                result=new CommonOutput{Result=RESULT.SUCCESS};
+                string ids="";
+                string message="";
+                ids+="[IC]";
+                if(output.Output.TryUnpack(out StringValue id))
+                {
+                    ids+=$"[{id.Value}]";
+                }
+                message+=$"[The insurer has {(acceptReject.AcceptReject?"Accepted":"Not Accepted")} the amount provided by Surveyor for Claim: {claimId}]";
+                message+=$"[The insurer has {(acceptReject.AcceptReject?"Accepted":"Not Accepted")} the amount provided for Claim: {claimId}]";
+                result=new CommonOutput{
+                    Result=RESULT.SUCCESS,
+                    Message=$"{ids}#{message}"
+                };
             }
             else if(output.StatusCode==STATUSCODE.Badrequest){
                 // Unpack validation errors if present and map them.

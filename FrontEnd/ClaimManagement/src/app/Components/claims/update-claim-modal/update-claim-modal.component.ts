@@ -24,22 +24,36 @@ export class UpdateClaimModalComponent {
   fieldValidations:{
     [key:string]:string
   }={
-    SurveyorId:""
+    SurveyorUserId:""
   }
 
-  constructor(private claimsService:ClaimsService,private accessoriesService:AccessoriesService,private router:Router){}
+  constructor(private claimsService:ClaimsService,private accessoriesService:AccessoriesService,private router:Router){
+    this.accessoriesService.surveyorDetailsEmitter.subscribe(
+      (data:{surveyorUserId:string, toShow:string})=>{
+        //For now, we are not using toShow property but in future if we want to show surveyor name or any other form in the input field then we can use it
+        this.updateClaim.form.patchValue({
+          "SurveyorUserId":data.surveyorUserId
+        })
+      }
+    )
+  }
 
   claimStatusOptions:ClaimStatus[] = Object.values(ClaimStatus);
 
   async onSubmit() {
     let details:UpdateClaim={
       ClaimStatus:this.updateClaim.value['ClaimStatus']===this.claim.claimStatus?null:this.updateClaim.value['ClaimStatus'],
-      SurveyorID:this.updateClaim.value['SurveyorId']===this.claim.surveyorID?null:this.updateClaim.value['SurveyorId'],
-      InsuranceCompanyApproval:this.updateClaim.value['InsuranceCompanyApproval']===this.claim.surveyorID?null:this.updateClaim.value['InsuranceCompanyApproval']
+      SurveyorUserId:this.updateClaim.value['SurveyorUserId']===this.claim.surveyorUserId?null:this.updateClaim.value['SurveyorUserId'],
+      InsuranceCompanyApproval:this.updateClaim.value['InsuranceCompanyApproval']===this.claim.insuranceCompanyApproval?null:this.updateClaim.value['InsuranceCompanyApproval']
     }
     let result:CommonOutput=await this.claimsService.updateClaim(this.claim.claimId,details)
     if(result.result===RESULT.SUCCESS){
-      this.accessoriesService.alertShow(`Your Claim with id:${this.claim.claimId} has been updated`,"success")
+      if(details.ClaimStatus===null&&details.SurveyorUserId===null&&details.InsuranceCompanyApproval===null){
+        this.accessoriesService.alertShow("No changes were made to the claim","warning")
+      }
+      else{
+        this.accessoriesService.alertShow(`Your Claim with id:${this.claim.claimId} has been updated`,"success")
+      }
       this.setNewValues(details)
       this.closeModal()
     }
@@ -70,10 +84,10 @@ export class UpdateClaimModalComponent {
         "ClaimStatus":this.claim.claimStatus,
         "InsuranceCompanyApproval":this.claim.insuranceCompanyApproval
       })
-      if(this.claim.surveyorID===null||this.claim.surveyorID===0){}
+      if(this.claim.surveyorUserId===null){}
       else{
         this.updateClaim.form.patchValue({
-          "SurveyorId":this.claim.surveyorID
+          "SurveyorUserId":this.claim.surveyorUserId
         })
       }
     }, 100);
@@ -82,6 +96,7 @@ export class UpdateClaimModalComponent {
 
   closeModal(){
     this.isModelOpen=false
+    this.accessoriesService.emitEstimatedLossValue(-1)
   }
 
   getSurveyors(){

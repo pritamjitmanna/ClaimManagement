@@ -1,0 +1,79 @@
+.breadcrumb {
+  position: relative;
+  display: inline-block;
+}
+
+.breadcrumb-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.breadcrumb-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.breadcrumb-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 999px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 0.9rem;
+  text-align: center;
+  line-height: 1;
+}
+
+.breadcrumb-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 260px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    padding: 0.6rem;
+    z-index: 1000;
+}
+
+.dropdown-header {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.dropdown-list {
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.dropdown-item {
+  padding: 0.5rem;
+  background: #f9fafb;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.dropdown-button {
+  width: 100%;
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 0.45rem;
+  border-radius: 6px;
+  cursor: pointer;
+}

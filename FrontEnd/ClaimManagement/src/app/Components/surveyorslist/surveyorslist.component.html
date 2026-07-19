@@ -3,16 +3,14 @@
     <button class="close-btn" (click)="closeSidebar()">&#10006;</button>
 
     @if(surveyors.length>0){
-        @for(surveyor of surveyors;track surveyor.surveyorId;){
-            <div class="surveyor-card">
+        @for(surveyor of surveyors;track surveyor.surveyorUserId;){
+            <button class="surveyor-card" (click)="onClickCardAssign(surveyor.surveyorUserId,   surveyor.firstName+' '+surveyor.lastName)">
                 <div class="surveyor-info">
                     <span class="surveyor-name">{{surveyor.firstName}} {{surveyor.lastName}}</span>
-                    <span class="surveyor-id">ID: {{surveyor.surveyorId}}</span>
                     <span class="estimated-limit">Limit: {{surveyor.estimateLimit}}</span>
                     <span class="times-allocated">Times Allocated: {{surveyor.timesAllocated}}</span>
                 </div>
-            </div>
-            
+            </button>            
         }
     }
 

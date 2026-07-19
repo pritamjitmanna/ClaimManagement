@@ -1,10 +1,14 @@
 #pragma warning disable CS8604 // Possible null reference argument.
 
+using System.IdentityModel.Tokens.Jwt;
 using gRPCClaimsService.Protos;
 using gRPCPoliciesService.Protos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Surveyor.BLL;
 using Surveyor.DAL;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +26,26 @@ builder.Services.AddScoped<ISurveyorService,SurveyorService>();
 
 
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MapperProfile>());
+
+JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+builder.Services.AddAuthentication(options=>{
+    options.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme=JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme=JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options=>{
+    options.SaveToken=true;
+    options.RequireHttpsMetadata=false;
+    options.MapInboundClaims = false; // IMPORTANT
+#pragma warning disable CS8604 // Possible null reference argument.
+    options.TokenValidationParameters=new TokenValidationParameters{
+        ValidateIssuer=true,
+        ValidateAudience=true,
+        ValidIssuer=builder.Configuration["JWT:Issuer"],
+        ValidAudience=builder.Configuration["JWT:Audience"],
+        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+    };
+#pragma warning restore CS8604 // Possible null reference argument.
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

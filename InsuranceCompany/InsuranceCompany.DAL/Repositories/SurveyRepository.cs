@@ -73,7 +73,7 @@ public class SurveyorRepository : ISurveyor
     // Notes:
     // - Where + FirstOrDefaultAsync() filters and returns a single item or null if not found.
     // - Using AsNoTracking avoids change tracking when only reading.
-    public async Task<Surveyor?> GetSurveyorById(int surveyorId)
+    public async Task<Surveyor?> GetSurveyorById(string surveyorId)
     {
 
 
@@ -82,7 +82,7 @@ public class SurveyorRepository : ISurveyor
         try
         {
 
-            surveyor=await _dbContext.Surveyors.AsNoTracking().Where(cd=>cd.SurveyorId==surveyorId).FirstOrDefaultAsync();
+            surveyor=await _dbContext.Surveyors.AsNoTracking().Where(cd=>cd.SurveyorUserId==surveyorId).FirstOrDefaultAsync();
 
             //surveyor = await (from x in _dbContext.Surveyors.AsNoTracking() where x.SurveyorId == surveyorId select x).FirstOrDefaultAsync();
             //if (surveyor == null) Console.WriteLine("True");
@@ -115,7 +115,7 @@ public class SurveyorRepository : ISurveyor
                 result=new CommonOutput
                 {
                     Result=RESULT.SUCCESS,
-                    Output=surveyor.SurveyorId
+                    Output=surveyor.SurveyorUserId
                 };
             }
             
@@ -128,7 +128,7 @@ public class SurveyorRepository : ISurveyor
         return result;
     }
 
-    public async Task<bool> DeleteSurveyorDetails(int surveyorId)
+    public async Task<bool> DeleteSurveyorDetails(string surveyorId)
     {
         bool isDeleted=false;
         try{

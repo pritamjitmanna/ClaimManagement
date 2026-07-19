@@ -16,7 +16,7 @@
             "AllowedScopes":[]
         },
         "RouteClaimsRequirement": {
-            "Role": "InsuranceCompany,Insurer"
+            "Role": "InsuranceCompany,Insurer,Surveyor"
         }
     },
     {
@@ -35,7 +35,7 @@
             "AllowedScopes":[]
         },
         "RouteClaimsRequirement": {
-            "Role": "InsuranceCompany,Insurer"
+            "Role": "InsuranceCompany,Insurer,Surveyor"
         }  
     },
     {

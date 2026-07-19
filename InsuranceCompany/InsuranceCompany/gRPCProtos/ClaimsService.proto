@@ -97,7 +97,7 @@ message ClaimDTOgRPC{
     string PolicyNo=2;
     int32 EstimatedLoss=3;
     google.protobuf.Timestamp DateOfAccident=4;
-    int32 SurveyorID=5;
+    string SurveyorUserId=5;
     int32 AmtApprovedBySurveyor=6;
     bool InsuranceCompanyApproval=7;
     WITHDRAWSTATUS WithdrawClaim=8;

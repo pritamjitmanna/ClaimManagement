@@ -77,11 +77,11 @@ public class SurveyorsController : ControllerBase
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteSurveyorDetails(int surveyorId)
+    public async Task<IActionResult> DeleteSurveyorDetails(string surveyorUserId)
     {
         try
         {
-            bool result = await _surveyorService.DeleteSurveyorDetails(surveyorId);
+            bool result = await _surveyorService.DeleteSurveyorDetails(surveyorUserId);
             if (result)
             {
                 return Ok();

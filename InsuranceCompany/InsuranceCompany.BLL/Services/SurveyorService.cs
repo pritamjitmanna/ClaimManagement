@@ -80,7 +80,7 @@ public class SurveyorService : ISurveyorService
     // GetSurveyorById:
     // - Fetches a surveyor by primary key via repository and maps to DTO.
     // - Uses await to asynchronously wait for DB call.
-    public async Task<SurveyorDTO?> GetSurveyorById(int surveyorId)
+    public async Task<SurveyorDTO?> GetSurveyorById(string surveyorId)
     {
         SurveyorDTO? surveyor;
         try
@@ -112,7 +112,7 @@ public class SurveyorService : ISurveyorService
         return result;
     }
 
-    public async Task<bool> DeleteSurveyorDetails(int surveyorId)
+    public async Task<bool> DeleteSurveyorDetails(string surveyorId)
     {
         bool isDeleted=false;
 

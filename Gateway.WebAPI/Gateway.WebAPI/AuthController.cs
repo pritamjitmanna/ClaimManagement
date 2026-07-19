@@ -4,6 +4,8 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Gateway.WebAPI.Notifications;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gateway.WebAPI;
 
@@ -29,12 +31,15 @@ public class AuthController:ControllerBase
     private readonly UserManager<AuthUser>_userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration; 
+    private readonly ChannelBackgroundService _channelBackgroundService;
+    private readonly AuthDBContext _dbContext;
 
-
-    public AuthController(UserManager<AuthUser> userManager,RoleManager<IdentityRole>roleManager,IConfiguration configuration){
+    public AuthController(UserManager<AuthUser> userManager,RoleManager<IdentityRole>roleManager,IConfiguration configuration,ChannelBackgroundService channelBackgroundService,AuthDBContext dBContext){
         _userManager = userManager;
         _roleManager = roleManager;
         _configuration = configuration;
+        _channelBackgroundService = channelBackgroundService;
+        _dbContext = dBContext;
     }
 
     /// <summary>
@@ -102,8 +107,7 @@ public class AuthController:ControllerBase
                     new(ClaimTypes.Name,user.UserName),
                     new(JwtRegisteredClaimNames.Sub,user.Id),
                     new(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                    new("profileSet",user.profileSet.ToString()),
-                    new("profileId",user.profileId.ToString()!)
+                    new("profileSet",user.profileSet.ToString())
                 };
 
                 foreach(var role in userRole){
@@ -120,9 +124,12 @@ public class AuthController:ControllerBase
                     signingCredentials:new SigningCredentials(authSigningKey,SecurityAlgorithms.HmacSha256)
                 );
 
+                List<NotificationDTO> notificationsdata=await _dbContext.NotificationModels.Where(n => n.ToUserId == user.Id && !n.IsRead).Select(m=>new NotificationDTO{Id = m.Id,Message = m.Message,Timestamp = m.Timestamp}).ToListAsync();
+
                 return Ok(new{
                     token=new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration=token.ValidTo
+                    expiration=token.ValidTo,
+                    notifications=notificationsdata
                 });
             }
             return Unauthorized();
@@ -173,6 +180,27 @@ public class AuthController:ControllerBase
             // Return a 500 status code with a generic error message
             return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred. Please try again later.");
         }
+    }
+
+    [HttpGet("testchannel")]
+    public async Task<IActionResult> TestChannel()
+    {
+        NotificationModel notificationModel = new()
+        {
+            ToUserId = "test-user-id",
+            Message = "This is a test notification.",
+            Timestamp = DateTime.UtcNow
+        };
+        bool result=await _channelBackgroundService.QueueModelAsync(notificationModel);
+        if(result)
+        {
+            return Ok(new { message = "Notification queued successfully." });
+        }
+        else
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to queue notification." });
+        }
+        
     }
 
 }
