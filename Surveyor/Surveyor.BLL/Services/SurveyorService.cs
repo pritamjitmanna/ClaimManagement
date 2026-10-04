@@ -148,20 +148,21 @@ public class SurveyorService:ISurveyorService
             GetErrorListInRequiredFormat(ref output);
 
             if(output.Result==RESULT.SUCCESS){
-                    output=await UpdateClaimAmtInsuranceCompany(report.ClaimId,TotalAmount);
-                    output.Message=output.Message.Replace("updated","created the survey report and updated");
-                    if(output.Result==RESULT.FAILURE){
-                        List<PropertyValidationResponse> temp=(List<PropertyValidationResponse>)output.Output;
-                        temp.Add(new PropertyValidationResponse{
-                            Property="ClaimId",
-                            ErrorMessage="There's some error while updating the Amount in InsuranceCompany, try again after sometime."
-                        });
+                output=await UpdateClaimAmtInsuranceCompany(report.ClaimId,TotalAmount);
+                output.Message=output.Message.Replace("updated","created the survey report and updated");
+                output.Output=TotalAmount;
+                if(output.Result==RESULT.FAILURE){
+                    List<PropertyValidationResponse> temp=(List<PropertyValidationResponse>)output.Output;
+                    temp.Add(new PropertyValidationResponse{
+                        Property="ClaimId",
+                        ErrorMessage="There's some error while updating the Amount in InsuranceCompany, try again after sometime."
+                    });
 
-                        //Here we need to roll back the changes in this database also for failure.    
+                    //Here we need to roll back the changes in this database also for failure.    
 
-                        output.Output=temp;
-                    }
+                    output.Output=temp;
                 }
+            }
             
         }
         catch (Exception ex)

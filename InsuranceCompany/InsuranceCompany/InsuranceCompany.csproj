@@ -5,8 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.33.4" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -18,25 +16,12 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.76.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.76.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.15.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="gRPCProtos\SharedProtos.proto" GrpcServices="None" ProtoRoot="gRPCProtos"/>
-    <Protobuf Include="gRPCProtos\ClaimsService.proto" GrpcServices="Server" ProtoRoot="gRPCProtos"/>
-    <Protobuf Include="gRPCProtos\PoliciesService.proto" GrpcServices="Server" ProtoRoot="gRPCProtos"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\InsuranceCompany.DAL\InsuranceCompany.DAL.csproj" />
     <ProjectReference Include="..\InsuranceCompany.BLL\InsuranceCompany.BLL.csproj" />
-    <ProjectReference Include="..\..\SharedModules\SharedModules.csproj" />
   </ItemGroup>
 </Project>

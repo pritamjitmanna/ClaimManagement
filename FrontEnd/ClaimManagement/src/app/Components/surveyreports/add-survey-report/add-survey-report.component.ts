@@ -46,6 +46,7 @@ export class AddSurveyReportComponent {
 
     if(result.result===RESULT.SUCCESS){
       this.accessoriesService.alertShow("Survey Report added successfully. Use the get survey report input field to get the report","success");
+      this.claim.amtApprovedBySurveyor=result.output
       this.router.navigate(['']);
     }
     else{

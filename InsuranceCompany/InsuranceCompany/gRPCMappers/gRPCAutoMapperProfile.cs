@@ -75,7 +75,7 @@ public class GRPCAutoMapperProfile:Profile
         .ForMember(pd=>pd.InsuredFirstName,opt=>opt.MapFrom(p=>p.InsuredFirstName))
         .ForMember(pd=>pd.InsuredLastName,opt=>opt.MapFrom(p=>p.InsuredLastName))
         .ForMember(cd=>cd.DateOfInsurance,opt=>opt.MapFrom(cg=>Timestamp.FromDateTime(DateTime.SpecifyKind(cg.DateOfInsurance.ToDateTime(TimeOnly.MinValue),DateTimeKind.Utc))))
-        .ForMember(pd=>pd.Status,opt=>opt.MapFrom(p=>p.status))
+        .ForMember(pd=>pd.Status,opt=>opt.MapFrom(p=>p.Status))
         .ForMember(pd=>pd.PolicyNo,opt=>opt.MapFrom(p=>p.PolicyNo))
         .ForMember(pd=>pd.EmailId,opt=>opt.MapFrom(p=>p.EmailId))
         .ForMember(pd=>pd.VehicleNo,opt=>opt.MapFrom(p=>p.VehicleNo));

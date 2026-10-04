@@ -1,0 +1,35 @@
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+WORKDIR /App
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+
+# Copying the solution and project files for the Insured service
+COPY Insured/*.sln ./Insured/
+COPY Insured/Insured/Insured.csproj ./Insured/Insured/
+COPY Insured/Insured.BLL/Insured.BLL.csproj ./Insured/Insured.BLL/
+COPY Insured/Insured.DAL/Insured.DAL.csproj ./Insured/Insured.DAL/
+COPY SharedModules/SharedModules.csproj ./SharedModules/
+
+# Restoring the dependencies for the Insured service
+RUN dotnet restore Insured/Insured.sln
+
+# Copying the rest of the source code for the Insured service and shared modules
+COPY Insured/ ./Insured/
+COPY SharedModules/ ./SharedModules/
+
+# Publish the Insured service
+WORKDIR /src/Insured
+FROM build as publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish -c $BUILD_CONFIGURATION -o /App/publish
+
+FROM base as final
+
+EXPOSE 5025
+
+# Run the Insured service
+WORKDIR /App
+COPY --from=publish /App/publish .
+ENTRYPOINT ["dotnet","Insured.dll"]

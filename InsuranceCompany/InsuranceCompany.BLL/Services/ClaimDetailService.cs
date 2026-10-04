@@ -104,7 +104,8 @@ public class ClaimDetailService : IClaimDetailService
         try
         {
 
-            foreach (Stages e in Enum.GetValues(typeof(Stages)))
+            // foreach (Stages e in Enum.GetValues(typeof(Stages)))
+            foreach (Stages e in Enum.GetValues<Stages>())
             {
                 claims.Add(new ClaimStatusReportDTO
                 {
@@ -194,7 +195,7 @@ public class ClaimDetailService : IClaimDetailService
             }
             else {
                 Policy policy = (Policy)policyOutput.Output;
-                if (policy.status == false){
+                if (policy.Status == false){
                     result = new CommonOutput
                     {
                         Result = RESULT.FAILURE,

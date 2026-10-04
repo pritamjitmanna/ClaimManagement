@@ -74,7 +74,8 @@ public class InsuranceCompanyDBContext:DbContext
         // IsRequired() makes the PolicyNo FK NOT NULL on ClaimDetail.
         // OnDelete(DeleteBehavior.Cascade) means deleting a Policy removes related ClaimDetails.
         modelBuilder.Entity<Policy>().HasMany(p => p.ClaimDetails).WithOne(p => p.Policy).IsRequired().HasForeignKey(c => c.PolicyNo).OnDelete(DeleteBehavior.Cascade).HasConstraintName("Fk_Policy_ClaimDetail");
-        modelBuilder.Entity<Policy>().Property(p=>p.status).HasDefaultValue(true);
+        modelBuilder.Entity<Policy>().Property(p=>p.Status).HasDefaultValue(true);
+        
 
         // Surveyor: primary key and relationship configuration.
         // HasMany/WithOne maps Surveyor -> ClaimDetails.

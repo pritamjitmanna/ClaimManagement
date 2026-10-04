@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 As base
+WORKDIR /App
+FROM mcr.microsoft.com/dotnet/sdk:10.0 As build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+COPY IRDA/*.sln ./IRDA/
+COPY IRDA/IRDA/IRDA.csproj ./IRDA/IRDA/
+COPY IRDA/IRDA.BLL/IRDA.BLL.csproj ./IRDA/IRDA.BLL/
+COPY IRDA/IRDA.DAL/IRDA.DAL.csproj ./IRDA/IRDA.DAL/
+COPY SharedModules/SharedModules.csproj ./SharedModules/
+RUN dotnet restore IRDA/IRDA.sln
+
+COPY IRDA/ ./IRDA/
+COPY SharedModules/ ./SharedModules/
+
+
+WORKDIR /src/IRDA
+FROM build AS publish
+RUN dotnet publish -c $BUILD_CONFIGURATION -o /App/publish
+
+FROM base as final
+
+EXPOSE 5199
+WORKDIR /App
+COPY --from=publish /App/publish .
+ENTRYPOINT ["dotnet","IRDA.dll"]

@@ -4,6 +4,7 @@ using InsuranceCompany.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InsuranceCompany.DAL.Migrations
 {
     [DbContext(typeof(InsuranceCompanyDBContext))]
-    partial class InsuranceCompanyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260914123007_Nullable_Policy_Status")]
+    partial class Nullable_Policy_Status
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

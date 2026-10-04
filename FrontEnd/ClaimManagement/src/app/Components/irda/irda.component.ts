@@ -9,11 +9,12 @@ import { NgForm } from '@angular/forms';
 import { RESULT } from '../../Models/e.enum';
 import { Router } from '@angular/router';
 import { AccessoriesService } from '../../Services/accessories.service';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
   selector: 'app-irda',
   standalone: true,
-  imports: [globalModules],
+  imports: [globalModules,LoadingComponent],
   providers:[IrdaService],
   animations: [
     trigger('slideInOut', [
@@ -32,6 +33,7 @@ export class IrdaComponent {
 
   showStatusReport: boolean = false;
   showPaymentReport:boolean=false;
+  isLoading:boolean=false;
 
   claimStatusReports:ClaimStatusReport[]=[]
   paymentStatusReport!:PaymentStatusReport
@@ -40,11 +42,13 @@ export class IrdaComponent {
 
   async getPaymentStatus(){
     this.showStatusReport=false;
+    this.isLoading=true;
 
     let month:number=Number(this.MonthYear.value['month-year'].split('-')[1])
     let year:number=Number(this.MonthYear.value['month-year'].split('-')[0])
     
     let result:CommonOutput=await this.irdaService.getPaymentStatus(month,year)
+    this.isLoading=false;
     if(result.result==RESULT.SUCCESS){
       this.paymentStatusReport=result.output
     }
@@ -64,12 +68,14 @@ export class IrdaComponent {
   }
 
   async getClaimStatus(){
+    this.isLoading=true;
     this.showPaymentReport=false;
 
     let month:number=Number(this.MonthYear.value['month-year'].split('-')[1])
     let year:number=Number(this.MonthYear.value['month-year'].split('-')[0])
     
     let result:CommonOutput=await this.irdaService.getClaimStatus(month,year)
+    this.isLoading=false;
     if(result.result==RESULT.SUCCESS){
       this.claimStatusReports=result.output
     }
@@ -90,12 +96,16 @@ export class IrdaComponent {
 
 
   async pullPaymentStatus(){
+    this.isLoading=true;
+    this.showPaymentReport=false;
+    this.showStatusReport=false;
     let month:number=Number(this.MonthYear.value['month-year'].split('-')[1])
     let year:number=Number(this.MonthYear.value['month-year'].split('-')[0])
     
-    console.log(month,year)
+    // console.log(month,year)
 
     let result:CommonOutput=await this.irdaService.pullPaymentStatus(month,year)
+    this.isLoading=false;
     if(result.result==RESULT.SUCCESS){
       this.accessoriesService.alertShow(`Data related to payment status is successfully fetched to the database. Use 'Payment Status' to check`,"success")
     }
@@ -113,10 +123,14 @@ export class IrdaComponent {
   }
 
   async pullClaimStatus(){
+    this.isLoading=true;
+    this.showPaymentReport=false
+    this.showStatusReport=false
     let month:number=Number(this.MonthYear.value['month-year'].split('-')[1])
     let year:number=Number(this.MonthYear.value['month-year'].split('-')[0])
     
     let result:CommonOutput=await this.irdaService.pullClaimStatus(month,year)
+    this.isLoading=false;
     if(result.result==RESULT.SUCCESS){
       this.accessoriesService.alertShow(`Data related to claim status is successfully fetched to the database. Use 'Claim Status' to check`,"success")
     }

@@ -29,8 +29,11 @@ using InsuranceCompany.gRPCServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SharedModules;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// builder.
 
 // Add services to the container.
 
@@ -61,6 +64,9 @@ builder.Services.AddAutoMapper(typeof(GRPCAutoMapperProfile));
 // Register gRPC server support so gRPC services can be mapped later.
 builder.Services.AddGrpc();
 
+builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+JWT? jwtDetails=builder.Configuration.GetSection("JWT").Get<JWT>();
+
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 builder.Services.AddAuthentication(options=>{
     options.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
@@ -74,9 +80,9 @@ builder.Services.AddAuthentication(options=>{
     options.TokenValidationParameters=new TokenValidationParameters{
         ValidateIssuer=true,
         ValidateAudience=true,
-        ValidIssuer=builder.Configuration["JWT:Issuer"],
-        ValidAudience=builder.Configuration["JWT:Audience"],
-        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+        ValidIssuer=jwtDetails?.Issuer,
+        ValidAudience=jwtDetails?.Audience,
+        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtDetails?.Secret)),
     };
 #pragma warning restore CS8604 // Possible null reference argument.
 });

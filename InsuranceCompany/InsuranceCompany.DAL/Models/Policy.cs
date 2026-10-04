@@ -18,7 +18,7 @@ public class Policy
         public DateOnly DateOfInsurance { get; set; }
         public string? EmailId { get; set; }
         public required string VehicleNo { get; set; }
-        public bool status { get; set; }
+        public bool? Status { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public ICollection<ClaimDetail> ClaimDetails { get; set; }

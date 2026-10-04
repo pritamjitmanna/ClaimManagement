@@ -61,6 +61,8 @@ public class NotificationDTO
     public required string Message{ get; set;}
     public required DateTimeOffset Timestamp{ get; set;}
 }
+
+
  
 
 

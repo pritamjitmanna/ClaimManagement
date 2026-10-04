@@ -1,0 +1,34 @@
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+WORKDIR /App
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+COPY InsuranceCompany/*.sln ./InsuranceCompany/
+COPY InsuranceCompany/InsuranceCompany/InsuranceCompany.csproj ./InsuranceCompany/InsuranceCompany/
+COPY InsuranceCompany/InsuranceCompany.BLL/InsuranceCompany.BLL.csproj ./InsuranceCompany/InsuranceCompany.BLL/
+COPY InsuranceCompany/InsuranceCompany.DAL/InsuranceCompany.DAL.csproj ./InsuranceCompany/InsuranceCompany.DAL/
+COPY InsuranceCompany/InsuranceCompany.UnitTests/InsuranceCompany.UnitTests.csproj ./InsuranceCompany/InsuranceCompany.UnitTests/
+COPY InsuranceCompany/testgRPC/testgRPC.csproj ./InsuranceCompany/testgRPC/
+COPY SharedModules/SharedModules.csproj ./SharedModules/
+
+RUN dotnet restore InsuranceCompany/InsuranceCompany.sln
+
+COPY InsuranceCompany/ ./InsuranceCompany/
+COPY SharedModules/ ./SharedModules/
+
+WORKDIR /src/InsuranceCompany
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish -c $BUILD_CONFIGURATION -o /App/publish 
+
+FROM base AS final
+
+EXPOSE 5000
+EXPOSE 5274
+
+# ENV ASPNETCORE_URLS=http://+:5000;http://+:5274
+WORKDIR /App
+COPY --from=publish /App/publish .
+ENTRYPOINT ["dotnet", "InsuranceCompany.dll"]
+

@@ -118,7 +118,7 @@ export class ClaimComponent {
     
     this.claim.insuranceCompanyApproval=details.InsuranceCompanyApproval===null?this.claim.insuranceCompanyApproval:details.InsuranceCompanyApproval
     if(this.claim.insuranceCompanyApproval===true)this.claim.claimStatus=ClaimStatus.Closed
-    // sessionStorage.setItem(this.claim.claimId,JSON.stringify(this.claim))
+    sessionStorage.setItem(this.claim.claimId,JSON.stringify(this.claim))
   }
 
 

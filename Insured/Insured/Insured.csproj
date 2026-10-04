@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.76.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.15.0" />
@@ -17,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Insured.BLL\Insured.BLL.csproj" />
-    <ProjectReference Include="..\Insured.DAL\Insured.DAL.csproj" />
   </ItemGroup>
 
 </Project>

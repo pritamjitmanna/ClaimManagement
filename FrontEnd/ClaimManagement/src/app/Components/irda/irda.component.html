@@ -1,24 +1,27 @@
-<div class="container">
-    <h1>IRDA Portal</h1>
-    <form class="irda-form" #MonthYear="ngForm">
-        <div class="form-group">
-            <label for="month-year">Month and Year:</label>
-            <input type="month" id="month-year" name="month-year" ngModel required #monthYear="ngModel">
-            @if(monthYear.invalid&&monthYear.touched&&monthYear.errors&&monthYear.errors['required']){
-              <div class="error-message">
-                <small>Month and Year is required</small>
+@if(isLoading){
+    <app-loading></app-loading>
+}
+    <div class="container">
+        <h1>IRDA Portal</h1>
+        <form class="irda-form" #MonthYear="ngForm">
+            <div class="form-group">
+                <label for="month-year">Month and Year:</label>
+                <input type="month" id="month-year" name="month-year" ngModel required #monthYear="ngModel">
+                @if(monthYear.invalid&&monthYear.touched&&monthYear.errors&&monthYear.errors['required']){
+                    <div class="error-message">
+                        <small>Month and Year is required</small>
+                    </div>
+                }
             </div>
-            }
-        </div>
-        <div class="button-group">
-            <button type="button" class="btn status-btn" (click)="getPaymentStatus()" [disabled]="MonthYear.invalid">Payment Status</button>
-            <button type="button" class="btn status-btn" (click)="getClaimStatus()" [disabled]="MonthYear.invalid">Claim Status</button>
-        </div>
-        <div class="button-group">
-            <button type="button" class="btn status-btn" (click)="pullClaimStatus()" [disabled]="MonthYear.invalid">Fetch Claim Status</button>
-            <button type="button" class="btn status-btn" (click)="pullPaymentStatus()" [disabled]="MonthYear.invalid">Fetch Payment Status</button>
-        </div>
-    </form>
+            <div class="button-group">
+                <button type="button" class="btn status-btn" (click)="getPaymentStatus()" [disabled]="MonthYear.invalid">Payment Status</button>
+                <button type="button" class="btn status-btn" (click)="getClaimStatus()" [disabled]="MonthYear.invalid">Claim Status</button>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn status-btn" (click)="pullClaimStatus()" [disabled]="MonthYear.invalid">Fetch Claim Status</button>
+                <button type="button" class="btn status-btn" (click)="pullPaymentStatus()" [disabled]="MonthYear.invalid">Fetch Payment Status</button>
+            </div>
+        </form>
     @if(showPaymentReport){
 
         <div class="payment-summary-container" [@slideInOut]>
@@ -30,20 +33,20 @@
     }
 
        @if(showStatusReport){
-
+           
            <div class="claim-status-report-container" [@slideInOut]>
-             <h2>Claim Status Report</h2>
-             
-             <div class="status-cards">
-              @for(claimType of claimStatusReports;track claimType){
-                <div class="status-card new-claims">
+               <h2>Claim Status Report</h2>
+               
+               <div class="status-cards">
+                   @for(claimType of claimStatusReports;track claimType){
+                       <div class="status-card new-claims">
                   <h3>{{claimType.stage}}</h3>
                   <p class="count">{{ claimType.count }}</p>
                 </div>
               }
-               
+              
              </div>
-           </div>
-       }   
-      
-</div>
+            </div>
+        }   
+        
+    </div>

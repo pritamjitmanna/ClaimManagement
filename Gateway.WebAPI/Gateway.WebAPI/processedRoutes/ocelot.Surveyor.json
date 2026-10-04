@@ -1,0 +1,43 @@
+{
+    
+    "Routes":[
+        {
+            "DownstreamPathTemplate": "/api/surveyors/{claimId}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5251"
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/surveyReport/{claimId}",  
+            "UpstreamHttpMethod": [ "GET","PATCH" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Surveyor"
+            }   
+        },
+        {
+            "DownstreamPathTemplate": "/api/surveyors/new",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5251"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/surveyors/new",  
+            "UpstreamHttpMethod": [ "POST" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Surveyor"
+            }   
+        }
+    ]
+}

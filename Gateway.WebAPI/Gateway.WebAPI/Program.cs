@@ -9,14 +9,22 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Ocelot.Authorization;
 using Gateway.WebAPI.Notifications;
+using SharedModules;
+using DotNetEnv;
+using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
+var envName=builder.Environment.EnvironmentName;
+
+Env.NoClobber().Load($"route.{envName}.env");
 
 builder.Services.AddDbContext<AuthDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("Auth")),ServiceLifetime.Singleton);
 builder.Services.AddSingleton<ChannelBackgroundService>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<ChannelBackgroundService>());
 
 builder.Services.AddIdentity<AuthUser,IdentityRole>().AddEntityFrameworkStores<AuthDBContext>().AddDefaultTokenProviders();
+
+var jwtDetails=builder.Configuration.GetSection("JWT").Get<JWT>();
 
 builder.Services.AddAuthentication(options=>{
     options.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
@@ -29,9 +37,9 @@ builder.Services.AddAuthentication(options=>{
     options.TokenValidationParameters=new TokenValidationParameters{
         ValidateIssuer=true,
         ValidateAudience=true,
-        ValidIssuer=builder.Configuration["JWT:Issuer"],
-        ValidAudience=builder.Configuration["JWT:Audience"],
-        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+        ValidIssuer=jwtDetails?.Issuer,
+        ValidAudience=jwtDetails?.Audience,
+        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtDetails?.Secret)),
     };
 #pragma warning restore CS8604 // Possible null reference argument.
 });
@@ -56,7 +64,46 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 
 builder.Services.AddLogging(opt=>opt.AddConsole());
 builder.Services.AddLogging(opt=>opt.AddDebug());
-builder.Services.AddOcelot(new ConfigurationBuilder().AddJsonFile("configuration.json").Build());
+
+var routes=Path.Combine(builder.Environment.ContentRootPath,"Routes");
+var processedRoutes=Path.Combine(builder.Environment.ContentRootPath,"processedRoutes");
+
+if (!Directory.Exists(processedRoutes))
+{
+    Directory.CreateDirectory(processedRoutes);
+}
+
+
+//This loop replaces the {{}} values for port and host with the passed env values. Now when in development, the environment. getvariables takes from the env file, but when passed from docker-compose, it takes from their and skips the values from the env file here. The env file is loaded using DotNetEnv package. 
+foreach(var file in Directory.GetFiles(routes,"ocelot.*.json"))
+{
+    var fileName=Path.GetFileName(file);
+
+    var fileContent=File.ReadAllText(file);
+    var pattern=@"{{ENV_\w+}}";
+    Regex re=new Regex(pattern);
+
+    var jsonContent=re.Replace(fileContent, match =>
+    {
+        var envVarName=match.Value.Substring(2,match.Value.Length-4);
+        var EnvValue=Environment.GetEnvironmentVariable(envVarName);
+        return EnvValue??match.Value;
+    });
+
+    var processedFile=Path.Combine(processedRoutes,fileName);
+    File.WriteAllText(processedFile,jsonContent);
+}
+
+
+
+
+//The below does is to set the base path for ocelot in the given folder. It finds for files which starts with "ocelot.*.json" in the given folder and loads them. The order of loading is important as it will load the files in the order of their names. So if we have ocelot.json and ocelot.dev.json, then it will load ocelot.json first and then ocelot.dev.json. So if we have any duplicate routes in both files, then the routes in ocelot.dev.json will override the routes in ocelot.json. This is useful for having different routes for different environments.
+builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
+    .AddOcelot(processedRoutes,builder.Environment);
+
+// Console.WriteLine(builder.Environment.EnvironmentName);
+
+builder.Services.AddOcelot();
 
 builder.Services.AddCors(options =>
 {

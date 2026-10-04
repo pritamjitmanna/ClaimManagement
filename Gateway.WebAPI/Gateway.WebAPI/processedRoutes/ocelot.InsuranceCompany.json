@@ -1,0 +1,233 @@
+{
+    
+    "Routes":[
+        {
+            "DownstreamPathTemplate": "/api/claims",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claims",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany,Insurer,Surveyor"
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/claims/closed",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claims/closed",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany,Insurer,Surveyor"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/claims/{claimId}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claims/{claimId}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany,Insurer,Surveyor"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/claimStatus/report/{month}/{year}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claimStatus/report/{month}/{year}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/paymentStatus/report/{month}/{year}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/paymentStatus/report/{month}/{year}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/claims/new",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"    
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claims/new",  
+            "UpstreamHttpMethod": [ "POST" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/claims/{claimId}/update",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claims/{claimId}/update",  
+            "UpstreamHttpMethod": [ "PUT" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/claims/{claimId}/{claimant}/update",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"   
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claims/{claimId}/{claimant}/update",  
+            "UpstreamHttpMethod": [ "PATCH" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/surveyorfees/{claimId}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"   
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/surveyorfees/{claimId}",  
+            "UpstreamHttpMethod": [ "PATCH" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/surveyors/{estimatedLoss}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"    
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/surveyors/{estimatedLoss}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "InsuranceCompany"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/surveyors/addsurveyor",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"    
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/surveyors/addsurveyor/{username}",  
+            "UpstreamHttpMethod": [ "POST" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Surveyor"
+            } 
+        },
+        {
+            "DownstreamPathTemplate": "/api/surveyors/deletesurveyor/{surveyorId}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "localhost",  
+                "Port": "5274"    
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/surveyors/deletesurveyor/{surveyorId}",  
+            "UpstreamHttpMethod": [ "DELETE" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Surveyor"
+            } 
+        }
+    ]
+}

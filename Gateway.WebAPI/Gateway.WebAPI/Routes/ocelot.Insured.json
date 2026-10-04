@@ -1,0 +1,81 @@
+{
+    
+    "Routes":[
+        {
+            "DownstreamPathTemplate": "/api/claims/addclaim",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "{{ENV_Insured_HOST}}",  
+                "Port": "{{ENV_Insured_PORT}}"   
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claims/addclaim",  
+            "UpstreamHttpMethod": [ "POST" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Insurer"
+            }  
+        },
+        {
+            "DownstreamPathTemplate": "/api/claims/{claimId}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "{{ENV_Insured_HOST}}",  
+                "Port": "{{ENV_Insured_PORT}}" 
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/claims/{claimId}",  
+            "UpstreamHttpMethod": [ "PATCH" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Insurer"
+            }    
+        },
+        {
+            "DownstreamPathTemplate": "/api/policy/addpolicy",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "{{ENV_Insured_HOST}}",  
+                "Port": "{{ENV_Insured_PORT}}"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/policy/addpolicy",  
+            "UpstreamHttpMethod": [ "POST" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Insurer"
+            }    
+        },
+        {
+            "DownstreamPathTemplate": "/api/policy/{policyNumber}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "{{ENV_Insured_HOST}}",  
+                "Port": "{{ENV_Insured_PORT}}"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/api/policy/{policyNumber}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Insurer"
+            }    
+        }
+    ]
+}

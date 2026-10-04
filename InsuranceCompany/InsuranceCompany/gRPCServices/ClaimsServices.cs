@@ -31,18 +31,14 @@ public class ClaimsServices:ClaimsService.ClaimsServiceBase
     #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
     private readonly ISharedLogic _sharedLogic;
     private readonly IClaimDetailService _claimService;
-    private readonly IPolicyService _policyService;
-    private readonly ISurveyorService _surveyorService;
     private readonly IMapper _mapper;
     //private readonly ILog _logger;
     const string INTERNAL_SERVER_ERROR = "There's an unexpected Internal error. Sorry for the inconvenience caused. Please try again after some time";
 
-    public ClaimsServices(ISharedLogic sharedLogic,IClaimDetailService claimDetail,IPolicyService policyService,ISurveyorService surveyorService, IMapper mapper)
+    public ClaimsServices(ISharedLogic sharedLogic,IClaimDetailService claimDetail, IMapper mapper)
     {
         _sharedLogic = sharedLogic;
         _claimService = claimDetail;
-        _policyService = policyService;
-        _surveyorService = surveyorService;
         _mapper = mapper;
         //_logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
     }

@@ -26,9 +26,9 @@ public static class OcelotAuthorize{
     public static bool Authorize(HttpContext ctx)
     {
         DownstreamRoute route = (DownstreamRoute)ctx.Items["DownstreamRoute"];
-        string key = route.AuthenticationOptions.AuthenticationProviderKey;
+        string[] key = route.AuthenticationOptions.AuthenticationProviderKeys;
         Console.WriteLine("--------------");
-        if (key == null || key == "") return true;
+        if (key == null || key.Length == 0) return true;
         if (route.RouteClaimsRequirement.Count == 0) return true;
         //flag for authorization
         bool auth = true;
@@ -85,10 +85,8 @@ public class ProfileSetMiddleware
     public async Task InvokeAsync(HttpContext context,UserManager<AuthUser> _userManager)
     {
         try
-        {
-            DownstreamRoute route = (DownstreamRoute)context.Items["DownstreamRoute"];
-            
-            await _next(context);
+        {            
+                await _next(context);
 
             if(context.Request.Path.StartsWithSegments("/api/surveyors/addsurveyor", out var remainder))
             {
@@ -153,25 +151,22 @@ public class NotificationMiddleware
     {
         try
         {
-            DownstreamRoute route = (DownstreamRoute)context.Items["DownstreamRoute"];
             await _next(context);
 
             if(context.Items.TryGetValue("DownstreamResponse", out var downstream))
             {
                 var response = downstream as DownstreamResponse;
                 string receiverIdsValue = string.Empty;
-                // Console.WriteLine(receiverIdsValue);
                 DateTimeOffset timestamp = DateTimeOffset.UtcNow;
                 if(response?.Headers!=null){
                     foreach(var header in response.Headers){
                         if(header.Key.Equals("Receiver-Id", StringComparison.OrdinalIgnoreCase)){
                             receiverIdsValue=header.Values.FirstOrDefault();
                         }
-                        else if(header.Key.Equals("X-Timestamp", StringComparison.OrdinalIgnoreCase)){
-                            if(DateTimeOffset.TryParse(header.Values.FirstOrDefault(), out var parsedTimestamp)){
+                        else if(header.Key.Equals("X-Timestamp", StringComparison.OrdinalIgnoreCase)&& DateTimeOffset.TryParse(header.Values.FirstOrDefault(), out var parsedTimestamp)){
                                 timestamp=parsedTimestamp;
-                            }
                         }
+                        
                     }
                 }
                 
@@ -184,11 +179,10 @@ public class NotificationMiddleware
                     string pattern = @"\[(?<content>[^\]]+)\]";                    
                     MatchCollection matchesI = Regex.Matches(receiverIdsValue, pattern);
                     receiverIdValues = [.. matchesI.Cast<Match>().Select(m => m.Groups["content"].Value)];
-                    List<string> messages=new List<string>();
                     
                     var messageElement = json.RootElement.GetProperty("message").GetString();
                     MatchCollection matches = Regex.Matches(messageElement, pattern);
-                    messages = [.. matches.Cast<Match>().Select(m => m.Groups["content"].Value)];
+                    List<string> messages = [.. matches.Cast<Match>().Select(m => m.Groups["content"].Value)];
                     for(int i=0;i<receiverIdValues.Count;i++)
                     {
                         string receiverIdValue = receiverIdValues[i];
@@ -198,7 +192,6 @@ public class NotificationMiddleware
                             receiverIdValue = users.Select(u => u.Id).FirstOrDefault(); 
                         }
                         string message = messages[i];
-                        // Console.WriteLine($"Receiver ID: {receiverIdValue}, Message: {message}");
                         bool notificationResult = await helperPushMessage(new NotificationModel
                         {
                             ToUserId = receiverIdValue,

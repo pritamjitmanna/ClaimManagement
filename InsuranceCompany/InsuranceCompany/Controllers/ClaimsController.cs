@@ -222,6 +222,7 @@ public class ClaimsController : ControllerBase
                 Response.Headers.Append("Receiver-Id", strings[0]);
                 Response.Headers.Append("X-Timestamp",DateTimeOffset.UtcNow.ToString("o")); // ISO 8601 format for timestamp
                 result.Message = strings[1];
+                
                 return Ok(result);
             }
             return BadRequest(result);

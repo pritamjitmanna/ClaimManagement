@@ -1,0 +1,147 @@
+# To run this compose file with the environment variables set in the .env file, use:
+# docker-compose --env-file .env -f mssql-compose.yaml up -d
+
+
+version: '3.8'
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: mssql
+    user: root
+    ports:
+      - ${MSSQL_PORT}:1433
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: ${MSSQL_PASSWORD}  
+    volumes:
+      - mssqldb_data:/var/opt/mssql/data
+      - mssqldb_log:/var/opt/mssql/log
+      - mssqldb_secrets:/var/opt/mssql/secrets
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "${USER_ID}", "-P", "${MSSQL_PASSWORD}", "-Q", "SELECT 1", "-C"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  InsuranceCompany:
+    image: pritamjitmanna/insurancecompany:3.0
+    container_name: insurancecompany
+    ports:
+      - ${INSURANCECOMPANY_Http1__PORT}:5274
+      - ${INSURANCECOMPANY_Http2__PORT}:5000
+    depends_on:
+      mssql:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__InsuranceCompany=Data Source=mssql,${MSSQL_PORT};Initial Catalog=${INSURANCECOMPANY_DB};User ID=${USER_ID};Password=${MSSQL_PASSWORD};Pooling=False;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Authentication=SqlPassword;Application Name=vscode-mssql;Application Intent=ReadWrite;Command Timeout=30;
+      - JWT__Issuer=${JWT_ISSUER}
+      - JWT__Audience=${JWT_AUDIENCE}
+      - JWT__Secret=${JWT_SECRET}
+      - Kestrel__Endpoints__WebAPi__Url=http://+:${INSURANCECOMPANY_Http1__PORT}
+      - Kestrel__Endpoints__gRPC__Url=http://+:${INSURANCECOMPANY_Http2__PORT}
+
+  Insured:
+    image: pritamjitmanna/insured:1.0
+    container_name: insured
+    ports:
+      - ${INSURED__PORT}:5025
+    depends_on:
+      InsuranceCompany:
+        condition: service_started
+    # Need  to add kestrel to the appsettings of the project as we need to pass the port number from docker-compose file to the application, else it will run on default port 80.
+    environment:
+      - CONNECTION_CHECK_TIMEOUT=60s
+      - ASPNETCORE_ENVIRONMENT=Production
+      - JWT__Issuer=${JWT_ISSUER}
+      - JWT__Audience=${JWT_AUDIENCE}
+      - JWT__Secret=${JWT_SECRET}
+      - Kestrel__Endpoints__WebAPi__Url=http://+:${INSURED__PORT} 
+      - URLs__InsuranceCompanyURL=http://insurancecompany:${INSURANCECOMPANY_Http2__PORT}
+  Surveyor:
+    image: pritamjitmanna/surveyor:1.0
+    container_name: surveyor
+    ports:
+      - ${SURVEYOR__PORT}:5251
+    depends_on:
+      InsuranceCompany:
+        condition: service_started
+    environment:
+      - CONNECTION_CHECK_TIMEOUT=60s
+      - ConnectionStrings__Surveyor=Data Source=mssql,${MSSQL_PORT};Initial Catalog=${SURVEYOR_DB};User ID=${USER_ID};Password=${MSSQL_PASSWORD};Pooling=False;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Authentication=SqlPassword;Application Name=vscode-mssql;Application Intent=ReadWrite;Command Timeout=30;
+      - ASPNETCORE_ENVIRONMENT=Production
+      - JWT__Issuer=${JWT_ISSUER}
+      - JWT__Audience=${JWT_AUDIENCE}
+      - JWT__Secret=${JWT_SECRET}
+      - Kestrel__Endpoints__WebApi__Url=http://+:${SURVEYOR__PORT}
+      - URLs__InsuranceCompanyURL=http://insurancecompany:${INSURANCECOMPANY_Http2__PORT}
+  IRDA:
+    image: pritamjitmanna/irda:1.0
+    container_name: irda
+    ports:
+      - ${IRDA__PORT}:5199
+    depends_on:
+      InsuranceCompany:
+        condition: service_started
+    environment:
+      - CONNECTION_CHECK_TIMEOUT=60s
+      - ConnectionStrings__IRDA=Data Source=mssql,${MSSQL_PORT};Initial Catalog=${IRDA_DB};User ID=${USER_ID};Password=${MSSQL_PASSWORD};Pooling=False;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Authentication=SqlPassword;Application Name=vscode-mssql;Application Intent=ReadWrite;Command Timeout=30;
+      - ASPNETCORE_ENVIRONMENT=Production
+      - JWT__Issuer=${JWT_ISSUER}
+      - JWT__Audience=${JWT_AUDIENCE}
+      - JWT__Secret=${JWT_SECRET}
+      - Kestrel__Endpoints__WebApi__Url=http://+:${IRDA__PORT}
+      - URLs__InsuranceCompanyURL=http://insurancecompany:${INSURANCECOMPANY_Http2__PORT}
+  Gateway:
+    image: pritamjitmanna/gatewaywebapi:1.0
+    container_name: gateway
+    ports:
+      - ${GATEWAY__PORT}:5179
+    depends_on:
+      InsuranceCompany:
+        condition: service_started
+    environment:
+      - CONNECTION_CHECK_TIMEOUT=60s
+      - ConnectionStrings__Auth=Data Source=mssql,1433;Initial Catalog=${AUTH_DB};User ID=sa;Password=${MSSQL_PASSWORD};Pooling=False;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Authentication=SqlPassword;Application Name=vscode-mssql;Application Intent=ReadWrite;Command Timeout=30
+      - ASPNETCORE_ENVIRONMENT=Production
+      - JWT__Issuer=${JWT_ISSUER}
+      - JWT__Audience=${JWT_AUDIENCE}
+      - JWT__Secret=${JWT_SECRET}
+      - Kestrel__Endpoints__WebApi__Url=http://+:${GATEWAY__PORT}
+      - ENV_InsuranceCompany_HOST=insurancecompany
+      - ENV_InsuranceCompany_PORT=${INSURANCECOMPANY_Http1__PORT}
+      - ENV_Insured_HOST=insured
+      - ENV_Insured_PORT=${INSURED__PORT}
+      - ENV_IRDA_HOST=irda
+      - ENV_IRDA_PORT=${IRDA__PORT}
+      - ENV_Surveyor_HOST=surveyor
+      - ENV_Surveyor_PORT=${SURVEYOR__PORT}
+
+volumes:
+  mssqldb_data:
+    external: true
+  mssqldb_log:
+    external: true
+  mssqldb_secrets:
+    external: true
+
+
+# So, there are several issues i faced, initially the url was not getting hit as docker container by default runs on port 80, so i had to bind the url endpoints for the webapi and grpc port by overriding the kestrel endpoints in appsettings by passing from here. The code is  
+# - Kestrel__Endpoints__WebAPi__Url=http://+:${INSURANCECOMPANY_Http1__PORT}
+#       - Kestrel__Endpoints__gRPC__Url=http://+:${INSURANCECOMPANY_Http2__PORT}
+
+# Then the containers were starting fine, but as the sql server takes some time to start, the insurance company container was not able to connect to the sql server and was throwing connection error. So, i had to add a health check for the sql server container and then make the insurance company container dependent on the sql server container being healthy. The code is
+# healthcheck:
+#       test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "${USER_ID}", "-P", "${MSSQL_PASSWORD}", "-Q", "SELECT 1", "-C"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+#       start_period: 15s
+# The above code will try to connect to the sql server container every 10 seconds and if it is not able to connect for 5 times, it will mark the container as unhealthy. Once the sql server container is healthy, the insurance company container will start and will be able to connect to the sql server without any issues. The code for making the insurance company container dependent on the sql server container being healthy is
+# with 
+#  depends_on:
+#       mssql:
+#         condition: service_healthy
+
+# Thus the ic container will wait for the sql server container to be healthy before starting and thus will be able to connect to the sql server without any issues.

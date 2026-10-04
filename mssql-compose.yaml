@@ -1,12 +1,9 @@
-# To run this compose file with the environment variables set in the .env file, use:
-# docker-compose --env-file .env -f mssql-compose.yaml up -d
-
-
 version: '3.8'
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2025-latest
     container_name: mssql
+    user: root
     ports:
       - ${MSSQL_PORT}:1433
     environment:
@@ -16,6 +13,7 @@ services:
       - mssqldb_data:/var/opt/mssql/data
       - mssqldb_log:/var/opt/mssql/log
       - mssqldb_secrets:/var/opt/mssql/secrets
+
 volumes:
   mssqldb_data:
     external: true

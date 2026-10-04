@@ -5,6 +5,7 @@ using gRPCPoliciesService.Protos;
 using Insured.BLL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using SharedModules;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 // builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+
+JWT? jwtDetails=builder.Configuration.GetSection("JWT").Get<JWT>();
+
 builder.Services.AddAuthentication(options=>{
     options.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme=JwtBearerDefaults.AuthenticationScheme;
@@ -54,9 +59,9 @@ builder.Services.AddAuthentication(options=>{
     options.TokenValidationParameters=new TokenValidationParameters{
         ValidateIssuer=true,
         ValidateAudience=true,
-        ValidIssuer=builder.Configuration["JWT:Issuer"],
-        ValidAudience=builder.Configuration["JWT:Audience"],
-        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+        ValidIssuer=jwtDetails?.Issuer,
+        ValidAudience=jwtDetails?.Audience,
+        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtDetails?.Secret)),
     };
 #pragma warning restore CS8604 // Possible null reference argument.
 });

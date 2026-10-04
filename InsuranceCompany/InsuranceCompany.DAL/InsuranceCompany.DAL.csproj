@@ -16,4 +16,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\SharedModules\SharedModules.csproj" />
   </ItemGroup>
+
 </Project>

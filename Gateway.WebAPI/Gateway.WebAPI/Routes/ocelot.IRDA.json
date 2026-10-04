@@ -1,0 +1,81 @@
+{
+    
+    "Routes":[
+        {
+            "DownstreamPathTemplate": "/IRDA/claimStatus/report/{month}/{year}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "{{ENV_IRDA_HOST}}",  
+                "Port": "{{ENV_IRDA_PORT}}"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/IRDA/claimStatus/report/{month}/{year}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "IRDA"
+            }    
+        },
+        {
+            "DownstreamPathTemplate": "/IRDA/paymentStatus/report/{month}/{year}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "{{ENV_IRDA_HOST}}",  
+                "Port": "{{ENV_IRDA_PORT}}" 
+                }  
+            ],  
+            "UpstreamPathTemplate": "/IRDA/paymentStatus/report/{month}/{year}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "IRDA"
+            }   
+        },
+        {
+            "DownstreamPathTemplate": "/IRDA/claimStatus/pull/{month}/{year}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "{{ENV_IRDA_HOST}}",  
+                "Port": "{{ENV_IRDA_PORT}}"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/IRDA/claimStatus/pull/{month}/{year}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "IRDA"
+            }   
+        },
+        {
+            "DownstreamPathTemplate": "/IRDA/paymentStatus/pull/{month}/{year}",  
+            "DownstreamScheme": "http",  
+            "DownstreamHostAndPorts": [  
+                {  
+                "Host": "{{ENV_IRDA_HOST}}",  
+                "Port": "{{ENV_IRDA_PORT}}"  
+                }  
+            ],  
+            "UpstreamPathTemplate": "/IRDA/paymentStatus/pull/{month}/{year}",  
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions":{
+                "AuthenticationProviderKey":"Bearer",
+                "AllowedScopes":[]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "IRDA"
+            }   
+        }
+    ]
+}

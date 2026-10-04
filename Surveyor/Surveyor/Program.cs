@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Surveyor.BLL;
 using Surveyor.DAL;
 using System.Text;
+using SharedModules;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.AddScoped<ISurveyorService,SurveyorService>();
 
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MapperProfile>());
 
+JWT? jWtDetails=builder.Configuration.GetSection("JWT").Get<JWT>();
+
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 builder.Services.AddAuthentication(options=>{
     options.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
@@ -40,9 +43,9 @@ builder.Services.AddAuthentication(options=>{
     options.TokenValidationParameters=new TokenValidationParameters{
         ValidateIssuer=true,
         ValidateAudience=true,
-        ValidIssuer=builder.Configuration["JWT:Issuer"],
-        ValidAudience=builder.Configuration["JWT:Audience"],
-        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+        ValidIssuer=jWtDetails?.Issuer,
+        ValidAudience=jWtDetails?.Audience,
+        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWtDetails?.Secret)),
     };
 #pragma warning restore CS8604 // Possible null reference argument.
 });

@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 As base
+WORKDIR /App
+FROM mcr.microsoft.com/dotnet/sdk:10.0 As build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+COPY Surveyor/*.sln ./Surveyor/
+COPY Surveyor/Surveyor/Surveyor.csproj ./Surveyor/Surveyor/
+COPY Surveyor/Surveyor.BLL/Surveyor.BLL.csproj ./Surveyor/Surveyor.BLL/
+COPY Surveyor/Surveyor.DAL/Surveyor.DAL.csproj ./Surveyor/Surveyor.DAL/
+COPY SharedModules/SharedModules.csproj ./SharedModules/
+RUN dotnet restore Surveyor/Surveyor.sln
+
+COPY Surveyor/ ./Surveyor/
+COPY SharedModules/ ./SharedModules/
+
+
+WORKDIR /src/Surveyor
+FROM build AS publish
+RUN dotnet publish -c $BUILD_CONFIGURATION -o /App/publish
+
+FROM base as final
+
+EXPOSE 5251
+WORKDIR /App
+COPY --from=publish /App/publish .
+ENTRYPOINT ["dotnet","Surveyor.dll"]
